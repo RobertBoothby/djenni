@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.matcher;
 
-import org.djenni.Generator;
-import org.djenni.distribution.Distribution;
-import org.djenni.helper.DataCompletenessAssessment;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.helper.DataCompletenessAssessment;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
@@ -54,7 +54,7 @@ public class Matchers {
     }
 
     /**
-     * Get a matcher that checks that a {@link org.djenni.distribution.Distribution} eventually generates all the expected values and not any
+     * Get a matcher that checks that a {@link com.robertboothby.djenni.distribution.Distribution} eventually generates all the expected values and not any
      * unexpected ones. This matcher is only practical when working with full ranges of smaller types or small ranges of
      * larger types.
      * @param values The full set of values that a generator is expected to generate.

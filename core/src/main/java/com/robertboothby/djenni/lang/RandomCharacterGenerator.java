@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.lang;
 
-import org.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGenerator;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;

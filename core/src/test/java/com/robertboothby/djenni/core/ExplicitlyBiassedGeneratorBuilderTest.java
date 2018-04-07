@@ -6,8 +6,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.djenni.core.ExplicitlyBiasedGenerator.biasDetail;
-import static org.djenni.core.ExplicitlyBiassedGeneratorBuilder.explicitlyBiassedGeneratorFor;
+import static com.robertboothby.djenni.core.ExplicitlyBiasedGenerator.biasDetail;
+import static com.robertboothby.djenni.core.ExplicitlyBiassedGeneratorBuilder.explicitlyBiassedGeneratorFor;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

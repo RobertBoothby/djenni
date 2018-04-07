@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.distribution.simple;
 
 import net.jcip.annotations.ThreadSafe;
-import org.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 import java.io.Serializable;

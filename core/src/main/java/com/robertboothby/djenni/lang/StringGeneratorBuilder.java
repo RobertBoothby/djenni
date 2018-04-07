@@ -5,18 +5,18 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistributi
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.lang.serializable.SerializableStringGenerator;
 import com.robertboothby.djenni.sugar.And;
-import org.djenni.distribution.Distribution;
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
-import org.djenni.core.CharacterStrings;
-import org.djenni.distribution.simple.SimpleRandomIntegerDistribution;
-import org.djenni.lang.serializable.SerializableStringGenerator;
-import org.djenni.sugar.And;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.core.CharacterStrings;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
+import com.robertboothby.djenni.lang.serializable.SerializableStringGenerator;
+import com.robertboothby.djenni.sugar.And;
 
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.core.GeneratorHelper.buildAn;
-import static org.djenni.lang.CharacterGeneratorBuilder.characterGenerator;
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
+import static com.robertboothby.djenni.lang.CharacterGeneratorBuilder.characterGenerator;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
 
 /**
  * This Builder helps with the configuration of the {@link StringGenerator}. It allows for the easy selection of

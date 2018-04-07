@@ -4,13 +4,13 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.sugar.And;
 import net.jcip.annotations.NotThreadSafe;
-import org.djenni.distribution.Distribution;
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
-import org.djenni.distribution.simple.SimpleRandomIntegerDistribution;
-import org.djenni.sugar.And;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
+import com.robertboothby.djenni.sugar.And;
 
-import static org.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
 
 /**
  * Builder designed to make it easy and expressive to configure a generator of Integer values.

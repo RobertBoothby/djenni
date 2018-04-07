@@ -1,9 +1,9 @@
 package com.robertboothby.djenni;
 
-import org.djenni.core.FixedValueGenerator;
+import com.robertboothby.djenni.core.FixedValueGenerator;
 import org.junit.Test;
 
-import static org.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;

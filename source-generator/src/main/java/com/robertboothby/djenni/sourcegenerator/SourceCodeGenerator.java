@@ -10,7 +10,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import org.djenni.util.Nullable;
+import com.robertboothby.djenni.util.Nullable;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
-import static org.djenni.util.Nullable.nullValue;
-import static org.djenni.util.Nullable.nullable;
+import static com.robertboothby.djenni.util.Nullable.nullValue;
+import static com.robertboothby.djenni.util.Nullable.nullable;
 
 /**
  *

@@ -2,7 +2,7 @@ package com.robertboothby.djenni.core;
 
 /**
  * This interface is intended to hold all useful character strings for construction of String and Character based
- * {@link org.djenni.Generator}s.
+ * {@link com.robertboothby.djenni.Generator}s.
  * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  *

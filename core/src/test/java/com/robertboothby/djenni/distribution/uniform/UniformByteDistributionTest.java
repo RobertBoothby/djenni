@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.distribution.uniform;
 
 import com.robertboothby.djenni.matcher.Matchers;
-import org.djenni.distribution.Distribution;
-import org.djenni.helper.DataDistributionAssessment;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,8 +10,8 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.djenni.helper.DataDistributionAssessment.assessDistribution;
-import static org.djenni.matcher.Matchers.eventuallyGeneratesAllValues;
+import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessDistribution;
+import static com.robertboothby.djenni.matcher.Matchers.eventuallyGeneratesAllValues;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

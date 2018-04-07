@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.lang;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGenerator;
 import org.hamcrest.Description;
 
 /**

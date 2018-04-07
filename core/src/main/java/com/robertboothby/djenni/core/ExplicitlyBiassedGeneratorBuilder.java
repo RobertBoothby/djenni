@@ -1,13 +1,13 @@
 package com.robertboothby.djenni.core;
 
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGeneratorBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.djenni.core.ExplicitlyBiasedGenerator.BiasDetail;
-import static org.djenni.core.ExplicitlyBiasedGenerator.biasDetail;
+import static com.robertboothby.djenni.core.ExplicitlyBiasedGenerator.BiasDetail;
+import static com.robertboothby.djenni.core.ExplicitlyBiasedGenerator.biasDetail;
 
 /**
  * TODO Implement...

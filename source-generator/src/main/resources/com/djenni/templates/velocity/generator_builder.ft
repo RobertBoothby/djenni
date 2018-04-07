@@ -1,10 +1,10 @@
 package ${class.package.name};
 
-import org.djenni.Generator;
-import org.djenni.GeneratorBuilder;
-import org.djenni.util.Nullable;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.GeneratorBuilder;
+import com.robertboothby.djenni.util.Nullable;
 
-import static org.djenni.util.Nullable.nullable;
+import static com.robertboothby.djenni.util.Nullable.nullable;
 
 /**
  * <p>

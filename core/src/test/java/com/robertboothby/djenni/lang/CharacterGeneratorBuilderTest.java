@@ -1,15 +1,15 @@
 package com.robertboothby.djenni.lang;
 
-import org.djenni.Generator;
-import org.djenni.core.FixedValueGenerator;
-import org.djenni.core.GeneratorHelper;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.core.FixedValueGenerator;
+import com.robertboothby.djenni.core.GeneratorHelper;
 import org.junit.Test;
 
-import static org.djenni.distribution.simple.SimpleRandomIntegerDistribution.INVERTED_NORMAL;
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.lang.CharacterGeneratorBuilder.characterGenerator;
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
-import static org.djenni.lang.StringGeneratorBuilder.DEFAULT_AVAILABLE_CHARACTERS;
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution.INVERTED_NORMAL;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.lang.CharacterGeneratorBuilder.characterGenerator;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_AVAILABLE_CHARACTERS;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

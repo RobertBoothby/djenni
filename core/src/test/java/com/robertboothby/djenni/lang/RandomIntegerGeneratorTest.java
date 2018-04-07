@@ -2,17 +2,17 @@ package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import com.robertboothby.djenni.helper.DataDistributionAssessmentRangeMatcher;
-import org.djenni.distribution.Distribution;
-import org.djenni.Generator;
-import org.djenni.helper.DataDistributionAssessment;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.djenni.helper.DataDistributionAssessment.assessGenerator;
-import static org.djenni.helper.DataDistributionAssessmentRangeMatcher.between;
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessGenerator;
+import static com.robertboothby.djenni.helper.DataDistributionAssessmentRangeMatcher.between;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;

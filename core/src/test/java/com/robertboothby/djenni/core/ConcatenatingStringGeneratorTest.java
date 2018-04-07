@@ -1,11 +1,11 @@
 package com.robertboothby.djenni.core;
 
-import org.djenni.Generator;
+import com.robertboothby.djenni.Generator;
 import org.junit.Test;
 
-import static org.djenni.core.ConcatenatingStringGeneratorBuilder.generatorOfConcatenatedValues;
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.ConcatenatingStringGeneratorBuilder.generatorOfConcatenatedValues;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 

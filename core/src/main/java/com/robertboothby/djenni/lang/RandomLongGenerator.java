@@ -2,8 +2,8 @@ package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.distribution.Distribution;
 import net.jcip.annotations.ThreadSafe;
-import org.djenni.distribution.Distribution;
-import org.djenni.SerializableGenerator;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.SerializableGenerator;
 import org.hamcrest.Description;
 
 import static org.hamcrest.MatcherAssert.assertThat;

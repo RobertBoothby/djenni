@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.lang.serializable;
 
-import org.djenni.SerializableGenerator;
-import org.djenni.lang.StringGenerator;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.lang.StringGenerator;
 
 /**
  * Version of {@link StringGenerator} that guarantees serializability.

@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.lang;
 
 import net.jcip.annotations.ThreadSafe;
-import org.djenni.Generator;
+import com.robertboothby.djenni.Generator;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 

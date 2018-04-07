@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.distribution.uniform;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 import java.util.concurrent.ThreadLocalRandom;

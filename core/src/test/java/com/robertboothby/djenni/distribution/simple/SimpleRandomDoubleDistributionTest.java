@@ -1,9 +1,9 @@
 package com.robertboothby.djenni.distribution.simple;
 
-import org.djenni.helper.DataDistributionAssessment;
+import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import org.junit.Test;
 
-import static org.djenni.helper.DataDistributionAssessment.assessDistribution;
+import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessDistribution;
 import static org.hamcrest.CoreMatchers.both;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;

@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <artifactId>djenni-parent</artifactId>
-    <groupId>org.djenni</groupId>
+    <groupId>com.robertboothby.djenni</groupId>
     <version>1.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
@@ -11,7 +11,7 @@
   <name>djenni source-generator-mojo Maven Mojo</name>
   <dependencies>
     <dependency>
-      <groupId>org.djenni</groupId>
+      <groupId>com.robertboothby.djenni</groupId>
       <artifactId>source-generator</artifactId>
       <version>${project.version}</version>
     </dependency>

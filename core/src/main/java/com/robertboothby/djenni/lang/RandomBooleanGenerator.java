@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.distribution.Distribution;
-import org.djenni.distribution.Distribution;
-import org.djenni.Generator;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.Generator;
 import org.hamcrest.Description;
 
 /**

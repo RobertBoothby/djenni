@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.core.util;
 
-import org.djenni.Generator;
+import com.robertboothby.djenni.Generator;
 import org.hamcrest.Description;
 
 /**

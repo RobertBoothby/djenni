@@ -2,7 +2,7 @@ package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.util.Nullable;
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.util.Nullable;
+import com.robertboothby.djenni.util.Nullable;
 
 import java.util.Collection;
 import java.util.Date;
@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.djenni.util.Nullable.nullValue;
+import static com.robertboothby.djenni.util.Nullable.nullValue;
 
 /**
  * <p>&#169; 2014 Forest View Developments Ltd.</p>

@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.lang;
 
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.Generator;
+import com.robertboothby.djenni.Generator;
 import org.hamcrest.Description;
 
 //TODO implement.

@@ -1,14 +1,14 @@
 package com.robertboothby.djenni.lang;
 
-import org.djenni.Generator;
-import org.djenni.distribution.Distribution;
-import org.djenni.helper.DataDistributionAssessment;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import org.junit.Test;
 
-import static org.djenni.distribution.simple.SimpleRandomLongDistribution.RIGHT_NORMAL;
-import static org.djenni.helper.DataDistributionAssessment.assessGenerator;
-import static org.djenni.helper.DataDistributionAssessmentSingleValueMatcher.dataDistributionAssessmentSingleValueMatcher;
-import static org.djenni.lang.LongGeneratorBuilder.generateALong;
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution.RIGHT_NORMAL;
+import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessGenerator;
+import static com.robertboothby.djenni.helper.DataDistributionAssessmentSingleValueMatcher.dataDistributionAssessmentSingleValueMatcher;
+import static com.robertboothby.djenni.lang.LongGeneratorBuilder.generateALong;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;

@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.lang.serializable;
 
-import org.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGenerator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;

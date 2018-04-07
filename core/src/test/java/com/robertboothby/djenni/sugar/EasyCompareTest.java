@@ -2,7 +2,7 @@ package com.robertboothby.djenni.sugar;
 
 import org.junit.Test;
 
-import static org.djenni.sugar.EasyCompare.$;
+import static com.robertboothby.djenni.sugar.EasyCompare.$;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;

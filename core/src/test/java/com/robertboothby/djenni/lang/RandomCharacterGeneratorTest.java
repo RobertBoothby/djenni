@@ -1,17 +1,17 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.matcher.Matchers;
-import org.djenni.SerializableGenerator;
-import org.djenni.core.util.Collections;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.core.util.Collections;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.djenni.core.GeneratorHelper.buildAn;
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
-import static org.djenni.core.util.Collections.asSet;
-import static org.djenni.matcher.Matchers.eventuallyGeneratesAllValues;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.core.util.Collections.asSet;
+import static com.robertboothby.djenni.matcher.Matchers.eventuallyGeneratesAllValues;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;

@@ -1,7 +1,7 @@
 package ${class.package.name};
 
-import org.djenni.Generator;
-import org.djenni.util.Nullable;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.util.Nullable;
 import org.hamcrest.Description;
 
 /**

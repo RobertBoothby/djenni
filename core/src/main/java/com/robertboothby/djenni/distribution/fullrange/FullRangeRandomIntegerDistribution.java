@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.distribution.fullrange;
 
-import org.djenni.distribution.Distribution;
-import org.djenni.distribution.simple.SimpleRandomLongDistribution;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
 import org.hamcrest.Description;
 
 /**

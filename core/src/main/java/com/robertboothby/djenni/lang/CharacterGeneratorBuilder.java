@@ -3,16 +3,16 @@ package com.robertboothby.djenni.lang;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import net.jcip.annotations.NotThreadSafe;
-import org.djenni.distribution.Distribution;
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
-import org.djenni.core.CharacterStrings;
-import org.djenni.distribution.simple.SimpleRandomIntegerDistribution;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.core.CharacterStrings;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
 import static java.util.Arrays.copyOf;
-import static org.djenni.core.GeneratorHelper.buildAn;
-import static org.djenni.core.GeneratorHelper.fixedValue;
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
+import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
 
 /**
  * Builder intended to make it expressive and easy to configure a Generator of Integers.

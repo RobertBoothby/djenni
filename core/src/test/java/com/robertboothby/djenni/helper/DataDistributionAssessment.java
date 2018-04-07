@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.helper;
 
 import net.jcip.annotations.NotThreadSafe;
-import org.djenni.Generator;
-import org.djenni.distribution.Distribution;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.MatcherAssert;
 
 import java.util.NavigableMap;

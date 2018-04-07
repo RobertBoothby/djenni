@@ -1,11 +1,11 @@
 package com.robertboothby.djenni.helper;
 
 
-import org.djenni.sugar.And;
+import com.robertboothby.djenni.sugar.And;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-import static org.djenni.sugar.EasyCompare.$;
+import static com.robertboothby.djenni.sugar.EasyCompare.$;
 
 /**
  *

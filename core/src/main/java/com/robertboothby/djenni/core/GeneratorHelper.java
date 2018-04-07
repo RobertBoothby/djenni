@@ -6,18 +6,18 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.lang.IntegerGeneratorBuilder;
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.core.util.Derivation;
-import org.djenni.distribution.Distribution;
-import org.djenni.Generator;
-import org.djenni.GeneratorBuilder;
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
-import org.djenni.distribution.simple.SimpleRandomIntegerDistribution;
+import com.robertboothby.djenni.core.util.Derivation;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.GeneratorBuilder;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import org.hamcrest.Description;
 
 import java.util.Collection;
 
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
 
 /**
  * Helpful utilities for working with Generators.

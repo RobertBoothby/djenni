@@ -3,14 +3,14 @@ package com.robertboothby.djenni.core;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.SerializableGenerator;
-import org.djenni.distribution.Distribution;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 import java.util.List;
 import java.util.TreeMap;
 
-import static org.djenni.distribution.simple.SimpleRandomDoubleDistribution.UNIFORM;
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution.UNIFORM;
 
 /**
  * <p>Instances of this class generate random values in given relative proportions that are passed in as a bias map
@@ -36,7 +36,7 @@ public class ExplicitlyBiasedGenerator<T> implements SerializableGenerator<T> {
 
     /**
      * Construct an instance of the generator using the map of values with their biasses
-     * @param biasList a list of {@link org.djenni.core.ExplicitlyBiasedGenerator.BiasDetail} that supplies the entries
+     * @param biasList a list of {@link com.robertboothby.djenni.core.ExplicitlyBiasedGenerator.BiasDetail} that supplies the entries
      *                 and relative proportions of the entries for generation.
      */
     public ExplicitlyBiasedGenerator(List<BiasDetail<T>> biasList) {

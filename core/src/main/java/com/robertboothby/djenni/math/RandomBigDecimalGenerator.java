@@ -2,8 +2,8 @@ package com.robertboothby.djenni.math;
 
 import com.robertboothby.djenni.distribution.Distribution;
 import org.apache.commons.lang.NotImplementedException;
-import org.djenni.Generator;
-import org.djenni.distribution.Distribution;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 import java.math.BigDecimal;

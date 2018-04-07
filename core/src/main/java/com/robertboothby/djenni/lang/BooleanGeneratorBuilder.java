@@ -3,15 +3,15 @@ package com.robertboothby.djenni.lang;
 import com.robertboothby.djenni.GeneratorBuilder;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
-import org.djenni.Generator;
-import org.djenni.GeneratorBuilder;
-import org.djenni.distribution.Distribution;
-import org.djenni.distribution.simple.SimpleRandomDoubleDistribution;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.GeneratorBuilder;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
 
 /**
  * Trivial implementation of the {@link GeneratorBuilder} inteface that is created to retain consistency with the other
  * primitive types. When explicit control is required then it is better to consider using the
- * {@link org.djenni.core.ExplicitlyBiasedGenerator}.
+ * {@link com.robertboothby.djenni.core.ExplicitlyBiasedGenerator}.
  * <p>&#169; 2013 Forest View Developments Ltd.</p>
  *
  * @author robertboothby

@@ -1,13 +1,13 @@
 package com.robertboothby.djenni.examples;
 
-import org.djenni.Generator;
-import org.djenni.SerializableGenerator;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.SerializableGenerator;
 import org.junit.Test;
 
-import static org.djenni.core.ConcatenatingStringGeneratorBuilder.generatorOfConcatenatedValues;
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.examples.StaffNumberGeneratorBuilder.generatorOfValidStaffNumberStrings;
-import static org.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
+import static com.robertboothby.djenni.core.ConcatenatingStringGeneratorBuilder.generatorOfConcatenatedValues;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.examples.StaffNumberGeneratorBuilder.generatorOfValidStaffNumberStrings;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

@@ -3,12 +3,6 @@ package com.robertboothby.djenni.core;
 import com.robertboothby.djenni.Generator;
 import com.robertboothby.djenni.GeneratorBuilder;
 import com.robertboothby.djenni.sugar.And;
-import org.apache.commons.lang.NotImplementedException;
-import org.djenni.Generator;
-import org.djenni.GeneratorBuilder;
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
-import org.djenni.sugar.And;
 
 import java.util.ArrayList;
 import java.util.List;

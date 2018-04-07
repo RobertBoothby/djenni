@@ -8,7 +8,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.shared.utils.io.DirectoryScanner;
-import org.djenni.sourcegenerator.SourceCodeGenerator;
+import com.robertboothby.djenni.sourcegenerator.SourceCodeGenerator;
 
 import java.io.File;
 import java.io.IOException;

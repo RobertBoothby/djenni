@@ -4,16 +4,16 @@ import com.robertboothby.djenni.core.CharacterStrings;
 import com.robertboothby.djenni.core.GeneratorHelper;
 import com.robertboothby.djenni.lang.StringGeneratorBuilder;
 import com.robertboothby.djenni.util.Nullable;
-import org.djenni.Generator;
+import com.robertboothby.djenni.Generator;
 
-import static org.djenni.core.CharacterStrings.ENGLISH_ALPHABETIC_LOWER;
-import static org.djenni.core.CharacterStrings.ENGLISH_ALPHABETIC_UPPER;
-import static org.djenni.core.ExplicitlyBiassedGeneratorBuilder.explicitlyBiassedGeneratorFor;
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.core.GeneratorHelper.fixedValue;
-import static org.djenni.examples.Gender.*;
-import static org.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
-import static org.djenni.util.Nullable.nullable;
+import static com.robertboothby.djenni.core.CharacterStrings.ENGLISH_ALPHABETIC_LOWER;
+import static com.robertboothby.djenni.core.CharacterStrings.ENGLISH_ALPHABETIC_UPPER;
+import static com.robertboothby.djenni.core.ExplicitlyBiassedGeneratorBuilder.explicitlyBiassedGeneratorFor;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.examples.Gender.*;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
+import static com.robertboothby.djenni.util.Nullable.nullable;
 
 /**
  * <p>&#169; 2014 Forest View Developments Ltd.</p>

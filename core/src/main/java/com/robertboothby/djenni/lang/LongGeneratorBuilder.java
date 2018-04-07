@@ -4,12 +4,12 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
 import com.robertboothby.djenni.sugar.And;
 import net.jcip.annotations.NotThreadSafe;
-import org.djenni.distribution.Distribution;
-import org.djenni.SerializableGenerator;
-import org.djenni.SerializableGeneratorBuilder;
-import org.djenni.core.GeneratorHelper;
-import org.djenni.distribution.simple.SimpleRandomLongDistribution;
-import org.djenni.sugar.And;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.core.GeneratorHelper;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
+import com.robertboothby.djenni.sugar.And;
 
 /**
  * Builder designed to make it easy and expressive to configure a generator of Long values. Limited to a range

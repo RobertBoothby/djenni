@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.distribution.simple;
 
-import org.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 /**

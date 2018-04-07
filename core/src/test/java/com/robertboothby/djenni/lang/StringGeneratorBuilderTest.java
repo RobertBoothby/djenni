@@ -1,19 +1,19 @@
 package com.robertboothby.djenni.lang;
 
-import org.djenni.SerializableGenerator;
-import org.djenni.lang.serializable.SerializableStringGenerator;
+import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.lang.serializable.SerializableStringGenerator;
 import org.junit.Test;
 
-import static org.djenni.distribution.simple.SimpleRandomIntegerDistribution.LEFT_INVERTED_NORMAL;
-import static org.djenni.distribution.simple.SimpleRandomIntegerDistribution.RIGHT_NORMAL;
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.core.GeneratorHelper.buildAn;
-import static org.djenni.lang.CharacterGeneratorBuilder.characterGenerator;
-import static org.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
-import static org.djenni.lang.StringGeneratorBuilder.DEFAULT_AVAILABLE_CHARACTERS;
-import static org.djenni.lang.StringGeneratorBuilder.DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
-import static org.djenni.lang.StringGeneratorBuilder.DEFAULT_LENGTH_DISTRIBUTION;
-import static org.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution.LEFT_INVERTED_NORMAL;
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution.RIGHT_NORMAL;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
+import static com.robertboothby.djenni.lang.CharacterGeneratorBuilder.characterGenerator;
+import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_AVAILABLE_CHARACTERS;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_LENGTH_DISTRIBUTION;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;

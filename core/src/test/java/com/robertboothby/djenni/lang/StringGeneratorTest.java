@@ -2,16 +2,16 @@ package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.helper.DataCompletenessAssessment;
 import com.robertboothby.djenni.matcher.Matchers;
-import org.djenni.Generator;
-import org.djenni.core.CharacterStrings;
-import org.djenni.core.util.Collections;
-import org.djenni.helper.DataCompletenessAssessment;
+import com.robertboothby.djenni.Generator;
+import com.robertboothby.djenni.core.CharacterStrings;
+import com.robertboothby.djenni.core.util.Collections;
+import com.robertboothby.djenni.helper.DataCompletenessAssessment;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-import static org.djenni.core.GeneratorHelper.buildA;
-import static org.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
-import static org.djenni.matcher.Matchers.eventuallyGeneratesAllDerivatives;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
+import static com.robertboothby.djenni.matcher.Matchers.eventuallyGeneratesAllDerivatives;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
