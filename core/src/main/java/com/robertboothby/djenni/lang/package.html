@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>org.djenni.lang</title>
+</head>
+<body>
+<p>
+    This package contains {@link org.djenni.Generator} and {@link org.djenni.GeneratorBuilder} instances for the core java
+    types in the java.lang package.
+</p>
+<p>
+    There are currently limitations in the implementation because of a logical flaw - Take Long for example. The full range
+    between {@link java.lang.Long#MIN_VALUE} and {@link java.lang.Long#MAX_VALUE} cannot be represented by a single Long
+    value this means that when one uses {@link java.util.concurrent.ThreadLocalRandom#nextLong(long)} one cannot get a single
+    number that is distributed over the range of values. Thus in order to get a random Long value between the minimum and
+    maximum one needs to perform at least 2 random number generations. The first to determine whether we are dealing with
+    the positive values or the negative values (0 must not be forgotten...), the second to generate a long within the chosen
+    partial range.
+</p>
+<p>
+    Probably the best approach is to have two instances of these types of generators that can be built one being the
+    &quot;fast&quot; one that deals with ranges that can be randomised simply (in the case of long the range is less than
+    Long.MAX_VALUE) and a &quot;slow&quot; one that deals with the greater ranges and does the appropriate calculation.
+    These two types can then be automatically be selected between by the appropriate GeneratorBuilder.
+</p>
+<p>
+    Of course a good question to ask is how often do we, when generating random data, need Longs and similar types generated
+    to the full range.
+</p>
+<p>
+    &#169; 2013 Forest View Developments Ltd.
+</p>
+</body>
+</html>

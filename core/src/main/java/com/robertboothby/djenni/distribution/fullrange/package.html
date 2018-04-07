@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>org.djenni.distribution.fullrange</title>
+</head>
+<body>
+<p>
+    This package contains distribution implementations that are capable of generating a full range of values. It does
+    this by expressing the bound when generating as a type that is capable of describing the full range that could be
+    generated.
+</p>
+<p>
+    For example when generating Integers, expressing the bound as an Integer only allows a bound of
+    2147483647 which means that a naive Integer Distribution can only ever generate values with a range of 0 to 2147483646
+    inclusive. This makes full range generation difficult as the full range of an Integer is -2147483648 to 2147483647 or
+    as a positive number bound it is 4294967296 (0x100000000).
+</p>
+<p>
+    So if we want to generate the full range we need to be able to express this bound in a type that can handle it. For
+    Integers the type is as a Long.
+</p>
+<p>
+    &#169; 2013 Forest View Developments Ltd.
+</p>
+</body>
+</html>
