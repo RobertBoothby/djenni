@@ -1,47 +1,71 @@
 package com.robertboothby.djenni;
 
 import com.robertboothby.template.AbstractGeneratorMojo;
+import com.robertboothby.utilities.lambda.FunctionResult;
 import com.robertboothby.template.model.GenerationModelRetriever;
+import com.robertboothby.utilities.lambda.LambdaUtilities;
+import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.JavaSource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.project.MavenProject;
+import org.apache.maven.shared.model.fileset.FileSet;
+import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.robertboothby.utilities.lambda.LambdaUtilities.wrap;
+import static java.util.Arrays.stream;
 
 
 @Mojo(name = "generate-sources", defaultPhase = LifecyclePhase.GENERATE_SOURCES)
 public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
 
     @Parameter(required = true)
-    private File[] sourceRoots;
+    private FileSet[] fileSets;
 
-    @Parameter
-    private String[] includes;
-
-    @Parameter
-    private String[] excludes;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-sources/djenni")
-    private File sourceDestination;
-
-    @Parameter(defaultValue = "${project.build.directory}/generated-test-sources/djenni")
-    private File testSourceDestination;
-
-    @Parameter(defaultValue = "${project}", required = true)
-    private MavenProject project;
-
-    @Parameter(defaultValue = "false")
-    private boolean isGeneratingTestSources;
+    private final FileSetManager fileSetManager = new FileSetManager();
 
     @Parameter(defaultValue = "false")
     private boolean generateForCollectionGetters;
 
     @Override
     protected GenerationModelRetriever getGenerationModelRetriever() throws MojoExecutionException {
+
+        JavaProjectBuilder builder = new JavaProjectBuilder();
+
+        List<FunctionResult<JavaSource>> sourceFiles =
+                stream(fileSets)
+                .flatMap(this::getIncludedFiles)
+                .collect(Collectors.toSet()) //Ensure uniqueness
+                .stream()
+                .map(wrap(builder::addSource))
+                .collect(Collectors.toList());
+
+        //Check for failures
+        String failures = sourceFiles.stream()
+                .filter(FunctionResult::isExceptional)
+                .map(FunctionResult::toString)
+                .collect(Collectors.joining("\n"));
+
+        if(failures != null && !failures.isEmpty()){
+            throw new MojoExecutionException("Failed to parse files: \n" + failures);
+        }
+
+
         return null;
     }
+
+    private Stream<File> getIncludedFiles(FileSet fileSet) {
+        return stream(fileSetManager.getIncludedFiles(fileSet))
+                .map(file -> new File(new File(fileSet.getDirectory()), file));
+    }
+
 
 //    public void execute() throws MojoExecutionException {
 //
