@@ -1,18 +1,15 @@
 package com.robertboothby.djenni.lang;
 
-import com.robertboothby.djenni.helper.DataCompletenessAssessment;
-import com.robertboothby.djenni.matcher.Matchers;
 import com.robertboothby.djenni.Generator;
 import com.robertboothby.djenni.core.CharacterStrings;
 import com.robertboothby.djenni.core.util.Collections;
 import com.robertboothby.djenni.helper.DataCompletenessAssessment;
+import com.robertboothby.djenni.matcher.Matchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
 import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
-import static com.robertboothby.djenni.matcher.Matchers.eventuallyGeneratesAllDerivatives;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *
