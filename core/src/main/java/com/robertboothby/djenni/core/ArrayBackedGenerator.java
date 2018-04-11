@@ -7,10 +7,7 @@ import org.hamcrest.Description;
 import java.util.Arrays;
 
 /**
- * Simple Generator that randomly generates values from an array selected using the passed in Integer Generator
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
- *
- * @author robertboothby
+ * Simple Generator that randomly generates values from an array selected using the passed in Integer Generator.
  */
 public class ArrayBackedGenerator<T> implements SerializableGenerator<T> {
 
@@ -29,12 +26,16 @@ public class ArrayBackedGenerator<T> implements SerializableGenerator<T> {
         this.selectionGenerator = selectionGenerator;
     }
 
+    @Override
     public T generate() {
         return array[selectionGenerator.generate()];
     }
 
+    @Override
     public void describeTo(Description description) {
-        //TODO Implement...
-        throw new NotImplementedException();
+        description.appendText("ArrayBackedGenerator : {");
+        description.appendValueList("values : [", ", ", "],", array);
+        description.appendDescriptionOf(selectionGenerator);
+        description.appendText("}");
     }
 }

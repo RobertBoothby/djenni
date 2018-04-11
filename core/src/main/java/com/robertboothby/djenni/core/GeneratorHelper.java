@@ -61,7 +61,10 @@ public class GeneratorHelper {
     public static <T> SerializableGenerator<T> fromArray(T[] array, Distribution<Integer, Integer> distribution) {
         return new ArrayBackedGenerator<T>(
                 array,
-                buildAn(IntegerGeneratorBuilder.integerGenerator().between(0).and(array.length).withDistribution(distribution)));
+                buildAn(IntegerGeneratorBuilder.integerGenerator()
+                        .between(0)
+                        .and(array.length)
+                        .withDistribution(distribution)));
     }
 
     /**
@@ -145,11 +148,12 @@ public class GeneratorHelper {
 
             @Override
             public void describeTo(Description description) {
-                description.appendText("{ Derived Value Generator : { derivation = ");
-                derivation.describeTo(description);
-                description.appendText(" , generator = ");
-                generator.describeTo(description);
-                description.appendText("} } ");
+                description
+                        .appendText("{ Derived Value Generator : { derivation = ")
+                        .appendDescriptionOf(derivation)
+                        .appendText(" , generator = ")
+                        .appendDescriptionOf(generator)
+                        .appendText("} } ");
             }
         };
     }

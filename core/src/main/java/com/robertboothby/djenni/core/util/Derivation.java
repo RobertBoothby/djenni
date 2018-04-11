@@ -1,12 +1,12 @@
 package com.robertboothby.djenni.core.util;
 
+import com.robertboothby.djenni.Generator;
 import org.hamcrest.SelfDescribing;
 
 /**
- *
- * <p>&#169; 2014 Forest View Developments Ltd.</p>
- *
- * @author robertboothby
+ * This interface represents any transformative derivation of a value. it is intended to be used with the
+ * {@link com.robertboothby.djenni.core.GeneratorHelper#derivedValueGenerator(Derivation, Generator)} utility method
+ * to allow a derivation from the generated value.
  */
 public interface Derivation<T, U> extends SelfDescribing {
 
