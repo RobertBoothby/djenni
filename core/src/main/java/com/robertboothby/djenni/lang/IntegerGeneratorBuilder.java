@@ -4,13 +4,10 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.sugar.And;
 import net.jcip.annotations.NotThreadSafe;
-import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
-import com.robertboothby.djenni.sugar.And;
 
-import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.GeneratorHelper.$;
 
 /**
  * Builder designed to make it easy and expressive to configure a generator of Integer values.
@@ -30,7 +27,7 @@ public class IntegerGeneratorBuilder implements SerializableGeneratorBuilder<Int
 
     public SerializableGenerator<Integer> build() {
         if(maxExclusiveValue - minInclusiveValue == 1){
-            return fixedValue(minInclusiveValue);
+            return $(minInclusiveValue);
         } else {
             return new RandomIntegerGenerator(minInclusiveValue, maxExclusiveValue, distribution);
         }

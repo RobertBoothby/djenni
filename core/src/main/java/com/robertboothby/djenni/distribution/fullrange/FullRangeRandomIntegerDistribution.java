@@ -5,8 +5,7 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution
 import org.hamcrest.Description;
 
 /**
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
- *
+ * This Distribution allows for the generation of the full range of integer values, positive to negative.
  * @author robertboothby
  */
 public class FullRangeRandomIntegerDistribution implements Distribution<Integer, Long> {
@@ -35,6 +34,9 @@ public class FullRangeRandomIntegerDistribution implements Distribution<Integer,
 
     public Integer generate(Long bound) {
         //TODO check bound is in range...
+        //TODO rethink how to express bound and relationship to generating negative values as this interface makes it
+        // hard to determin what range of values will be generated. May want to create a "Bound" type and use that
+        // instead of using "Number".
         return (int) underlyingDistribution.generate(bound).longValue();
     }
 

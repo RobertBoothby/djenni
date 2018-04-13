@@ -10,10 +10,7 @@ import static com.robertboothby.djenni.core.ExplicitlyBiasedGenerator.BiasDetail
 import static com.robertboothby.djenni.core.ExplicitlyBiasedGenerator.biasDetail;
 
 /**
- * TODO Implement...
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
- *
- * @author robertboothby
+ * This builder allows for the configuration of ExplicitlyBiasedGenerator instances.
  */
 public class ExplicitlyBiassedGeneratorBuilder<T> implements SerializableGeneratorBuilder<T> {
 
@@ -70,6 +67,7 @@ public class ExplicitlyBiassedGeneratorBuilder<T> implements SerializableGenerat
         return this;
     }
 
+    @Override
     public SerializableGenerator<T> build() {
         return new ExplicitlyBiasedGenerator<T>(biaslist);
     }

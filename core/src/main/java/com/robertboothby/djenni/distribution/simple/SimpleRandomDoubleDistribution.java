@@ -19,7 +19,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * threaded environment anyway. If generated values are needed for repeatable testing then they must be
  * stored independently after generation.
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * {@link java.util.concurrent.ThreadLocalRandom#nextLong(long)}
  */

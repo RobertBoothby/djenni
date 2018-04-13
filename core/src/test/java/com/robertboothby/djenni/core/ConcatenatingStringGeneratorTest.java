@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static com.robertboothby.djenni.core.ConcatenatingStringGeneratorBuilder.generatorOfConcatenatedValues;
 import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
-import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.GeneratorHelper.$;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
@@ -20,9 +20,9 @@ public class ConcatenatingStringGeneratorTest {
     public void shouldGenerateASimpleConcatenatedString() {
         //Given
         final Generator<String> concatenatedStringGenerator = buildA(generatorOfConcatenatedValues()
-                        .with(fixedValue("A"))
-                        .and(fixedValue("B"))
-                        .and(fixedValue("C"))
+                        .with($("A"))
+                        .and($("B"))
+                        .and($("C"))
         );
 
         //When

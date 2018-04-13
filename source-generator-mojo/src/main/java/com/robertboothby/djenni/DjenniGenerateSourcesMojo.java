@@ -36,6 +36,12 @@ public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
 
     @Override
     protected GenerationModelRetriever getGenerationModelRetriever() throws MojoExecutionException {
+        //Been thinking about how to provide default (not abstract) implementations of the Builders.
+        //Should always use the builders that are generated and should also consider looking for pre-generated builders
+        //either on the classpath or on the sources directory.
+        //Also need to think about the default builders for primitive types.
+        //Also need to provide a configuration mechanism to provide point overrides to the generation.
+
 
         JavaProjectBuilder builder = new JavaProjectBuilder();
 

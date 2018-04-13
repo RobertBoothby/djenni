@@ -1,27 +1,17 @@
 package com.robertboothby.djenni.core;
 
-import com.robertboothby.djenni.GeneratorBuilder;
-import com.robertboothby.djenni.core.util.Derivation;
-import com.robertboothby.djenni.distribution.Distribution;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
-import com.robertboothby.djenni.lang.IntegerGeneratorBuilder;
-import org.apache.commons.lang.NotImplementedException;
-import com.robertboothby.djenni.core.util.Derivation;
-import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.Generator;
 import com.robertboothby.djenni.GeneratorBuilder;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
+import com.robertboothby.djenni.core.util.Derivation;
+import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
+import com.robertboothby.djenni.lang.IntegerGeneratorBuilder;
 import org.hamcrest.Description;
-
-import java.util.Collection;
-
-import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
 
 /**
  * Helpful utilities for working with Generators.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class GeneratorHelper {
@@ -32,7 +22,7 @@ public class GeneratorHelper {
      * @param <T> The type of the fixed value and so the generator.
      * @return a generator that will always return the fixed value.
      */
-    public static <T> SerializableGenerator<T> fixedValue(final T fixedValue){
+    public static <T> SerializableGenerator<T> $(final T fixedValue){
         return new FixedValueGenerator<T>(fixedValue);
     }
 
@@ -72,27 +62,20 @@ public class GeneratorHelper {
      * @param enumerationClass The enumeration class to use.
      * @param <T> The enumeration type.
      * @return a generator that will generate values from the enumeration.
-     * TODO test...
      */
     public static <T extends Enum<T>> SerializableGenerator<T> fromEnum(Class<T> enumerationClass) {
         return fromArray(enumerationClass.getEnumConstants());
     }
 
     /**
-     *
-     * @param collection
-     * @param <T>
-     * @return
+     * Shortcut method for creating a generator that randomly generates values from the enumeration with equal bias.
+     * @param enumerationClass The enumeration class to use.
+     * @param distribution The distribution to use.
+     * @param <T> The enumeration type.
+     * @return a generator that will generate values from the enumeration.
      */
-    public static <T> SerializableGenerator<T> fromCollection(Collection<T> collection) {
-
-        //TODO implement
-        throw new NotImplementedException();
-    }
-
-    public static <T> SerializableGenerator<T> fromIterable(Iterable<T> iterable, Distribution distribution) {
-        //TODO implement
-        throw new NotImplementedException();
+    public static <T extends Enum<T>> SerializableGenerator<T> fromEnum(Class<T> enumerationClass, Distribution<Integer, Integer> distribution) {
+        return fromArray(enumerationClass.getEnumConstants(), distribution);
     }
 
     /**

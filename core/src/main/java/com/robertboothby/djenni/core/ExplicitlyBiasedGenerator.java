@@ -23,10 +23,6 @@ import static com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDis
  * </code>
  * Would produce a bias map that when passed into this class would generate TRUE 90% of the time and FALSE 10% of the
  * time.</p>
- *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
- *
- * @author robertboothby
  */
 public class ExplicitlyBiasedGenerator<T> implements SerializableGenerator<T> {
 

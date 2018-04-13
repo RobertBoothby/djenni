@@ -4,12 +4,9 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
 import com.robertboothby.djenni.sugar.And;
 import net.jcip.annotations.NotThreadSafe;
-import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
 import com.robertboothby.djenni.core.GeneratorHelper;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
-import com.robertboothby.djenni.sugar.And;
 
 /**
  * Builder designed to make it easy and expressive to configure a generator of Long values. Limited to a range
@@ -30,7 +27,7 @@ public class LongGeneratorBuilder implements SerializableGeneratorBuilder<Long> 
 
     public SerializableGenerator<Long> build() {
         if(maxExclusiveValue - minInclusiveValue == 1){
-            return GeneratorHelper.fixedValue(minInclusiveValue);
+            return GeneratorHelper.$(minInclusiveValue);
         } else {
             return new RandomLongGenerator(minInclusiveValue, maxExclusiveValue, distribution);
         }

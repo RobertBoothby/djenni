@@ -6,8 +6,8 @@ import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 /**
- * A generator that will always return the configured fixed value no matter what.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
+ * A generator that will always return the configured fixed value no matter what. This is an important type of Generator
+ * as it is one of the key generators for delivering fine grained control of the generation.
  * @author robertboothby
  * @param <T> The type of the fixed value.
  */

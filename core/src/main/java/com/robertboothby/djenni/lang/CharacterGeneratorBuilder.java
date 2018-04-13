@@ -3,15 +3,13 @@ package com.robertboothby.djenni.lang;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import net.jcip.annotations.NotThreadSafe;
-import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
 import static java.util.Arrays.copyOf;
 import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
-import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.GeneratorHelper.$;
 import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
 
 /**
@@ -31,7 +29,7 @@ public class CharacterGeneratorBuilder implements SerializableGeneratorBuilder<C
 
     public SerializableGenerator<Character> build() {
         if(characters.length == 1){
-            return fixedValue(characters[0]);
+            return $(characters[0]);
         } else if (characters.length > 1) {
             return new RandomCharacterGenerator(characters,
                     buildAn(integerGenerator().between(0).and(characters.length).withDistribution(distribution)));

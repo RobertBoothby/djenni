@@ -3,7 +3,7 @@ package com.robertboothby.djenni;
 import com.robertboothby.djenni.core.FixedValueGenerator;
 import org.junit.Test;
 
-import static com.robertboothby.djenni.core.GeneratorHelper.fixedValue;
+import static com.robertboothby.djenni.core.GeneratorHelper.$;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -20,7 +20,7 @@ public class GeneratorHelperTest {
     @Test
     public void fixedGeneratorShouldReturnExactObject() {
         String value = "Test Value";
-        final Generator<String> generator = fixedValue(value);
+        final Generator<String> generator = $(value);
         assertThat(generator, is(instanceOf(FixedValueGenerator.class)));
         assertThat(generator.generate(), is(equalTo(value)));
         assertThat(generator.generate(), is(theInstance(value)));
