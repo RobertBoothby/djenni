@@ -32,6 +32,7 @@
         <module>core</module>
         <module>source-generator-mojo</module>
         <module>common-generators</module>
+        <module>source-generator-example</module>
         <!--
         TODO eventually add modules for data generation for types in common frameworks such as JAXB.
         -->

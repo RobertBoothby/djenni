@@ -5,10 +5,16 @@
         <groupId>com.robertboothby</groupId>
         <version>0.1.0-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.robertboothby.djenni</groupId>
     <artifactId>djenni-source-maven-plugin</artifactId>
+
     <packaging>maven-plugin</packaging>
-    <name>djenni source-generator-mojo Maven Mojo</name>
+
+    <name>Djenni source-generator-mojo Maven Mojo</name>
+
     <dependencies>
         <dependency>
             <groupId>com.robertboothby</groupId>
@@ -31,4 +37,27 @@
             <version>2.0-M8</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.5.1</version>
+                <executions>
+                    <execution>
+                        <id>default-descriptor</id>
+                        <phase>process-classes</phase>
+                    </execution>
+                    <execution>
+                        <id>help-goal</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>

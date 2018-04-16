@@ -5,7 +5,6 @@ import com.robertboothby.djenni.GeneratorBuilder;
 import com.robertboothby.djenni.sugar.And;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<String>, And<ConcatenatingStringGeneratorBuilder, Generator> {
 
-    private List<Generator<? extends Object>> generators = new ArrayList<>();
+    private List<Generator<?>> generators = new ArrayList<>();
 
     /**
      * Get an instance of this builder.
@@ -29,7 +28,7 @@ public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<Str
      * @param value the value to add.
      * @return the buider for further configuration.
      */
-    public ConcatenatingStringGeneratorBuilder with(Generator value) {
+    public ConcatenatingStringGeneratorBuilder with(Generator<?> value) {
         generators.add(value);
         return this;
     }
@@ -39,7 +38,7 @@ public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<Str
      * @param values the values to add.
      * @return the buider for further configuration.
      */
-    public ConcatenatingStringGeneratorBuilder with(Generator ... values) {
+    public ConcatenatingStringGeneratorBuilder with(Generator<?> ... values) {
         Collections.addAll(generators, values);
         return this;
     }
