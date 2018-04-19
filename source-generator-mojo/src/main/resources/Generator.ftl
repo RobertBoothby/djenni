@@ -1,3 +1,4 @@
+<#import "GenericTypeParameters.ftl" as g/>
 <#if javaSource.packageName?has_content>package ${javaSource.packageName};
 
 </#if>
@@ -20,124 +21,106 @@ import static java.util.Optional.ofNullable;
  * </p>
  */
 public class ${javaClass.name}Generator implements Generator<${javaClass.name}> {
-<#--#if(${constructor.parameters.isEmpty()} == false)-->
+<#if constructor.parameters?has_content>
 
-    <#--//Constructor parameter generators.-->
-<#--#end-->
-<#--#foreach(${constructorParameter} in ${constructor.parameters})-->
-    <#--protected final Generator<${constructorParameter.type.genericValue.replace('$', '.')}> ${constructorParameter.name}ConstructorGenerator;-->
-<#--#end-->
-<#--#if(${setterMethods.isEmpty()} == false)-->
+    //Constructor parameter generators.
+</#if>
+<#list constructor.parameters as constructorParameter>
+    protected final Generator<${constructorParameter.type.genericFullyQualifiedName}> ${constructorParameter.name}ConstructorGenerator;
+</#list>
+<#if setterMethods?has_content>
 
-    <#--//Setter method generators.-->
-<#--#end-->
-<#--#foreach(${setterMethod} in ${setterMethods})-->
-    <#--protected final Nullable<Generator<${setterMethod.propertyType.genericValue.replace('$', '.')}>> ${setterMethod.propertyName}SetterGenerator;-->
-<#--#end-->
-<#--#if(${collectionGetters.isEmpty()} == false)-->
+    //Setter method generators.
+</#if>
+<#list setterMethods as setterMethod>
+    protected final Generator<${setterMethod.propertyType.genericFullyQualifiedName}> ${setterMethod.propertyName}SetterGenerator;
 
-    <#--//Collection getter method generators.-->
-<#--#end-->
-<#--#foreach(${collectionGetter} in ${collectionGetters})-->
-    <#--protected final Nullable<Generator<${collectionGetter.propertyType.genericValue.replace('$', '.')}>> ${collectionGetter.propertyName}CollectionGenerator;-->
-<#--#end-->
+</#list>
+<#if collectionGetters?has_content>
 
-    <#--//Constructor-->
-    <#--public ${class.name}Generator (#foreach(${constructorParameter} in ${constructor.parameters})-->
+    //Collection getter method generators.
+</#if>
+<#list collectionGetters as collectionGetter>
+    protected final Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> ${collectionGetter.propertyName}CollectionGenerator;
+</#list>
 
-        <#--Generator<${constructorParameter.type.genericValue.replace('$', '.')}> ${constructorParameter.name}ConstructorGenerator#if(${velocityCount} != ${constructor.parameters.size()}-->
-            <#--||  !${setterMethods.isEmpty()} || !${collectionGetters.isEmpty()}),#else) { #end-->
-<#--#end-->
-<#--#foreach(${setterMethod} in ${setterMethods})-->
-        <#--Nullable<Generator<${setterMethod.propertyType.genericValue.replace('$', '.')}>> ${setterMethod.propertyName}SetterGenerator#if(${velocityCount} != ${setterMethods.size()}-->
-            <#--|| !${collectionGetters.isEmpty()}),#else) { #end-->
-<#--#end-->
-<#--#foreach(${collectionGetter} in ${collectionGetters})-->
-        <#--Nullable<Generator<${collectionGetter.propertyType.genericValue.replace('$', '.')}>> ${collectionGetter.propertyName}CollectionGenerator#if(${velocityCount} != ${collectionGetters.size()}),#else) { #end-->
-<#--#end-->
+    //Constructor
+    public ${javaClass.name}Generator (<#list constructor.parameters as constructorParameter>
+            Generator<${constructorParameter.type.genericFullyQualifiedName}> ${constructorParameter.name}ConstructorGenerator<#sep>,</#sep></#list><#if setterMethods?has_content || collectionGetters?has_content>,</#if>
+<#list setterMethods as setterMethod>
+            Generator<${setterMethod.propertyType.genericFullyQualifiedName}> ${setterMethod.propertyName}SetterGenerator<#sep>,</#sep></#list><#if collectionGetters?has_content>,</#if>
+<#list collectionGetters as collectionGetter>
+            Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> ${collectionGetter.propertyName}CollectionGenerator<#sep>,</#sep></#list>
+    ) {
+<#list constructor.parameters as constructorParameter>
+        this.${constructorParameter.name}ConstructorGenerator = ${constructorParameter.name}ConstructorGenerator;
+</#list>
+<#list setterMethods as setterMethod>
+        this.${setterMethod.propertyName}SetterGenerator = ${setterMethod.propertyName}SetterGenerator;
+</#list>
+<#list collectionGetters as collectionGetter>
+        this.${collectionGetter.propertyName}CollectionGenerator = ${collectionGetter.propertyName}CollectionGenerator;
+</#list>
+    }
 
-<#--#foreach(${constructorParameter} in ${constructor.parameters})-->
-        <#--this.${constructorParameter.name}ConstructorGenerator = ${constructorParameter.name}ConstructorGenerator;-->
-<#--#end-->
-<#--#foreach(${setterMethod} in ${setterMethods})-->
-        <#--this.${setterMethod.propertyName}SetterGenerator = ${setterMethod.propertyName}SetterGenerator;-->
-<#--#end-->
-<#--#foreach(${collectionGetter} in ${collectionGetters})-->
-        <#--this.${collectionGetter.propertyName}CollectionGenerator = ${collectionGetter.propertyName}CollectionGenerator;-->
-<#--#end-->
-    <#--}-->
+    public ${javaClass.name} generate() {
+<#if !constructor.parameters?has_content>
+        ${javaClass.name} generated${javaClass.name} = new ${javaClass.name}();
+    <#else>
+        ${javaClass.name} generated${javaClass.name} = new ${javaClass.name}(
+<#list constructor.parameters as constructorParameter>
+                ${constructorParameter.name}ConstructorGenerator.generate()<#sep>,</#sep>
+</#list>
+        );
+</#if>
 
-    <#--public ${class.name} generate() {-->
-<#--#if(${constructor.parameters.size()} == 0)-->
-        <#--${class.name} generated${class.name} = new ${class.name}();-->
-<#--#else-->
-        <#--${class.name} generated${class.name} = new ${class.name}(#foreach(${constructorParameter} in ${constructor.parameters})-->
+<#list setterMethods as setterMethod>
+        generated${javaClass.name}.${setterMethod.name}(${setterMethod.propertyName}SetterGenerator.generate());
+</#list>
 
-            <#--${constructorParameter.name}ConstructorGenerator.generate()#if(${velocityCount} != ${constructor.parameters.size()}),#else);#end-->
-<#--#end-->
-<#--#end-->
-<#--#foreach(${setterMethod} in ${setterMethods})-->
-        <#--if(${setterMethod.propertyName}SetterGenerator.hasValue()){-->
-            <#--generated${class.name}.${setterMethod.name}(${setterMethod.propertyName}SetterGenerator.value().generate());-->
-        <#--}-->
-<#--#end-->
-<#--#foreach(${collectionGetter} in ${collectionGetters})-->
-        <#--if(${collectionGetter.propertyName}CollectionGenerator.hasValue()){-->
-            <#--generated${class.name}.${collectionGetter.name}().addAll(${collectionGetter.propertyName}CollectionGenerator.value().generate());-->
-        <#--}-->
-<#--#end-->
+<#list collectionGetters as collectionGetter>
+        generated${javaClass.name}.${collectionGetter.name}().addAll(${collectionGetter.propertyName}CollectionGenerator.generate());
+</#list>
 
-        <#--return generated${class.name};-->
-    <#--}-->
+        return generated${javaClass.name};
+    }
 
-    <#--public void describeTo(Description description) {-->
-        <#--description.appendText("{  ${class.name}Generator ");-->
-<#--#if(${constructor.parameters.isEmpty()} && ${setterMethods.isEmpty()} && ${collectionGetters.isEmpty()})#else-->
-<#--#if(!${constructor.parameters.isEmpty()})-->
-        <#--description.appendText("Constructor Generators : { ");-->
-<#--#foreach(${constructorParameter} in ${constructor.parameters})-->
-        <#--description.appendText("${constructorParameter.name}ConstructorGenerator : ");-->
-        <#--${constructorParameter.name}ConstructorGenerator.describeTo(description);-->
-<#--#if(${velocityCount} != ${constructor.parameters.size()})-->
-        <#--description.appendText(", ");-->
-<#--#end-->
-<#--#end-->
-        <#--description.appendText("} ");-->
-<#--#end-->
+    public void describeTo(Description description) {
+        description.appendText("{  ${javaClass.name}Generator ");
 
-<#--#if(!${setterMethods.isEmpty()})-->
-        <#--description.appendText("Setter Generators : { ");-->
-<#--#foreach(${setterMethod} in ${setterMethods})-->
-        <#--description.appendText("${setterMethod.propertyName}SetterGenerator : ");-->
-        <#--if(${setterMethod.propertyName}SetterGenerator.hasValue()){-->
-            <#--${setterMethod.propertyName}SetterGenerator.value().describeTo(description);-->
-        <#--} else {-->
-            <#--description.appendText(" null ");-->
-        <#--}-->
-        <#--${setterMethod.propertyName}SetterGenerator.value().describeTo(description);-->
-<#--#if(${velocityCount} != ${setterMethods.size()})-->
-        <#--description.appendText(", ");-->
-<#--#end-->
-<#--#end-->
-        <#--description.appendText("} ");-->
-<#--#end-->
+<#if constructor.parameters?has_content>
+        description.appendText("Constructor Generators : { ");
+<#list constructor.parameters as constructorParameter>
+        description.appendText("${constructorParameter.name}ConstructorGenerator : ");
+        ${constructorParameter.name}ConstructorGenerator.describeTo(description);
+<#sep>
+        description.appendText(", ");
+</#list>
+        description.appendText("} ");
+</#if>
 
-<#--#if(!${collectionMethods.isEmpty()})-->
-        <#--description.appendText("Collection Generators : { ");-->
-<#--#foreach(${collectionMethod} in ${collectionMethods})-->
-        <#--description.appendText("${collectionMethod.propertyName}CollectiorGenerator : ");-->
-        <#--if(${collectionMethod.propertyName}CollectiorGenerator.hasValue()){-->
-            <#--${collectionMethod.propertyName}CollectiorGenerator.value().describeTo(description);-->
-        <#--} else {-->
-            <#--description.appendText(" null ");-->
-        <#--}-->
-<#--#if(${velocityCount} != ${collectionMethods.size()})-->
-        <#--description.appendText(", ");-->
-<#--#end-->
-<#--#end-->
-        <#--description.appendText("} ");-->
-<#--#end-->
-<#--#end-->
-        <#--description.appendText("}");-->
-    <#--}-->
+<#if setterMethods?has_content>
+        description.appendText("Setter Generators : { ");
+<#list setterMethods as setterMethod>
+        description.appendText("${setterMethod.propertyName}SetterGenerator : ");
+        ${setterMethod.propertyName}SetterGenerator.describeTo(description);
+    <#sep>
+        description.appendText(", ");
+</#list>
+        description.appendText("} ");
+</#if>
+
+<#if collectionGetters?has_content>
+        description.appendText("Collection Generators : { ");
+    <#list collectionGetters as collectionGetter>
+        description.appendText("${collectionGetter.propertyName}CollectiorGenerator : ");
+        ${collectionGetter.propertyName}CollectionGenerator.describeTo(description);
+<#sep>
+        description.appendText(", ");
+</#list>
+        description.appendText("} ");
+</#if>
+
+        description.appendText("}");
+    }
 }

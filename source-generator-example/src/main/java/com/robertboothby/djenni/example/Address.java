@@ -10,11 +10,11 @@ public class Address {
     private final List<String> addressLines = new ArrayList<>();
     private final Country country;
     private final Postcode postcode;
+    private String region;
 
-    public Address(Country country, Postcode postcode, String ... addressLines) {
+    public Address(Country country, Postcode postcode) {
         this.country = country;
         this.postcode = postcode;
-        this.addressLines.addAll(Arrays.asList(addressLines));
     }
 
     public List<String> getAddressLines() {
@@ -27,5 +27,15 @@ public class Address {
 
     public Postcode getPostcode() {
         return postcode;
+
     }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
 }

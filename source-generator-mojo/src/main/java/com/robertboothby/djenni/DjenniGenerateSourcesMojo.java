@@ -1,12 +1,16 @@
 package com.robertboothby.djenni;
 
+import com.robertboothby.djenni.sourcegenerator.ConstructorForGeneration;
 import com.robertboothby.template.AbstractGeneratorMojo;
 import com.robertboothby.template.model.GenerationModel;
 import com.robertboothby.utilities.lambda.FunctionResult;
 import com.robertboothby.template.model.GenerationModelRetriever;
 import com.robertboothby.utilities.lambda.LambdaUtilities;
 import com.thoughtworks.qdox.JavaProjectBuilder;
+import com.thoughtworks.qdox.model.BeanProperty;
 import com.thoughtworks.qdox.model.JavaClass;
+import com.thoughtworks.qdox.model.JavaConstructor;
+import com.thoughtworks.qdox.model.JavaMethod;
 import com.thoughtworks.qdox.model.JavaSource;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
@@ -16,7 +20,9 @@ import org.apache.maven.shared.model.fileset.FileSet;
 import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,6 +125,9 @@ public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
         Map<String, Object> result = new HashMap<>();
         result.put("javaSource", javaSource);
         result.put("javaClass", javaClass);
+        result.put("constructor", getConstructorForGenerator(javaClass).orElse(null));
+        result.put("setterMethods", getSetters(javaClass));
+        result.put("collectionGetters", getCollectionGetters(javaClass));
         return result;
     }
 
@@ -126,4 +135,43 @@ public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
         return stream(fileSetManager.getIncludedFiles(fileSet))
                 .map(file -> new File(new File(fileSet.getDirectory()), file));
     }
+
+    private Optional<JavaConstructor> getConstructorForGenerator(JavaClass javaClass) {
+        List<JavaConstructor> candidateConstructors = javaClass.getConstructors();
+        if(candidateConstructors.size() == 1){
+            return Optional.of(candidateConstructors.get(0));
+        }
+
+        for(JavaConstructor candidateConstructor : candidateConstructors){
+            if(candidateConstructor.getTagByName(ConstructorForGeneration.class.getSimpleName()) != null){
+                return Optional.of(candidateConstructor);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private List<JavaMethod> getSetters(JavaClass javaClass) {
+        List<JavaMethod> setterMethods = new ArrayList<>();
+        for(BeanProperty candidateProperty : javaClass.getBeanProperties(true)){
+            final JavaMethod candidatePropertyMutator = candidateProperty.getMutator();
+            if(candidatePropertyMutator != null){
+                setterMethods.add(candidatePropertyMutator);
+            }
+        }
+        return setterMethods;
+    }
+
+    private List<JavaMethod> getCollectionGetters(JavaClass javaClass) {
+        List<JavaMethod> collectionGetters = new ArrayList<>();
+        for(BeanProperty candidateProperty : javaClass.getBeanProperties(true)){
+            JavaMethod candidatePropertyAccessor = candidateProperty.getAccessor();
+            if(     candidatePropertyAccessor != null
+                    &&
+                    candidatePropertyAccessor.getReturns().isA(Collection.class.getName())){
+                collectionGetters.add(candidatePropertyAccessor);
+            }
+        }
+        return collectionGetters;
+    }
+
 }
