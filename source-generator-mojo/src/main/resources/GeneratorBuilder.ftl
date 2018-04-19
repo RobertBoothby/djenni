@@ -19,28 +19,28 @@ import static java.util.Optional.ofNullable;
  *    </em>
  * </p>
  */
-<#--public abstract class Abstract${class.name}GeneratorBuilder implements GeneratorBuilder<${class.name}> {-->
-<#--#if(${constructor.parameters.isEmpty()} == false)-->
+public abstract class ${javaClass.name}GeneratorBuilder implements GeneratorBuilder<${javaClass.name}> {
+<#if constructor.parameters?has_content>
 
-    <#--//Constructor parameter generators.-->
-<#--#end-->
-<#--#foreach(${constructorParameter} in ${constructor.parameters})-->
-    <#--protected Generator<${constructorParameter.type.genericValue.replace('$', '.')}> ${constructorParameter.name}ConstructorGenerator;-->
-<#--#end-->
-<#--#if(${setterMethods.isEmpty()} == false)-->
+    //Constructor parameter generators.
+<#list constructor.parameters as constructorParameter>
+    protected Generator<${constructorParameter.type.genericFullyQualifiedName}> ${constructorParameter.name}ConstructorGenerator;
+</#list>
+</#if>
+<#if setterMethods?has_content>
 
-    <#--//Setter method generators.-->
-<#--#end-->
-<#--#foreach(${setterMethod} in ${setterMethods})-->
-    <#--protected Nullable<Generator<${setterMethod.propertyType.genericValue.replace('$', '.')}>> ${setterMethod.propertyName}SetterGenerator = nullable(null);-->
-<#--#end-->
-<#--#if(${collectionGetters.isEmpty()} == false)-->
+    //Setter method generators.
+<#list setterMethods as setterMethod>
+    protected Generator<${setterMethod.propertyType.genericFullyQualifiedName}> ${setterMethod.propertyName}SetterGenerator;
+</#list>
+</#if>
+<#if collectionGetters?has_content>
 
-    <#--//Collection getter method generators.-->
-<#--#end-->
-<#--#foreach(${collectionGetter} in ${collectionGetters})-->
-    <#--protected Nullable<Generator<${collectionGetter.propertyType.genericValue.replace('$', '.')}>> ${collectionGetter.propertyName}CollectionGenerator = nullable(null);-->
-<#--#end-->
+    //Collection getter method generators.
+<#list collectionGetters as collectionGetter>
+    protected Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> ${collectionGetter.propertyName}CollectionGenerator;
+</#list>
+</#if>
 
     <#--public Abstract${class.name}GeneratorBuilder() {-->
         <#--setupDefaults();-->
@@ -70,4 +70,4 @@ import static java.util.Optional.ofNullable;
      <#--*/-->
     <#--public abstract void setupDefaults();-->
 
-<#--}-->
+}
