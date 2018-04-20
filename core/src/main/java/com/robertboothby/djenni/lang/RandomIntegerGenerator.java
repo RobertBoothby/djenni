@@ -77,8 +77,8 @@ public class RandomIntegerGenerator implements SerializableGenerator<Integer> {
         description
                 .appendText("{ RandomIntegerGenerator : { minInclusiveValue : ")
                 .appendValue(minInclusiveValue)
-                .appendText(", range : ")
-                .appendValue(range)
+                .appendText(", maxExclusiveValue : ")
+                .appendValue(getMaxExclusiveValue())
                 .appendText(", distribution : ")
                 .appendDescriptionOf(distribution)
                 .appendText(" } }");
