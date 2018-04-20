@@ -1,8 +1,6 @@
 package com.robertboothby.djenni.example;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class Address {
@@ -18,7 +16,7 @@ public class Address {
     }
 
     public List<String> getAddressLines() {
-        return Collections.unmodifiableList(addressLines);
+        return addressLines;
     }
 
     public Country getCountry() {
@@ -38,4 +36,13 @@ public class Address {
         this.region = region;
     }
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressLines=" + addressLines +
+                ", country=" + country +
+                ", postcode=" + postcode +
+                ", region='" + region + '\'' +
+                '}';
+    }
 }

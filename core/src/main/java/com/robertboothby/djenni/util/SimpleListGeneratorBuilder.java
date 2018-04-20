@@ -2,7 +2,8 @@ package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.Generator;
 import com.robertboothby.djenni.GeneratorBuilder;
-import com.robertboothby.djenni.sugar.SizeCatcher;
+import com.robertboothby.djenni.sugar.And;
+import com.robertboothby.djenni.sugar.RangeCatcher;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -12,7 +13,7 @@ import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGener
 
 public class SimpleListGeneratorBuilder<T> implements GeneratorBuilder<List<T>>{
 
-    private SizeCatcher<SimpleListGeneratorBuilder<T>> sizeCatcher = new SizeCatcher<>(1,1, this);
+    private RangeCatcher<SimpleListGeneratorBuilder<T>> sizeCatcher = new RangeCatcher<>(1,1, this);
     private Generator<T> entryGenerator;
 
     @Override
@@ -35,13 +36,13 @@ public class SimpleListGeneratorBuilder<T> implements GeneratorBuilder<List<T>>{
         return this;
     }
 
-    public static <T> SimpleListGeneratorBuilder<T> simpleListGenerator(Consumer<SimpleListGeneratorBuilder<T>> consumer) {
+    public static <T> SimpleListGeneratorBuilder<T> simpleList(Consumer<SimpleListGeneratorBuilder<T>> consumer) {
         SimpleListGeneratorBuilder<T> builder = new SimpleListGeneratorBuilder<>();
         consumer.accept(builder);
         return builder;
     }
 
-    public SizeCatcher<SimpleListGeneratorBuilder<T>> withSize() {
-        return sizeCatcher;
+    public And<SimpleListGeneratorBuilder<T>, Integer> withSizeBetween(int value) {
+        return sizeCatcher.between(value);
     }
 }

@@ -69,7 +69,7 @@ public class StringGeneratorBuilder implements SerializableGeneratorBuilder<Stri
      * @param length The length of string to be generated.
      * @return the builder for further configuration.
      */
-    public StringGeneratorBuilder withAFixedLengthOf(int length){
+    public StringGeneratorBuilder withFixedLength(int length){
         this.minimumLength = length;
         this.maximumLength = length + 1;
         return this;
@@ -174,7 +174,7 @@ public class StringGeneratorBuilder implements SerializableGeneratorBuilder<Stri
      * Get an instance of the builder for usage.
      * @return and instance of the builder for usage.
      */
-    public static StringGeneratorBuilder generatorOfArbitraryStrings() {
+    public static StringGeneratorBuilder arbitraryString() {
         return new StringGeneratorBuilder();
     }
 }

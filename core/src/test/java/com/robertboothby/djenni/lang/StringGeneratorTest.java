@@ -9,7 +9,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
-import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.arbitraryString;
 
 /**
  *
@@ -20,7 +20,7 @@ public class StringGeneratorTest {
 
     @Test
     public void shouldEventuallyGenerateAllLengths(){
-        Generator<String> stringGenerator = buildA(generatorOfArbitraryStrings().withLengthsBetween(5).and(10));
+        Generator<String> stringGenerator = buildA(arbitraryString().withLengthsBetween(5).and(10));
         MatcherAssert.assertThat(stringGenerator,
             Matchers.eventuallyGeneratesAllDerivatives(
                 Collections.range(5, 10),
@@ -35,7 +35,7 @@ public class StringGeneratorTest {
     }
 
     @Test public void shouldEventuallyUseAllCharacters(){
-        Generator<String> stringGenerator = buildA(generatorOfArbitraryStrings().withEuropeanNumerals().withAFixedLengthOf(1));
+        Generator<String> stringGenerator = buildA(arbitraryString().withEuropeanNumerals().withFixedLength(1));
         MatcherAssert.assertThat(stringGenerator,
             Matchers.eventuallyGeneratesAllDerivatives(
                 Collections.asSet(CharacterStrings.EUROPEAN_NUMERIC.toCharArray()),

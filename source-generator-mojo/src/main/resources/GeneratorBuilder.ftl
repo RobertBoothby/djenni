@@ -26,21 +26,21 @@ public class ${javaClass.name}GeneratorBuilder implements GeneratorBuilder<${jav
 
     //Constructor parameter generators.
 <#list constructor.parameters as constructorParameter>
-    protected Generator<${constructorParameter.type.genericFullyQualifiedName}> ${constructorParameter.name}ConstructorGenerator = $(null);
+    protected Generator<${constructorParameter.type.genericFullyQualifiedName}> ${constructorParameter.name}Constructor = $(null);
 </#list>
 </#if>
 <#if setterMethods?has_content>
 
     //Setter method generators.
 <#list setterMethods as setterMethod>
-    protected Generator<${setterMethod.propertyType.genericFullyQualifiedName}> ${setterMethod.propertyName}SetterGenerator = $(null);
+    protected Generator<${setterMethod.propertyType.genericFullyQualifiedName}> ${setterMethod.propertyName}Setter = $(null);
 </#list>
 </#if>
 <#if collectionGetters?has_content>
 
     //Collection getter method generators.
 <#list collectionGetters as collectionGetter>
-    protected Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> ${collectionGetter.propertyName}CollectionGenerator = $(emptyList());
+    protected Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> ${collectionGetter.propertyName}Collection = $(emptyList());
 </#list>
 </#if>
 
@@ -48,55 +48,55 @@ public class ${javaClass.name}GeneratorBuilder implements GeneratorBuilder<${jav
         return new ${javaClass.name}Generator(
 <#if constructor.parameters?has_content>
 <#list constructor.parameters as constructorParameter>
-                ${constructorParameter.name}ConstructorGenerator<#sep>,
+                ${constructorParameter.name}Constructor<#sep>,
 </#list>
 <#if setterMethods?has_content || collectionGetters?has_content>,</#if>
 </#if>
 <#if setterMethods?has_content>
 <#list setterMethods as setterMethod>
-                ${setterMethod.propertyName}SetterGenerator<#sep>,
+                ${setterMethod.propertyName}Setter<#sep>,
 </#list>
 <#if collectionGetters?has_content>,</#if>
 </#if>
 <#list collectionGetters as collectionGetter>
-                ${collectionGetter.propertyName}CollectionGenerator<#sep>,
+                ${collectionGetter.propertyName}Collection<#sep>,
 </#list>
 
         );
     }
 <#list constructor.parameters as constructorParameter>
 
-    public ${javaClass.name}GeneratorBuilder with${constructorParameter.name?cap_first}ConstructorGenerator(Generator<${constructorParameter.type.genericFullyQualifiedName}> generator) {
-        this.${constructorParameter.name}ConstructorGenerator = generator;
+    public ${javaClass.name}GeneratorBuilder with${constructorParameter.name?cap_first}Constructor(Generator<${constructorParameter.type.genericFullyQualifiedName}> generator) {
+        this.${constructorParameter.name}Constructor = generator;
         return this;
     }
 
-    public ${javaClass.name}GeneratorBuilder with${constructorParameter.name?cap_first}ConstructorGenerator(GeneratorBuilder<${constructorParameter.type.genericFullyQualifiedName}> builder) {
-        this.${constructorParameter.name}ConstructorGenerator = builder.build();
+    public ${javaClass.name}GeneratorBuilder with${constructorParameter.name?cap_first}Constructor(GeneratorBuilder<${constructorParameter.type.genericFullyQualifiedName}> builder) {
+        this.${constructorParameter.name}Constructor = builder.build();
         return this;
     }
 </#list>
 <#list setterMethods as setterMethod>
 
-    public ${javaClass.name}GeneratorBuilder with${setterMethod.propertyName?cap_first}SetterGenerator(Generator<${setterMethod.propertyType.genericFullyQualifiedName}> generator) {
-        this.${setterMethod.propertyName}SetterGenerator = generator;
+    public ${javaClass.name}GeneratorBuilder with${setterMethod.propertyName?cap_first}Setter(Generator<${setterMethod.propertyType.genericFullyQualifiedName}> generator) {
+        this.${setterMethod.propertyName}Setter = generator;
         return this;
     }
 
-    public ${javaClass.name}GeneratorBuilder with${setterMethod.propertyName?cap_first}SetterGenerator(GeneratorBuilder<${setterMethod.propertyType.genericFullyQualifiedName}> builder) {
-        this.${setterMethod.propertyName}SetterGenerator = builder.build();
+    public ${javaClass.name}GeneratorBuilder with${setterMethod.propertyName?cap_first}Setter(GeneratorBuilder<${setterMethod.propertyType.genericFullyQualifiedName}> builder) {
+        this.${setterMethod.propertyName}Setter = builder.build();
         return this;
     }
 </#list>
 <#list collectionGetters as collectionGetter>
 
-    public ${javaClass.name}GeneratorBuilder with${collectionGetter.propertyName?cap_first}CollectionGenerator(Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> generator) {
-        this.${collectionGetter.propertyName}CollectionGenerator = generator;
+    public ${javaClass.name}GeneratorBuilder with${collectionGetter.propertyName?cap_first}Collection(Generator<${collectionGetter.propertyType.genericFullyQualifiedName}> generator) {
+        this.${collectionGetter.propertyName}Collection = generator;
         return this;
     }
 
-    public ${javaClass.name}GeneratorBuilder with${collectionGetter.propertyName?cap_first}CollectionGenerator(GeneratorBuilder<${collectionGetter.propertyType.genericFullyQualifiedName}> builder) {
-        this.${collectionGetter.propertyName}CollectionGenerator = builder.build();
+    public ${javaClass.name}GeneratorBuilder with${collectionGetter.propertyName?cap_first}Collection(GeneratorBuilder<${collectionGetter.propertyType.genericFullyQualifiedName}> builder) {
+        this.${collectionGetter.propertyName}Collection = builder.build();
         return this;
     }
 </#list>

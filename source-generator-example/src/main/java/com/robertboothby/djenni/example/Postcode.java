@@ -15,4 +15,11 @@ public class Postcode {
     public String getPostcode() {
         return postcode;
     }
+
+    @Override
+    public String toString() {
+        return "Postcode{" +
+                "postcode='" + postcode + '\'' +
+                '}';
+    }
 }

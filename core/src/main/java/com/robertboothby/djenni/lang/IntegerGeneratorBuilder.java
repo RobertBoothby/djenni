@@ -11,7 +11,6 @@ import static com.robertboothby.djenni.core.GeneratorHelper.$;
 
 /**
  * Builder designed to make it easy and expressive to configure a generator of Integer values.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 @NotThreadSafe
@@ -40,11 +39,9 @@ public class IntegerGeneratorBuilder implements SerializableGeneratorBuilder<Int
      */
     public And<IntegerGeneratorBuilder, Integer> between(int minInclusiveValue) {
         this.minInclusiveValue = minInclusiveValue;
-        return new And<IntegerGeneratorBuilder, Integer>() {
-            public IntegerGeneratorBuilder and(Integer maxExclusiveValue) {
-                IntegerGeneratorBuilder.this.maxExclusiveValue = maxExclusiveValue;
-                return IntegerGeneratorBuilder.this;
-            }
+        return maxExclusiveValue -> {
+            this.maxExclusiveValue = maxExclusiveValue;
+            return this;
         };
     }
 

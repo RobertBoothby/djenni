@@ -13,7 +13,7 @@ import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGener
 import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_AVAILABLE_CHARACTERS;
 import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
 import static com.robertboothby.djenni.lang.StringGeneratorBuilder.DEFAULT_LENGTH_DISTRIBUTION;
-import static com.robertboothby.djenni.lang.StringGeneratorBuilder.generatorOfArbitraryStrings;
+import static com.robertboothby.djenni.lang.StringGeneratorBuilder.arbitraryString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -28,7 +28,7 @@ public class StringGeneratorBuilderTest {
     @Test
     public void shouldUseDefaults() {
         //Given
-        final StringGeneratorBuilder generatorBuilder = generatorOfArbitraryStrings();
+        final StringGeneratorBuilder generatorBuilder = arbitraryString();
 
         //When
         final SerializableGenerator<String> generator = generatorBuilder.build();
@@ -53,7 +53,7 @@ public class StringGeneratorBuilderTest {
     @Test
     public void shouldConfigureLengthRange() {
         //Given
-        final StringGeneratorBuilder generatorBuilder = generatorOfArbitraryStrings().withLengthsBetween(5).and(10);
+        final StringGeneratorBuilder generatorBuilder = arbitraryString().withLengthsBetween(5).and(10);
 
         //When
         final SerializableGenerator<String> generator = generatorBuilder.build();
@@ -79,7 +79,7 @@ public class StringGeneratorBuilderTest {
     @Test
     public void shouldConfigureFixedLength() {
         //Given
-        final StringGeneratorBuilder generatorBuilder = generatorOfArbitraryStrings().withAFixedLengthOf(5);
+        final StringGeneratorBuilder generatorBuilder = arbitraryString().withFixedLength(5);
 
         //When
         final SerializableGenerator<String> generator = generatorBuilder.build();
@@ -104,7 +104,7 @@ public class StringGeneratorBuilderTest {
     public void shouldConfigureDistributions() {
         //Given
         final StringGeneratorBuilder generatorBuilder =
-                generatorOfArbitraryStrings().withLengthDistribution(RIGHT_NORMAL).withCharacterSelectionDistribution(LEFT_INVERTED_NORMAL);
+                arbitraryString().withLengthDistribution(RIGHT_NORMAL).withCharacterSelectionDistribution(LEFT_INVERTED_NORMAL);
 
         //When
         final SerializableGenerator<String> generator = generatorBuilder.build();
@@ -130,7 +130,7 @@ public class StringGeneratorBuilderTest {
     public void shouldConfigureAvailableCharacters() {
         //Given
         final String testCharacters = "!@£$%^&*()";
-        final StringGeneratorBuilder generatorBuilder = generatorOfArbitraryStrings().withAvailableCharacters(testCharacters);
+        final StringGeneratorBuilder generatorBuilder = arbitraryString().withAvailableCharacters(testCharacters);
 
         //When
         final SerializableGenerator<String> generator = generatorBuilder.build();

@@ -1,14 +1,13 @@
 package com.robertboothby.djenni.sugar;
 
 import com.robertboothby.djenni.GeneratorBuilder;
-import com.robertboothby.djenni.sugar.And;
 
-public class SizeCatcher<T extends GeneratorBuilder>{
+public class RangeCatcher<T extends GeneratorBuilder>{
     private int minimumSize;
     private int maximumSize;
     private final T generatorBuilder;
 
-    public SizeCatcher(int defaultMinimumSize, int defaultMaximumSize, T generatorBuilder) {
+    public RangeCatcher(int defaultMinimumSize, int defaultMaximumSize, T generatorBuilder) {
         this.minimumSize = defaultMinimumSize;
         this.maximumSize = defaultMaximumSize;
         this.generatorBuilder = generatorBuilder;
@@ -17,6 +16,9 @@ public class SizeCatcher<T extends GeneratorBuilder>{
     public And<T, Integer> between(int minimumSize) {
         this.minimumSize = minimumSize;
         return maximumSize -> {
+            if(maximumSize < minimumSize){
+                throw new IllegalArgumentException("Maximum must be greater or equal to minimum size.");
+            }
             this.maximumSize = maximumSize;
             return generatorBuilder;
         };
