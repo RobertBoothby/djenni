@@ -10,8 +10,8 @@ import static java.util.Optional.ofNullable;
 
 /**
  * <p>
- *     This class is intended to be used to generate instances of ${javaClass.name}. It is intended to be used with concrete
- *     implementations of {@link Abstract${javaClass.name}GeneratorBuilder.
+ *     This class is intended to be used to generate instances of ${javaClass.name}. It is intended to be used with
+ * {@link ${javaClass.name}GeneratorBuilder} which provides a fluent interface for configuring and instantiating it.
  * </p>
  * <p>
  *    <em>
