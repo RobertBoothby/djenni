@@ -2,6 +2,7 @@
 <h2>Test Data Generation Framework</h3>
 Djenni is the distillation of many years building diverse systems that all needed testing and as a result needed test data.
 <h3>Why Djenni?</h3>
+
 I came to the realisation that in most testing the exact values in the data were irrelevant and needed only to be relevant and coherent.
 
 In fact my realisation went further and I realised that there is a major unstated assertion in most testing. 
@@ -32,6 +33,7 @@ is irrelevant to the outome and which data matters.
 Djenni also makes it easy to generate large volumes of test data for rich domains and can scale well to support
 everything from unit testing to large scale non-functional testing.
 <h3>The Core Pattern</h3>
+
 Djenni is built around the concept of a &quot;Generator&quot; and a &quot;GeneratorBuilder&quot.
 
 The Generator is the ultimate source of test data. Generators produce the objects required by the tests. These objects
