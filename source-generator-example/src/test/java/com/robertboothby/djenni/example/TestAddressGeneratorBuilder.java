@@ -34,12 +34,9 @@ public class TestAddressGeneratorBuilder {
                                                 .withSizeBetween(3)
                                                 .and(5)
                                 )
-                                        )
+                        )
         );
         Generator<Address> addressGenerator = addressGeneratorBuilder.build();
-        Description description = new StringDescription();
-        addressGenerator.describeTo(description);
-        System.out.println(description.toString());
 
         //When
         Address address = addressGenerator.generate();
@@ -48,6 +45,10 @@ public class TestAddressGeneratorBuilder {
 
         assertThat(address.getCountry(), notNullValue());
         assertThat(address.getPostcode().getPostcode().length(), is(10));
+
+        Description description = new StringDescription();
+        addressGenerator.describeTo(description);
+        System.out.println(description.toString());
 
         System.out.println(address.toString());
 
