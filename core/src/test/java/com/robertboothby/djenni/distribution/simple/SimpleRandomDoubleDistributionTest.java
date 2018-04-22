@@ -14,7 +14,6 @@ import static org.junit.Assert.assertThat;
 
 /**
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class SimpleRandomDoubleDistributionTest {

@@ -1,7 +1,6 @@
 package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.SerializableGenerator;
-import org.apache.commons.lang.NotImplementedException;
 import org.hamcrest.Description;
 
 import java.util.Arrays;

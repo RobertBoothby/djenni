@@ -24,7 +24,6 @@ import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGener
  * any significant support for the generation of meaningful Strings, other generators should be used or created for that
  * purpose.
  * <p>
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class StringGeneratorBuilder implements SerializableGeneratorBuilder<String>, CharacterStrings {

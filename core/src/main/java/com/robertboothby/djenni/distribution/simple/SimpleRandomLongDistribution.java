@@ -4,7 +4,6 @@ import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 /**
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  *
  * @author robertboothby
  */

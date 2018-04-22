@@ -1,6 +1,5 @@
 package com.robertboothby.djenni.lang;
 
-import net.jcip.annotations.ThreadSafe;
 import com.robertboothby.djenni.Generator;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
@@ -9,10 +8,8 @@ import org.hamcrest.StringDescription;
  * This Generator generates a string with defined bounds on the length and the characters used.
  * <p>
  * Marked ThreadSafe only if the internal generators are thread safe too.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
-@ThreadSafe
 public class StringGenerator implements Generator<String> {
 
     private final Generator<Integer> lengthGenerator;

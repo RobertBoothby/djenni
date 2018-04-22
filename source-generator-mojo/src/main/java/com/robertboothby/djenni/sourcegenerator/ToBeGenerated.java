@@ -9,7 +9,6 @@ import java.lang.annotation.Target;
  * This annotation may be applied in new code bases to classes that are to have Generators and GeneratorBuilders created
  * as part of source code generation. This annotation is primarily intended to be used in conjunction with the Source
  * Generator maven plugin.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  *
  * @author robertboothby
  */

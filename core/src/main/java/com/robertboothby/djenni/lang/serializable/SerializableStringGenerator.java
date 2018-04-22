@@ -5,7 +5,6 @@ import com.robertboothby.djenni.lang.StringGenerator;
 
 /**
  * Version of {@link StringGenerator} that guarantees serializability.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class SerializableStringGenerator extends StringGenerator implements SerializableGenerator<String> {

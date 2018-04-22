@@ -1,16 +1,13 @@
 package com.robertboothby.djenni.core;
 
-import com.robertboothby.djenni.distribution.Distribution;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
-import org.apache.commons.lang.NotImplementedException;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
+import org.apache.commons.lang3.NotImplementedException;
 import org.hamcrest.Description;
 
 import java.util.List;
 import java.util.TreeMap;
-
-import static com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution.UNIFORM;
 
 /**
  * <p>Instances of this class generate random values in given relative proportions that are passed in as a bias map
@@ -51,7 +48,7 @@ public class ExplicitlyBiasedGenerator<T> implements SerializableGenerator<T> {
     }
 
     public void describeTo(Description description) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Needs implementation.");
     }
 
     @Override

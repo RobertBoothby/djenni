@@ -12,7 +12,6 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistributi
  * Trivial implementation of the {@link GeneratorBuilder} inteface that is created to retain consistency with the other
  * primitive types. When explicit control is required then it is better to consider using the
  * {@link com.robertboothby.djenni.core.ExplicitlyBiasedGenerator}.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  *
  * @author robertboothby
  */

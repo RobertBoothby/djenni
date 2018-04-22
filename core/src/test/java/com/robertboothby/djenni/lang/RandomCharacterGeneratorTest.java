@@ -18,7 +18,6 @@ import static org.mockito.BDDMockito.given;
 
 /**
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 @RunWith(MockitoJUnitRunner.class)

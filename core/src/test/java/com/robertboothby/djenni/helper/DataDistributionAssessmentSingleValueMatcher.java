@@ -5,7 +5,6 @@ import org.hamcrest.DiagnosingMatcher;
 
 /**
  * This matcher helps assert that a DataDistributionAssessment only has one value.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * @param <T> The type, extending Comparable, of the values whose distribution is being assessed.
  */

@@ -1,6 +1,5 @@
 package com.robertboothby.djenni.distribution.simple;
 
-import net.jcip.annotations.ThreadSafe;
 import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
@@ -22,7 +21,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author robertboothby
  * {@link java.util.concurrent.ThreadLocalRandom#nextLong(long)}
  */
-@ThreadSafe
 public abstract class SimpleRandomDoubleDistribution implements Serializable, Distribution<Double, Double> {
 
     /**

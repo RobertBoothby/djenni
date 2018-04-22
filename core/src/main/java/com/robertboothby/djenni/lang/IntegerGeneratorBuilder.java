@@ -3,7 +3,6 @@ package com.robertboothby.djenni.lang;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.sugar.And;
-import net.jcip.annotations.NotThreadSafe;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
 
@@ -13,7 +12,6 @@ import static com.robertboothby.djenni.core.GeneratorHelper.$;
  * Builder designed to make it easy and expressive to configure a generator of Integer values.
  * @author robertboothby
  */
-@NotThreadSafe
 public class IntegerGeneratorBuilder implements SerializableGeneratorBuilder<Integer> {
 
     public static final int MIN_INCLUSIVE_VALUE_DEFAULT = 0;

@@ -1,23 +1,20 @@
 package com.robertboothby.djenni.lang;
 
-import com.robertboothby.djenni.distribution.Distribution;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
-import net.jcip.annotations.NotThreadSafe;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
+import com.robertboothby.djenni.distribution.Distribution;
+import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
-import static java.util.Arrays.copyOf;
-import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
 import static com.robertboothby.djenni.core.GeneratorHelper.$;
+import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
 import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
+import static java.util.Arrays.copyOf;
 
 /**
  * Builder intended to make it expressive and easy to configure a Generator of Integers.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
-@NotThreadSafe
 public class CharacterGeneratorBuilder implements SerializableGeneratorBuilder<Character>, CharacterStrings {
 
     //The default values used by the generator

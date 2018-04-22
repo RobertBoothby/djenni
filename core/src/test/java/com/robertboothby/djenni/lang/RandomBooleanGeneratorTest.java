@@ -21,7 +21,6 @@ import static org.mockito.Mockito.verify;
 
 /**
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 @RunWith(MockitoJUnitRunner.class)

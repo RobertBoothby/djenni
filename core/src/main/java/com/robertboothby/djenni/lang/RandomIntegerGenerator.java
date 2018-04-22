@@ -1,9 +1,7 @@
 package com.robertboothby.djenni.lang;
 
-import com.robertboothby.djenni.distribution.Distribution;
-import net.jcip.annotations.ThreadSafe;
-import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -14,7 +12,6 @@ import static org.hamcrest.Matchers.is;
 /**
  * A generator of random integers within the bounds defined by its configuration.
  */
-@ThreadSafe
 public class RandomIntegerGenerator implements SerializableGenerator<Integer> {
     private final int minInclusiveValue;
     private final int range;

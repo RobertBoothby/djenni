@@ -3,7 +3,6 @@ package com.robertboothby.djenni;
 /**
  * A builder of object generators, implementing the &apos;Builder&apos; pattern. Instances of this interface will usually
  * be not thread safe and highly mutable.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * @param <T>
  */

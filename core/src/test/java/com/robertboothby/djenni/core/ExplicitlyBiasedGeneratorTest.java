@@ -18,7 +18,6 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 
 /**
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  *
  * @author robertboothby
  */

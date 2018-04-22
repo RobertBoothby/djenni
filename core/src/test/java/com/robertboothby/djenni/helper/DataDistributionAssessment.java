@@ -1,6 +1,5 @@
 package com.robertboothby.djenni.helper;
 
-import net.jcip.annotations.NotThreadSafe;
 import com.robertboothby.djenni.Generator;
 import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.MatcherAssert;
@@ -13,11 +12,9 @@ import static org.hamcrest.Matchers.greaterThan;
 
 /**
  * This class provides an assessment of the distribution of comparable data values.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * @param <T> The comparable type whose distribution is being assessed.
  */
-@NotThreadSafe
 public class DataDistributionAssessment<T extends Comparable<T>> {
 
     /**

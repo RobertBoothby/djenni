@@ -3,7 +3,6 @@ package com.robertboothby.djenni.lang;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
 import com.robertboothby.djenni.sugar.And;
-import net.jcip.annotations.NotThreadSafe;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.SerializableGeneratorBuilder;
 import com.robertboothby.djenni.core.GeneratorHelper;
@@ -11,10 +10,8 @@ import com.robertboothby.djenni.core.GeneratorHelper;
 /**
  * Builder designed to make it easy and expressive to configure a generator of Long values. Limited to a range
  * defined by the maximum value of a Long.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
-@NotThreadSafe
 public class LongGeneratorBuilder implements SerializableGeneratorBuilder<Long> {
 
     public static final long MIN_INCLUSIVE_VALUE_DEFAULT = 0;

@@ -3,7 +3,6 @@ package com.robertboothby.djenni.sugar;
 
 /**
  * Piece of syntactic sugar intended to make it easier to work with Comparables.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * @param <T> The type of Comparable that we are working with.
  */

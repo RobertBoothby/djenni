@@ -2,20 +2,62 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <parent>
-    <artifactId>djenni-parent</artifactId>
-    <groupId>com.robertboothby.djenni</groupId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <description>
-    This module contains generators for common domains and common standards.
+    <parent>
+        <artifactId>djenni-parent</artifactId>
+        <groupId>com.robertboothby.djenni</groupId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
 
-    Currently contains
-    - Person name generators.
-  </description>
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>common-generators</artifactId>
+    <artifactId>common-generators</artifactId>
 
+    <description>
+        This module contains generators for common domains and common standards.
+
+        Currently contains
+        - Person name generators.
+    </description>
+    <url>https://github.com/RobertBoothby/djenni</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Robert Boothby</name>
+            <email>bob.boothby@gmail.com</email>
+            <organization>Robert Boothby</organization>
+            <organizationUrl>https://github.com/RobertBoothby</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/RobertBoothby/mojo-parent.git</connection>
+        <developerConnection>scm:git:https://github.com/RobertBoothby/djenni.git</developerConnection>
+        <url>https://github.com/RobertBoothby/djenni</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.robertboothby.djenni</groupId>
+            <artifactId>core</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

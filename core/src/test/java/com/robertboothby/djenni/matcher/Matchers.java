@@ -10,7 +10,6 @@ import java.util.Set;
 
 /**
  * This class produces matchers that are helpful in the testing of Generators and GeneratorBuilders.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class Matchers {

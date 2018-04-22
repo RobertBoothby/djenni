@@ -8,7 +8,6 @@ import org.hamcrest.Description;
 /**
  * This generator provides a mechanism for generating random {@link Boolean} values. It is about the simplest of all
  * {@link Generator} implementations as it is really only a shim.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class RandomBooleanGenerator implements Generator<Boolean> {

@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.lang;
 
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import com.robertboothby.djenni.Generator;
 import org.hamcrest.Description;
 
@@ -21,11 +21,11 @@ public class RandomByteGenerator implements Generator<Byte> {
     private int maximumExclusiveValue;
 
     public Byte generate() {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Needs implementation.");
     }
 
     public void describeTo(Description description) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Needs implementation.");
     }
 
     public static void main(String[] args) {

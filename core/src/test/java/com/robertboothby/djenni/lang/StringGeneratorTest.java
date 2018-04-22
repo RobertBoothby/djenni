@@ -13,7 +13,6 @@ import static com.robertboothby.djenni.lang.StringGeneratorBuilder.arbitraryStri
 
 /**
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class StringGeneratorTest {

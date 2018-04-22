@@ -17,7 +17,6 @@ import static org.hamcrest.Matchers.is;
 
 /**
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class IntegerGeneratorBuilderTest {

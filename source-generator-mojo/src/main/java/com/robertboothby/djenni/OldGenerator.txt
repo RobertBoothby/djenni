@@ -29,7 +29,6 @@ import static com.robertboothby.djenni.util.Nullable.nullable;
  *
  * <p>If the class has only one constructor then there is no need for an annotation otherwise the constructor to be
  * generated must be annotated with {@link ConstructorForGeneration}</p>
- * <p>&#169; 2014 Forest View Developments Ltd.</p>
  *
  * @author robertboothby
  */

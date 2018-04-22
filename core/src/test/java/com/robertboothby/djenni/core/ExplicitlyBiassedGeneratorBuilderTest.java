@@ -14,7 +14,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 /**
- * <p>&#169; 2014 Forest View Developments Ltd.</p>
  *
  * @author robertboothby
  */

@@ -1,9 +1,7 @@
 package com.robertboothby.djenni.lang;
 
-import com.robertboothby.djenni.distribution.Distribution;
-import net.jcip.annotations.ThreadSafe;
-import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.SerializableGenerator;
+import com.robertboothby.djenni.distribution.Distribution;
 import org.hamcrest.Description;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -12,10 +10,8 @@ import static org.hamcrest.Matchers.is;
 
 /**
  * A generator of random longs within the bounds defined by its configuration.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
-@ThreadSafe
 public class RandomLongGenerator implements SerializableGenerator<Long> {
 
     private final long minInclusiveValue;

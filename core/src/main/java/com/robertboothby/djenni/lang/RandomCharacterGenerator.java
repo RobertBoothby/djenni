@@ -9,7 +9,6 @@ import java.util.Arrays;
 
 /**
  * TODO Document properly.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  */
 public class RandomCharacterGenerator implements SerializableGenerator<Character>, SelfDescribing {

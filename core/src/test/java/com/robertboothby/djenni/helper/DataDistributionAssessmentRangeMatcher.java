@@ -9,7 +9,6 @@ import static com.robertboothby.djenni.sugar.EasyCompare.$;
 
 /**
  *
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * @param <T>
  */

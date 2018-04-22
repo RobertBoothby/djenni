@@ -8,7 +8,6 @@ import java.util.Set;
  * This is intended to help with checking that generators can cover all reasonable permutations not that it <em>does</em>
  * generate all permutations as that could take a very long time indeed. To give you an idea the first use cases are for
  * checking derivatives of StringGenerator values such as the set of lengths generated and the set of characters.
- * <p>&#169; 2013 Forest View Developments Ltd.</p>
  * @author robertboothby
  * @param <T> The type derived from the source type to be assessed.
  * @param <U> The source type whose derivatives are being assessed.
