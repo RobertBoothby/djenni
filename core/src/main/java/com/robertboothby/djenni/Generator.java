@@ -2,6 +2,8 @@ package com.robertboothby.djenni;
 
 import org.hamcrest.SelfDescribing;
 
+import java.util.stream.Stream;
+
 /**
  * A generator of objects intended primarily to facilitate the creation of test data. Instances of this interface
  * should typically be thread safe and immutable.

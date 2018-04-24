@@ -2,11 +2,13 @@ package com.robertboothby.djenni.common;
 
 import com.robertboothby.djenni.Generator;
 import com.robertboothby.djenni.GeneratorBuilder;
+import com.robertboothby.djenni.core.GeneratorHelper;
 
 import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
+import static com.robertboothby.djenni.core.GeneratorHelper.derived;
 import static com.robertboothby.djenni.core.GeneratorHelper.fromArray;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
@@ -16,8 +18,8 @@ import static java.util.stream.StreamSupport.stream;
  */
 public class NameGeneratorBuilder implements GeneratorBuilder<Name> {
 
-    public static String[] DEFAULT_GIVEN_NAMES;
-    public static String[] DEFAULT_FAMILY_NAMES;
+    public static final String[] DEFAULT_GIVEN_NAMES;
+    public static final String[] DEFAULT_FAMILY_NAMES;
 
     static {
             DEFAULT_GIVEN_NAMES = readValues("/Given_Names.csv");
@@ -29,7 +31,7 @@ public class NameGeneratorBuilder implements GeneratorBuilder<Name> {
 
     @Override
     public Generator<Name> build() {
-        return new NameGenerator(fromArray(givenNames), fromArray(familyNames));
+        return derived(Name::new, fromArray(givenNames), fromArray(familyNames));
     }
 
     public NameGeneratorBuilder withFamilyNames(String ... familyNames) {
