@@ -2,6 +2,9 @@ package com.robertboothby.djenni.core.util;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.IntToDoubleFunction;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Collections.addAll;
 
@@ -17,11 +20,7 @@ public class Collections {
      * @return the set with the values.
      */
     public static Set<Integer> range(int leastInclusive, int maxExclusive) {
-        Set<Integer> rangeSet = new HashSet<Integer>();
-        for(int i = leastInclusive; i < maxExclusive; i++){
-            rangeSet.add(i);
-        }
-        return rangeSet;
+        return IntStream.range(leastInclusive, maxExclusive).boxed().collect(Collectors.toSet());
     }
 
     /**
@@ -31,7 +30,7 @@ public class Collections {
      * @param <T> The type of the values in the array and the resulting set.
      * @return A set of the values from the array.
      */
-    public static <T> Set<T> asSet(T[] valueArray) {
+    public static <T> Set<T> asSet(T ... valueArray) {
         Set<T> valueSet = new HashSet<T>();
         addAll(valueSet, valueArray);
         return valueSet;
@@ -39,14 +38,14 @@ public class Collections {
 
     /**
      * Create a set of Characters based on the array of chars passed in, thereby ensuring uniqueness.
-     * @param valueArray the array of characters to add.
+     * @param charSequence the character sequence to base the array on..
      * @return a set of the Characters from the array.
      */
-    public static Set<Character> asSet(char[] valueArray) {
-        Set<Character> valueSet = new HashSet<>();
-        for(char value : valueArray) {
-            valueSet.add(value);
-        }
-        return valueSet;
+    public static Set<Character> asSetOfCharacters(CharSequence charSequence) {
+        return charSequence
+                .chars()
+                .mapToObj(i -> (char) i)
+                .collect(Collectors.toSet());
     }
+
 }

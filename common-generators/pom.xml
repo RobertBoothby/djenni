@@ -16,7 +16,7 @@
         This module contains generators for common domains and common standards.
 
         Currently contains
-        - Person name generators.
+        - Person name generator.
     </description>
     <url>https://github.com/RobertBoothby/djenni</url>
 

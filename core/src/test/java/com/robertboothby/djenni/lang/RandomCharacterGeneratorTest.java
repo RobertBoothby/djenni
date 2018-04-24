@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.lang;
 
-import com.robertboothby.djenni.matcher.Matchers;
 import com.robertboothby.djenni.SerializableGenerator;
 import com.robertboothby.djenni.core.util.Collections;
+import com.robertboothby.djenni.matcher.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -10,8 +10,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.robertboothby.djenni.core.GeneratorHelper.buildAn;
 import static com.robertboothby.djenni.lang.IntegerGeneratorBuilder.integerGenerator;
-import static com.robertboothby.djenni.core.util.Collections.asSet;
-import static com.robertboothby.djenni.matcher.Matchers.eventuallyGeneratesAllValues;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -48,6 +46,6 @@ public class RandomCharacterGeneratorTest {
         //When
         //Then
         assertThat(generator,
-                Matchers.eventuallyGeneratesAllValues(Collections.asSet("ABCDEF".toCharArray()), 100));
+                Matchers.eventuallyGeneratesAllValues(Collections.asSetOfCharacters("ABCDEF"), 100));
     }
 }

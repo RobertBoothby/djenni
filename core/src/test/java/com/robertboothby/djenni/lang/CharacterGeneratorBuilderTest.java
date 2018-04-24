@@ -81,7 +81,7 @@ public class CharacterGeneratorBuilderTest {
         //When
         //Then
         assertThat(generator, is(instanceOf(FixedValueGenerator.class)));
-        assertThat((FixedValueGenerator<Character>)generator,
+        assertThat(generator,
                 is(
                         new FixedValueGenerator<>('A')
                 ));
@@ -96,7 +96,7 @@ public class CharacterGeneratorBuilderTest {
         //When
         //Then
         assertThat(generator, is(instanceOf(RandomCharacterGenerator.class)));
-        assertThat((RandomCharacterGenerator)generator,
+        assertThat(generator,
                 is(
                         new RandomCharacterGenerator(
                                 DEFAULT_AVAILABLE_CHARACTERS.toCharArray(),

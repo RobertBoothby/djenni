@@ -2,15 +2,12 @@ package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import com.robertboothby.djenni.matcher.Matchers;
-import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.robertboothby.djenni.core.util.Collections.asSet;
-import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessGenerator;
-import static com.robertboothby.djenni.matcher.Matchers.eventuallyGeneratesAllValues;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
 import static org.hamcrest.Matchers.greaterThan;

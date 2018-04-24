@@ -9,6 +9,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import static com.robertboothby.djenni.core.GeneratorHelper.buildA;
+import static com.robertboothby.djenni.core.util.Collections.range;
 import static com.robertboothby.djenni.lang.StringGeneratorBuilder.arbitraryString;
 
 /**
@@ -22,12 +23,8 @@ public class StringGeneratorTest {
         Generator<String> stringGenerator = buildA(arbitraryString().withLengthsBetween(5).and(10));
         MatcherAssert.assertThat(stringGenerator,
             Matchers.eventuallyGeneratesAllDerivatives(
-                Collections.range(5, 10),
-                new DataCompletenessAssessment.Deriver<Integer, String>() {
-                    public Integer derive(String original) {
-                        return original.length();
-                    }
-                },
+                range(5, 10),
+                    String::length,
                 100
             )
         );
@@ -37,7 +34,7 @@ public class StringGeneratorTest {
         Generator<String> stringGenerator = buildA(arbitraryString().withEuropeanNumerals().withFixedLength(1));
         MatcherAssert.assertThat(stringGenerator,
             Matchers.eventuallyGeneratesAllDerivatives(
-                Collections.asSet(CharacterStrings.EUROPEAN_NUMERIC.toCharArray()),
+                Collections.asSetOfCharacters(CharacterStrings.EUROPEAN_NUMERIC),
                 new DataCompletenessAssessment.Deriver<Character, String>() {
                     public Character derive(String original) {
                         return original.charAt(0);

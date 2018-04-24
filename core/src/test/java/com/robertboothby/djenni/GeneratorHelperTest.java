@@ -1,6 +1,7 @@
 package com.robertboothby.djenni;
 
 import com.robertboothby.djenni.core.FixedValueGenerator;
+import com.robertboothby.djenni.core.GeneratorHelper;
 import org.junit.Test;
 
 import static com.robertboothby.djenni.core.GeneratorHelper.$;
@@ -23,6 +24,18 @@ public class GeneratorHelperTest {
         assertThat(generator, is(instanceOf(FixedValueGenerator.class)));
         assertThat(generator.generate(), is(equalTo(value)));
         assertThat(generator.generate(), is(theInstance(value)));
+    }
+
+    @Test
+    public void shouldGenerateFromArray(){
+        //Given
+        String charString = "ABCDEF";
+
+        //When
+        SerializableGenerator<Character> generator = GeneratorHelper.fromValues(charString.toCharArray());
+
+        //Then
+
     }
 
 }

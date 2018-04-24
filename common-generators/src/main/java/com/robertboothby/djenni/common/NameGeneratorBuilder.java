@@ -9,7 +9,7 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 import static com.robertboothby.djenni.core.GeneratorHelper.derived;
-import static com.robertboothby.djenni.core.GeneratorHelper.fromArray;
+import static com.robertboothby.djenni.core.GeneratorHelper.fromValues;
 import static java.util.Spliterators.spliteratorUnknownSize;
 import static java.util.stream.StreamSupport.stream;
 
@@ -31,7 +31,7 @@ public class NameGeneratorBuilder implements GeneratorBuilder<Name> {
 
     @Override
     public Generator<Name> build() {
-        return derived(Name::new, fromArray(givenNames), fromArray(familyNames));
+        return derived(Name::new, GeneratorHelper.fromValues(givenNames), GeneratorHelper.fromValues(familyNames));
     }
 
     public NameGeneratorBuilder withFamilyNames(String ... familyNames) {

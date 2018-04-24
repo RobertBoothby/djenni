@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 /**
  * Simple Generator that randomly generates values from an array selected using the passed in Integer Generator.
+ * Instances can easily be derived from {@link GeneratorHelper#fromValues(Object[])}.
  */
 public class ArrayBackedGenerator<T> implements SerializableGenerator<T> {
 

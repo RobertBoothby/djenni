@@ -10,8 +10,11 @@ import com.robertboothby.djenni.lang.IntegerGeneratorBuilder;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hamcrest.Description;
 
+import java.lang.reflect.Array;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -34,12 +37,42 @@ public class GeneratorHelper {
      * Create a Generator from an array with equal chance of generating any of the values.
      * @see SimpleRandomIntegerDistribution#UNIFORM
      * @see ArrayBackedGenerator
-     * @param array the array to use when selecting values to generate
+     * @param values the array to use when selecting values to generate
      * @param <T> the type of values in the array and the generator.
      * @return a generator derived from the array.
      */
-    public static <T> SerializableGenerator<T> fromArray(T[] array) {
-        return fromArray(array, SimpleRandomIntegerDistribution.UNIFORM);
+    public static <T> SerializableGenerator<T> fromValues(T ...  values) {
+        return fromValues(SimpleRandomIntegerDistribution.UNIFORM, values);
+    }
+
+    /**
+     * Create a Generator from a char array with equal chance of generating any of the values.
+     * @see SimpleRandomIntegerDistribution#UNIFORM
+     * @see ArrayBackedGenerator
+     * @param values the values to generate
+     * @return a generator derived from the values.
+     */
+    public static SerializableGenerator<Character> fromValues(char ...  values) {
+        return fromValues(SimpleRandomIntegerDistribution.UNIFORM, values);
+    }
+
+    /**
+     * Create a Generator from an array using the passed in distribution to control the likelihood of generating any of
+     * the values.
+     * @see ArrayBackedGenerator
+     * @param values the array to use when selecting values to generate
+     * @param distribution the distribution to use when selecting any of the values from the array. Any bias introduced
+     *                     relates to the position in the array that is selected.
+     * @param <T> the type of values in the array and the generator.
+     * @return a generator derived from the array.
+     */
+    public static <T> SerializableGenerator<T> fromValues(Distribution<Integer, Integer> distribution, T ... values) {
+        return new ArrayBackedGenerator<T>(
+                values,
+                buildAn(IntegerGeneratorBuilder.integerGenerator()
+                        .between(0)
+                        .and(values.length)
+                        .withDistribution(distribution)));
     }
 
     /**
@@ -49,16 +82,20 @@ public class GeneratorHelper {
      * @param array the array to use when selecting values to generate
      * @param distribution the distribution to use when selecting any of the values from the array. Any bias introduced
      *                     relates to the position in the array that is selected.
-     * @param <T> the type of values in the array and the generator.
      * @return a generator derived from the array.
      */
-    public static <T> SerializableGenerator<T> fromArray(T[] array, Distribution<Integer, Integer> distribution) {
-        return new ArrayBackedGenerator<T>(
-                array,
+    public static SerializableGenerator<Character> fromValues(Distribution<Integer, Integer> distribution, char ... array) {
+        return new ArrayBackedGenerator<>(
+
+                IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(Character[]::new),
                 buildAn(IntegerGeneratorBuilder.integerGenerator()
                         .between(0)
                         .and(array.length)
                         .withDistribution(distribution)));
+    }
+
+    public static <T, R> R[] boxed(T[] array, Class<R> clazz) {
+        return IntStream.range(0, array.length).mapToObj(i -> array[i]).toArray(i-> (R[])Array.newInstance(clazz, 0));
     }
 
     /**
@@ -68,7 +105,7 @@ public class GeneratorHelper {
      * @return a generator that will generate values from the enumeration.
      */
     public static <T extends Enum<T>> SerializableGenerator<T> fromEnum(Class<T> enumerationClass) {
-        return fromArray(enumerationClass.getEnumConstants());
+        return fromValues(enumerationClass.getEnumConstants());
     }
 
     /**
@@ -79,7 +116,7 @@ public class GeneratorHelper {
      * @return a generator that will generate values from the enumeration.
      */
     public static <T extends Enum<T>> SerializableGenerator<T> fromEnum(Class<T> enumerationClass, Distribution<Integer, Integer> distribution) {
-        return fromArray(enumerationClass.getEnumConstants(), distribution);
+        return fromValues(distribution, enumerationClass.getEnumConstants());
     }
 
     /**

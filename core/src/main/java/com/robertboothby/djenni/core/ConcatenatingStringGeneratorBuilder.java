@@ -7,11 +7,15 @@ import com.robertboothby.djenni.sugar.And;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static com.robertboothby.djenni.core.LambdaGenerator.generator;
 
 /**
- * Builder for the {@link ConcatenatingStringGenerator}.
+ * TODO describe
  */
-public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<String>, And<ConcatenatingStringGeneratorBuilder, Generator> {
+public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<String>, And<ConcatenatingStringGeneratorBuilder, Generator<?>> {
 
     private List<Generator<?>> generators = new ArrayList<>();
 
@@ -48,7 +52,7 @@ public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<Str
      * @param value the value to add.
      * @return the buider for further configuration.
      */
-    public ConcatenatingStringGeneratorBuilder and(Generator value) {
+    public ConcatenatingStringGeneratorBuilder and(Generator<?> value) {
         return with(value);
     }
 
@@ -57,12 +61,21 @@ public class ConcatenatingStringGeneratorBuilder implements GeneratorBuilder<Str
      * @param values the values to add.
      * @return the buider for further configuration.
      */
-    public ConcatenatingStringGeneratorBuilder and(Generator ...  values) {
+    public ConcatenatingStringGeneratorBuilder and(Generator<?> ...  values) {
         return with(values);
     }
 
     @Override
     public Generator<String> build() {
-        return new ConcatenatingStringGenerator(generators);
+        //Take a copy of the list so that it won't be mutated.
+        List<Generator<?>> generators = new ArrayList<>(this.generators);
+        return generator(
+                () -> generators.stream().map(Generator::generate).map(Object::toString).collect(Collectors.joining()),
+                d -> d
+                        .appendText("Concatenating String Generator : { ")
+                        .appendList("[",", ", "]",  generators)
+                        .appendText(" }")
+        );
     }
+
 }
