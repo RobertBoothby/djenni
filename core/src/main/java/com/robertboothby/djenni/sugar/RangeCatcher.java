@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.sugar;
 
-import com.robertboothby.djenni.GeneratorBuilder;
+import com.robertboothby.djenni.SupplierBuilder;
 
-public class RangeCatcher<T extends GeneratorBuilder>{
+public class RangeCatcher<T extends SupplierBuilder>{
     private int minimumSize;
     private int maximumSize;
     private final T generatorBuilder;

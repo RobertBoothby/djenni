@@ -102,9 +102,9 @@ public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
                 .stream()
                 .map(javaClass ->
                         new GenerationModel(
-                                "Generator.ftl",
+                                "Supplier.ftl",
                                 getModel(javaSource, javaClass),
-                                javaClass.getFullyQualifiedName().replace('.', '/') + "Generator.java"
+                                javaClass.getFullyQualifiedName().replace('.', '/') + "Supplier.java"
                         )
                 );
     }
@@ -114,9 +114,9 @@ public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
                 .stream()
                 .map(javaClass ->
                         new GenerationModel(
-                                "GeneratorBuilder.ftl",
+                                "SupplierBuilder.ftl",
                                 getModel(javaSource, javaClass),
-                                javaClass.getFullyQualifiedName().replace('.', '/') + "GeneratorBuilder.java"
+                                javaClass.getFullyQualifiedName().replace('.', '/') + "SupplierBuilder.java"
                         )
                 );
     }
