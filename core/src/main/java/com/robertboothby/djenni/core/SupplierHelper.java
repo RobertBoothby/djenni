@@ -3,14 +3,16 @@ package com.robertboothby.djenni.core;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
-import com.robertboothby.djenni.lang.IntegerSupplierBuilder;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSupplier;
 
 /**
  * Helpful utilities for working with Suppliers.
@@ -61,7 +63,7 @@ public class SupplierHelper {
      */
     @SafeVarargs
     public static <T> Supplier<T> fromValues(Distribution<Integer, Integer> distribution, T ... values) {
-        Supplier<Integer> selectionGenerator = buildAn(IntegerSupplierBuilder.integerSupplier()
+        Supplier<Integer> selectionGenerator = buildAn(integerSupplier()
                 .between(0)
                 .and(values.length)
                 .withDistribution(distribution));
@@ -163,5 +165,42 @@ public class SupplierHelper {
      */
     public static <T> Stream<T> stream(Supplier<T> supplier, long numberOfValues){
         return Stream.generate(supplier).limit(numberOfValues);
+    }
+
+    /**
+     * Create a supplier that picks between one of a range of suppliers.
+     * @param suppliers The suppliers to choose from.
+     * @param <T> The type of value to be supplied.
+     * @return A supplier that randomly picks one of the suppliers to create the value.
+     */
+    public static <T> Supplier<T> fromRandomSuppliers(Supplier<T> ... suppliers){
+        return fromRandomSuppliers(integerSupplier($ -> $.between(0).and(suppliers.length)), suppliers);
+    }
+
+    /**
+     * Create a supplier that picks between one of a range of suppliers.
+     * @param positionSupplier A supplier that provides an integer value to choose between the range of suppliers.
+     * @param suppliers The suppliers to choose from.
+     * @param <T> The type of value to be supplied.
+     * @return A supplier that randomly picks one of the suppliers to create the value.
+     */
+    public static <T> Supplier<T> fromRandomSuppliers(Supplier<Integer> positionSupplier, Supplier<T> ... suppliers) {
+        return () -> suppliers[positionSupplier.get()].get();
+    }
+
+    /**
+     * Create a supplier wrapping another supplier that allows you to 'peek' at the values as they are supplied. It is
+     * strongly advised that you do not alter the values as you peek at them as this may cause thread safety issues.
+     * @param supplier The supplier to wrap and peek at.
+     * @param peeker The consumer that will peek at the values created by the wrapped supplier
+     * @param <T> The type of the values being supplied.
+     * @return A supplier that will allow peeking at the values.
+     */
+    public static <T> Supplier<T> peek(Supplier<T> supplier, Consumer<T> peeker) {
+        return () -> {
+            T value = supplier.get();
+            peeker.accept(value);
+            return value;
+        };
     }
 }

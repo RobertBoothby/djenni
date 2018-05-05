@@ -1,13 +1,19 @@
 package com.robertboothby.djenni.example;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.function.Supplier;
 
+import static com.robertboothby.djenni.core.SupplierHelper.derived;
 import static com.robertboothby.djenni.core.SupplierHelper.fromEnum;
 import static com.robertboothby.djenni.example.PostcodeSupplierBuilder.postcodeSupplier;
 import static com.robertboothby.djenni.lang.StringSupplierBuilder.arbitraryString;
+import static com.robertboothby.djenni.util.CollectionSupplierBuilder.collection;
+import static com.robertboothby.djenni.util.CollectionTypes.arrayList;
+import static com.robertboothby.djenni.util.CollectionTypes.asList;
 import static com.robertboothby.djenni.util.SimpleListSupplierBuilder.simpleList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -15,7 +21,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 public class TestAddressSupplierBuilder {
     @Test
-    public void shouldGenerateAddressOnceConfigured(){
+    public void shouldGenerateAddressOnceConfigured() {
         //Given
         Supplier<Address> addressSupplier = AddressSupplierBuilder.addressSupplier(address ->
                 address
@@ -48,7 +54,7 @@ public class TestAddressSupplierBuilder {
 
     }
 
-    private SupplierBuilder<String> exactly10Text(){
+    private SupplierBuilder<String> exactly10Text() {
         return arbitraryString().withFixedLength(10);
     }
 

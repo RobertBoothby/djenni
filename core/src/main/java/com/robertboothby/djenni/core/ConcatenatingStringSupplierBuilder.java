@@ -10,7 +10,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
- * TODO describe
+ * This SupplierBuilder builds a Supplier that concatenates the {@link Object#toString()}} results of multiple other
+ * Suppliers together to supply a String.
  */
 public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<String>, And<ConcatenatingStringSupplierBuilder, Supplier<?>> {
 
@@ -60,6 +61,25 @@ public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<Strin
      */
     public ConcatenatingStringSupplierBuilder and(Supplier<?> ...  values) {
         return with(values);
+    }
+
+    public ConcatenatingStringSupplierBuilder with(Supplier<?> start, Supplier<?> end, Supplier<?> separator, List<Supplier<?>> values) {
+        suppliers.add(start);
+        with(separator, values);
+        suppliers.add(end);
+        return this;
+    }
+
+    public ConcatenatingStringSupplierBuilder with(Supplier<?> separator, List<Supplier<?>> suppliers) {
+        boolean notFirst = false;
+        for (Supplier<?> supplier : suppliers) {
+            if(notFirst){
+                suppliers.add(separator);
+                notFirst = true;
+            }
+            this.suppliers.add(supplier);
+        }
+        return this;
     }
 
     @Override

@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import java.util.function.Supplier;
 
-import static com.robertboothby.djenni.common.NameSupplierBuilder.nameGenerator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -14,26 +13,26 @@ import static org.hamcrest.Matchers.notNullValue;
 public class NameSupplierBuilderTest {
 
     @Test
-    public void shouldCreateNameGenerator(){
+    public void shouldCreateNameSupplier(){
         //Given
 
         //When
-        Supplier<Name> result = nameGenerator().build();
+        Supplier<Name> result = NameSupplierBuilder.nameSupplierBuilder().build();
 
         //Then
         assertThat(result, notNullValue());
     }
 
     @Test
-    public void shouldCreateGeneratorWithSuppliedNames(){
+    public void shouldCreateSupplierWithNewNames(){
         //Given
-        NameSupplierBuilder generatorBuilder = NameSupplierBuilder.nameGenerator(
+        Supplier<Name> nameSupplier = NameSupplierBuilder.names(
                 $ -> $.withFamilyNames("Smith")
                         .withGivenNames("John")
         );
 
         //When
-        Name result = generatorBuilder.build().get();
+        Name result = nameSupplier.get();
 
         //Then
         assertThat(result, is(new Name("John", "Smith")));

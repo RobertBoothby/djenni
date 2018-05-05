@@ -11,6 +11,5 @@ import org.hamcrest.SelfDescribing;
  */
 public interface Distribution<T  extends Number, U extends Number> extends SelfDescribing {
 
-
     public T generate(U bound);
 }

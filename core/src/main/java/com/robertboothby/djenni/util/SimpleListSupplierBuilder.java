@@ -2,7 +2,7 @@ package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.sugar.And;
-import com.robertboothby.djenni.sugar.RangeCatcher;
+import com.robertboothby.djenni.sugar.Range;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -14,15 +14,15 @@ import static java.util.stream.Collectors.toList;
 
 public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
 
-    private RangeCatcher<SimpleListSupplierBuilder<T>> sizeCatcher = new RangeCatcher<>(1,1, this);
+    private Range<SimpleListSupplierBuilder<T>, Integer> range = Range.inclusive(this);
     private Supplier<T> entryGenerator;
 
     @Override
     public Supplier<List<T>> build() {
         Supplier<Integer> sizeSupplier = integerSupplier(
                 builder -> builder
-                        .between(sizeCatcher.getMinimumSize())
-                        .and(sizeCatcher.getMaximumSize())
+                        .between(range.getMinimum())
+                        .and(range.getMaximum())
         );
 
         return () -> stream(entryGenerator, sizeSupplier.get()).collect(toList());
@@ -45,6 +45,6 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
     }
 
     public And<SimpleListSupplierBuilder<T>, Integer> withSizeBetween(int value) {
-        return sizeCatcher.between(value);
+        return range.between(value);
     }
 }

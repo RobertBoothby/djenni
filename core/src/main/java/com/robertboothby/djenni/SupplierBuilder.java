@@ -1,5 +1,6 @@
 package com.robertboothby.djenni;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**

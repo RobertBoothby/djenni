@@ -11,8 +11,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 /**
- *
- * @author robertboothby
+ * Test for the ConcatenatingStringSupplierBuilder.
+ * @author robertboothby.
  */
 public class ConcatenatingStringSupplierBuilderTest {
 

@@ -1,5 +1,6 @@
 <#import "GenericTypeParameters.ftl" as g/>
 <#if javaSource.packageName?has_content>package ${javaSource.packageName};
+<#--TODO Make this support generic types properly and subclasses of the various parameters e.g. use ? extends List not just List.-->
 
 </#if>
 import java.util.function.Supplier;
