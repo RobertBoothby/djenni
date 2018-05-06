@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.sugar.And;
@@ -25,7 +26,7 @@ public class IntegerSupplierBuilder implements SupplierBuilder<Integer> {
     private int maxExclusiveValue = MAX_EXCLUSIVE_VALUE_DEFAULT;
     private Distribution<Integer, Integer> distribution = DISTRIBUTION_DEFAULT;
 
-    public Supplier<Integer> build() {
+    public StreamableSupplier<Integer> build() {
         if(maxExclusiveValue - minInclusiveValue == 1){
             return fix(minInclusiveValue);
         } else {

@@ -65,7 +65,7 @@ public class ExplicitlyBiassedSupplierBuilder<T> implements SupplierBuilder<T> {
     }
 
     @Override
-    public Supplier<T> build() {
+    public StreamableSupplier<T> build() {
         return new ExplicitlyBiasedSupplier<T>(biaslist);
     }
 

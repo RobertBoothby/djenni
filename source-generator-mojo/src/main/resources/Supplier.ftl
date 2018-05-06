@@ -3,6 +3,8 @@
 <#--TODO Make this support generic types properly and subclasses of the various parameters e.g. use ? extends List not just List.-->
 
 </#if>
+import com.robertboothby.djenni.core.StreamableSupplier;
+
 import java.util.function.Supplier;
 import java.util.Optional;
 import org.hamcrest.Description;
@@ -21,7 +23,7 @@ import static java.util.Optional.ofNullable;
  *    </em>
  * </p>
  */
-public class ${javaClass.name}Supplier implements Supplier<${javaClass.name}> {
+public class ${javaClass.name}Supplier implements StreamableSupplier<${javaClass.name}> {
 <#if constructor.parameters?has_content>
 
     //Constructor parameter suppliers.

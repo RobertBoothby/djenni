@@ -1,10 +1,11 @@
 <#if javaSource.packageName?has_content>package ${javaSource.packageName};
 
 </#if>
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.SupplierBuilder;
-import java.util.function.Consumer;
-import java.util.function.Supplier; 
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static java.util.Collections.emptyList;
@@ -44,7 +45,7 @@ public class ${javaClass.name}SupplierBuilder implements SupplierBuilder<${javaC
 </#list>
 </#if>
 
-    public Supplier<${javaClass.name}> build() {
+    public StreamableSupplier<${javaClass.name}> build() {
         return new ${javaClass.name}Supplier(
 <#if constructor.parameters?has_content>
 <#list constructor.parameters as constructorParameter>

@@ -2,6 +2,7 @@ package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
@@ -27,7 +28,7 @@ public class CharacterSupplierBuilder implements SupplierBuilder<Character>, Cha
     private char[] characters = DEFAULT_AVAILABLE_CHARACTERS .toCharArray();
     private Distribution<Integer, Integer> distribution = DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
 
-    public Supplier<Character> build() {
+    public StreamableSupplier<Character> build() {
         if(characters.length == 1){
             return fix(characters[0]);
         } else if (characters.length > 1) {

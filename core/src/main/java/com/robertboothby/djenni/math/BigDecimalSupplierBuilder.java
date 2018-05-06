@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.math;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import org.apache.commons.lang3.NotImplementedException;
 import org.hamcrest.Description;
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
 public class BigDecimalSupplierBuilder implements SupplierBuilder<BigDecimal> {
 
     @Override
-    public Supplier<BigDecimal> build() {
+    public StreamableSupplier<BigDecimal> build() {
         throw new NotImplementedException("Needs implementation.");
     }
 }

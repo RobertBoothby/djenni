@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.sugar.And;
 import com.robertboothby.djenni.sugar.Range;
 
@@ -18,7 +19,7 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
     private Supplier<T> entryGenerator;
 
     @Override
-    public Supplier<List<T>> build() {
+    public StreamableSupplier<List<T>> build() {
         Supplier<Integer> sizeSupplier = integerSupplier(
                 builder -> builder
                         .between(range.getMinimum())

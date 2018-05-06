@@ -18,7 +18,7 @@ import java.util.function.Supplier;
  * Would produce a bias list that when passed into this class would generate TRUE 90% of the time and FALSE 10% of the
  * time.</p>
  */
-public class ExplicitlyBiasedSupplier<T> implements Supplier<T> {
+public class ExplicitlyBiasedSupplier<T> implements StreamableSupplier<T> {
 
     private final TreeMap<Double, T> lookupMap;
     private final double proportionsTotal;

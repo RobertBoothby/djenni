@@ -6,12 +6,12 @@ import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.ConcatenatingStringSupplierBuilder.supplierOfConcatenatedValues;
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
-import static com.robertboothby.djenni.core.SupplierHelper.buildA;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
 /**
  * Test for the ConcatenatingStringSupplierBuilder.
+ *
  * @author robertboothby.
  */
 public class ConcatenatingStringSupplierBuilderTest {
@@ -19,10 +19,11 @@ public class ConcatenatingStringSupplierBuilderTest {
     @Test
     public void shouldGenerateASimpleConcatenatedString() {
         //Given
-        final Supplier<String> concatenatedStringGenerator = buildA(supplierOfConcatenatedValues()
-                .with(fix("A"))
-                .and(fix("B"))
-                .and(fix("C"))
+        final StreamableSupplier<String> concatenatedStringGenerator = supplierOfConcatenatedValues(
+                b -> b
+                        .with(fix("A"))
+                        .and(fix("B"))
+                        .and(fix("C"))
         );
 
         //When

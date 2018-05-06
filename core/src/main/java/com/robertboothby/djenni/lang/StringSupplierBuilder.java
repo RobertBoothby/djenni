@@ -2,6 +2,7 @@ package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
@@ -37,7 +38,7 @@ public class StringSupplierBuilder implements SupplierBuilder<String>, Character
     public static final Distribution<Integer, Integer> DEFAULT_CHARACTER_SELECTION_DISTRIBUTION = SimpleRandomIntegerDistribution.UNIFORM;
     private Distribution<Integer, Integer> characterSelectionDistribution = DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
 
-    public Supplier<String> build() {
+    public StreamableSupplier<String> build() {
         Supplier<Integer> integerSupplier = integerSupplier(
                 builder -> builder
                         .between(minimumLength)

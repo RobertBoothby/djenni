@@ -12,7 +12,6 @@ import java.util.List;
  * Maps do not implement the {@link Collection} interface and are treated separately in the {@link MapType} interface.
  * @param <T> The type of the Collection being represented.
  * @param <U> The type of the values contained in the collection.
- * @todo Add static methods for the List, Set, SortedSet etc. interfaces.
  */
 public interface CollectionType<T extends Collection<U>, U> {
 
@@ -23,6 +22,6 @@ public interface CollectionType<T extends Collection<U>, U> {
      * @param values The values to instantiate the list with.
      * @return A newly instantiated collection containing the values passed in.
      */
-    T instance(List<U> values);
+    T instance(List<? extends U> values);
 
 }

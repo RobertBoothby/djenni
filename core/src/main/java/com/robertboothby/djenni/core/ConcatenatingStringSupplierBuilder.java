@@ -6,6 +6,7 @@ import com.robertboothby.djenni.sugar.And;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,17 @@ public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<Strin
      */
     public static ConcatenatingStringSupplierBuilder supplierOfConcatenatedValues() {
         return new ConcatenatingStringSupplierBuilder();
+    }
+
+    /**
+     * Get an instance of this supplier configured using this builder.
+     * @param configuration the configuration to use.
+     * @return an instance of the builder.
+     */
+    public static StreamableSupplier<String> supplierOfConcatenatedValues(Consumer<ConcatenatingStringSupplierBuilder> configuration) {
+        ConcatenatingStringSupplierBuilder builder = supplierOfConcatenatedValues();
+        configuration.accept(builder);
+        return builder.build();
     }
 
     /**
@@ -83,7 +95,7 @@ public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<Strin
     }
 
     @Override
-    public Supplier<String> build() {
+    public StreamableSupplier<String> build() {
         //Take a copy of the list so that it won't be mutated.
         List<Supplier<?>> generators = new ArrayList<>(this.suppliers);
         return () -> generators.stream().map(Supplier::get).map(Object::toString).collect(Collectors.joining());

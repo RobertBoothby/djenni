@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.SupplierHelper;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
@@ -27,7 +28,7 @@ public class LongSupplierBuilder implements SupplierBuilder<Long> {
     private long maxExclusiveValue = MAX_EXCLUSIVE_VALUE_DEFAULT;
     private Distribution<Long, Long> distribution = DISTRIBUTION_DEFAULT;
 
-    public Supplier<Long> build() {
+    public StreamableSupplier<Long> build() {
         if(maxExclusiveValue - minInclusiveValue == 1){
             return SupplierHelper.fix(minInclusiveValue);
         } else {

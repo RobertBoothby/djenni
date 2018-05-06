@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.common;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.util.Scanner;
 import java.util.Spliterator;
@@ -37,7 +38,7 @@ public class NameSupplierBuilder implements SupplierBuilder<Name> {
     private String[] givenNames = DEFAULT_GIVEN_NAMES;
 
     @Override
-    public Supplier<Name> build() {
+    public StreamableSupplier<Name> build() {
         return derived(Name::new, fromValues(givenNames), fromValues(familyNames));
     }
 

@@ -9,7 +9,21 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TransferQueue;
 
+/**
+ * This class contains static factory methods for creating CollectionTypes for all collections in the java.util.concurrent
+ * package.
+ */
 public class ConcurrentCollectionTypes {
 
     /**
@@ -36,6 +50,19 @@ public class ConcurrentCollectionTypes {
     @SuppressWarnings("unchecked")
     public static <T extends BlockingQueue<U>, U> CollectionType<BlockingQueue<U>, U> asBlockingQueue(CollectionType<T,U> underlying){
         return (CollectionType<BlockingQueue<U>, U>) underlying;
+    }
+
+    /**
+     * Create a CollectionTypeInstance for TransferQueue based on an underlying CollectionType that is an implementation
+     * of TransferQueue.
+     * @param underlying The underlying TransferQueue based CollectionType.
+     * @param <T> The type of the underlying TransferQueue implementation.
+     * @param <U> The type of the values to be carried in the TransferQueue.
+     * @return A CollectionType instance for TransferQueue that will actually be the underlying CollectionType.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends TransferQueue<U>, U> CollectionType<TransferQueue<U>, U> asTransferQueue(CollectionType<T,U> underlying){
+        return (CollectionType<TransferQueue<U>, U>) underlying;
     }
 
     /**
@@ -138,7 +165,7 @@ public class ConcurrentCollectionTypes {
     }
 
     /**
-     * Create a CollectionType instance for ConcurrentLinkedDeque. The order of values in an ConcurrentLinkedDeque created
+     * Create a CollectionType instance for ConcurrentLinkedDeque. The order of values in a ConcurrentLinkedDeque created
      * using it will reflect their order in the input value list.
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentLinkedDeque from the passed in values.
@@ -148,7 +175,7 @@ public class ConcurrentCollectionTypes {
     }
 
     /**
-     * Create a CollectionType instance for ConcurrentLinkedDeque. The order of values in an ConcurrentLinkedDeque created
+     * Create a CollectionType instance for ConcurrentLinkedDeque. The order of values in a ConcurrentLinkedDeque created
      * using it will reflect their order in the input value list.
      * @param tClass The class of the values in the collections created.
      * @param <T> The type of the values in the collections created.
@@ -159,7 +186,7 @@ public class ConcurrentCollectionTypes {
     }
 
     /**
-     * Create a CollectionType instance for ConcurrentLinkedQueue. The order of values in an ConcurrentLinkedQueue created
+     * Create a CollectionType instance for ConcurrentLinkedQueue. The order of values in a ConcurrentLinkedQueue created
      * using it will reflect their order in the input value list.
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentLinkedQueue from the passed in values.
@@ -169,7 +196,7 @@ public class ConcurrentCollectionTypes {
     }
 
     /**
-     * Create a CollectionType instance for ConcurrentLinkedQueue. The order of values in an ConcurrentLinkedQueue created
+     * Create a CollectionType instance for ConcurrentLinkedQueue. The order of values in a ConcurrentLinkedQueue created
      * using it will reflect their order in the input value list.
      * @param tClass The class of the values in the collections created.
      * @param <T> The type of the values in the collections created.
@@ -205,10 +232,274 @@ public class ConcurrentCollectionTypes {
      * @return A CollectionType instance that will create an ConcurrentSkipListSet from the passed in values.
      * @todo think about comparators of super types.
      */
-    public static <T extends Comparable> CollectionType<ConcurrentSkipListSet<T>, T> concurrentSkipListSet(Comparator<T> comparator){
+    public static <T> CollectionType<ConcurrentSkipListSet<T>, T> concurrentSkipListSet(Comparator<T> comparator){
         return values -> new ConcurrentSkipListSet<>(comparator);
     }
 
+    /**
+     * Create a CollectionType instance for CopyOnWriteArrayList. The order of values in a CopyOnWriteArrayList created
+     *      * using it will reflect their order in the input value list.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an CopyOnWriteArrayList from the passed in values.
+     */
+    public static <T> CollectionType<CopyOnWriteArrayList<T>, T> copyOnWriteArrayList(){
+        return CopyOnWriteArrayList::new;
+    }
 
+    /**
+     * Create a CollectionType instance for CopyOnWriteArrayList. The order of values in a CopyOnWriteArrayList created
+     * using it will reflect their order in the input value list.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an CopyOnWriteArrayList from the passed in values.
+     */
+    public static <T> CollectionType<CopyOnWriteArrayList<T>, T> copyOnWriteArrayList(Class<T> tClass){
+        return CopyOnWriteArrayList::new;
+    }
 
+    /**
+     * Create a CollectionType instance for CopyOnWriteArraySet.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an CopyOnWriteArraySet from the passed in values.
+     */
+    public static <T> CollectionType<CopyOnWriteArraySet<T>, T> copyOnWriteArraySet(){
+        return CopyOnWriteArraySet::new;
+    }
+
+    /**
+     * Create a CollectionType instance for CopyOnWriteArraySet.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an CopyOnWriteArraySet from the passed in values.
+     */
+    public static <T> CollectionType<CopyOnWriteArraySet<T>, T> copyOnWriteArraySet(Class<T> tClass){
+        return CopyOnWriteArraySet::new;
+    }
+
+    /**
+     * Create a CollectionType instance for DelayQueue. The order of values in a DelayQueue created
+     * using it will reflect their order in the input value list.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an DelayQueue from the passed in values.
+     */
+    public static <T extends Delayed> CollectionType<DelayQueue<T>, T> delayQueue(){
+        return DelayQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for DelayQueue. The order of values in a DelayQueue created
+     * using it will reflect their order in the input value list.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an DelayQueue from the passed in values.
+     */
+    public static <T extends Delayed> CollectionType<DelayQueue<T>, T> delayQueue(Class<T> tClass){
+        return DelayQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingDeque. The order of values in a LinkedBlockingDeque created
+     * using it will reflect their order in the input value list.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(){
+        return LinkedBlockingDeque::new;
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingDeque. The order of values in a LinkedBlockingDeque created
+     * using it will reflect their order in the input value list.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(Class<T> tClass){
+        return LinkedBlockingDeque::new;
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingDeque. The order of values in a LinkedBlockingDeque created
+     * using it will reflect their order in the input value list.
+     * @param capacity The capacity of the LinkedBlockingDeque to create.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(int capacity){
+        return values -> {
+            LinkedBlockingDeque<T> blockingDeque = new LinkedBlockingDeque<>(capacity);
+            blockingDeque.addAll(values);
+            return blockingDeque;
+        };
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingDeque. The order of values in a LinkedBlockingDeque created
+     * using it will reflect their order in the input value list.
+     * @param capacity The capacity of the LinkedBlockingDeque to create.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(int capacity, Class<T> tClass){
+        return linkedBlockingDeque(capacity);
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingQueue. The order of values in a LinkedBlockingQueue created
+     * using it will reflect their order in the input value list.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a LinkedBlockingQueue from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(){
+        return LinkedBlockingQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingQueue. The order of values in a LinkedBlockingQueue created
+     * using it will reflect their order in the input value list.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a LinkedBlockingQueue from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(Class<T> tClass){
+        return LinkedBlockingQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingQueue. The order of values in a LinkedBlockingQueue created
+     * using it will reflect their order in the input value list.
+     * @param capacity The capacity of the LinkedBlockingQueue to create.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an LinkedBlockingQueue from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(int capacity){
+        return values -> {
+            LinkedBlockingQueue<T> blockingQueue = new LinkedBlockingQueue<>(capacity);
+            blockingQueue.addAll(values);
+            return blockingQueue;
+        };
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedBlockingQueue. The order of values in a LinkedBlockingQueue created
+     * using it will reflect their order in the input value list.
+     * @param capacity The capacity of the LinkedBlockingQueue to create.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an LinkedBlockingQueue from the passed in values.
+     */
+    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(int capacity, Class<T> tClass){
+        return linkedBlockingQueue(capacity);
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedTransferQueue. The order of values in a LinkedTransferQueue created
+     * using it will reflect their order in the input value list.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a LinkedTransferQueue from the passed in values.
+     */
+    public static <T> CollectionType<LinkedTransferQueue<T>, T> linkedTransferQueue(){
+        return LinkedTransferQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for LinkedTransferQueue. The order of values in a LinkedTransferQueue created
+     * using it will reflect their order in the input value list.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a LinkedTransferQueue from the passed in values.
+     */
+    public static <T> CollectionType<LinkedTransferQueue<T>, T> linkedTransferQueue(Class<T> tClass){
+        return LinkedTransferQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for PriorityBlockingQueue. The order of values in a PriorityBlockingQueue created
+     *      * using it will reflect their order in the input value list and how their comparison further orders them.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a PriorityBlockingQueue from the passed in values.
+     */
+    public static <T extends Comparable> CollectionType<PriorityBlockingQueue<T>, T> priorityBlockingQueue(){
+        return PriorityBlockingQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for PriorityBlockingQueue. The order of values in a PriorityBlockingQueue created
+     *      * using it will reflect their order in the input value list and how their comparison further orders them.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a PriorityBlockingQueue from the passed in values.
+     */
+    public static <T extends Comparable> CollectionType<PriorityBlockingQueue<T>, T> priorityBlockingQueue(Class<T> tClass){
+        return PriorityBlockingQueue::new;
+    }
+
+    /**
+     * Create a CollectionType instance for PriorityBlockingQueue. The order of values in a PriorityBlockingQueue created
+     *      * using it will reflect their order in the input value list and how their comparison further orders them.
+     * @param comparator the comparator used in the PriorityBlockingQueue.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create an PriorityBlockingQueue from the passed in values.
+     * @todo think about comparators of super types.
+     */
+    public static <T> CollectionType<PriorityBlockingQueue<T>, T> priorityBlockingQueue(Comparator<T> comparator){
+        return values -> {
+            PriorityBlockingQueue<T> blockingQueue = new PriorityBlockingQueue<>(values.size(), comparator);
+            blockingQueue.addAll(values);
+            return blockingQueue;
+        };
+    }
+
+    /**
+     * Create a CollectionType instance for SynchronousQueue. The order of values in a SynchronousQueue created
+     * using it will reflect their order in the input value list.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
+     */
+    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(){
+        return values -> {
+            SynchronousQueue<T> queue = new SynchronousQueue<>();
+            queue.addAll(values);
+            return queue;
+        };
+    }
+
+    /**
+     * Create a CollectionType instance for SynchronousQueue. The order of values in a SynchronousQueue created
+     * using it will reflect their order in the input value list.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
+     */
+    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(Class<T> tClass){
+        return synchronousQueue();
+    }
+
+    /**
+     * Create a CollectionType instance for SynchronousQueue. The order of values in a SynchronousQueue created
+     * using it will reflect their order in the input value list.
+     * @param fair Whether the queue will be fair or not.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
+     */
+    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(boolean fair){
+        return values -> {
+            SynchronousQueue<T> queue = new SynchronousQueue<>(fair);
+            queue.addAll(values);
+            return queue;
+        };
+    }
+
+    /**
+     * Create a CollectionType instance for SynchronousQueue. The order of values in a SynchronousQueue created
+     * using it will reflect their order in the input value list.
+     * @param fair Whether the queue will be fair or not.
+     * @param tClass The class of the values in the collections created.
+     * @param <T> The type of the values in the collections created.
+     * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
+     */
+    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(boolean fair, Class<T> tClass){
+        return synchronousQueue(fair);
+    }
 }

@@ -1,7 +1,6 @@
 package com.robertboothby.djenni;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import com.robertboothby.djenni.core.StreamableSupplier;
 
 /**
  * A builder of object Suppliers, implementing the &apos;Builder&apos; pattern. Instances of this interface will usually
@@ -15,5 +14,5 @@ public interface SupplierBuilder<T> {
      * Build an instance of the generator based on the current configuration state.
      * @return an instance of the generator.
      */
-    public Supplier<T> build();
+    public StreamableSupplier<T> build();
 }

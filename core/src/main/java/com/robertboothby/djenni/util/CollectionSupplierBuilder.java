@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +31,7 @@ public class CollectionSupplierBuilder<T extends Collection<U>, U> implements Su
     }
 
     @Override
-    public Supplier<T> build() {
+    public StreamableSupplier<T> build() {
         return () -> collectionType.instance(contentSupplier.get());
     }
 

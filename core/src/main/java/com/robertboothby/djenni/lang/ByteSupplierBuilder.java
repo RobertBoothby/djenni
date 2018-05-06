@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
@@ -12,7 +13,7 @@ import java.util.function.Supplier;
 public class ByteSupplierBuilder implements SupplierBuilder<Byte> {
 
     @Override
-    public Supplier<Byte> build() {
+    public StreamableSupplier<Byte> build() {
         return () -> {
             byte[] single = new byte[1];
             ThreadLocalRandom.current().nextBytes(single);

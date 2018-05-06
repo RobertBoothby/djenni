@@ -15,6 +15,8 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 /**
+ * This class contains static factory methods for creating CollectionTypes for all collections in the java.util.concurrent
+ * package.
  * @todo Add static methods for the List, Set, SortedSet etc. interfaces.
  */
 public class CollectionTypes {
@@ -41,7 +43,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the ArrayList from the passed in values.
      */
-    public static <T> CollectionType<ArrayList<T>, T> arrayList(Class<T> clazz) {
+    public static <T> CollectionType<ArrayList<T>, T> arrayList(Class<? extends T> clazz) {
         return ArrayList::new;
     }
 
@@ -62,7 +64,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the ArrayDeque from the passed in values.
      */
-    public static <T> CollectionType<ArrayDeque<T>, T> arrayDeque(Class<T> clazz) {
+    public static <T> CollectionType<ArrayDeque<T>, T> arrayDeque(Class<? extends T> clazz) {
         return ArrayDeque::new;
     }
 
@@ -72,8 +74,9 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the EnumSet from the passed in values.
      */
+    @SuppressWarnings("unchecked")
     public static <T extends Enum<T>> CollectionType<EnumSet<T>, T> enumSet() {
-        return EnumSet::copyOf;
+        return values -> EnumSet.copyOf((Collection<T>)values);
     }
 
     /**
@@ -108,7 +111,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the HashSet from the passed in values.
      */
-    public static <T> CollectionType<HashSet<T>, T> hashSet(Class<T> clazz) {
+    public static <T> CollectionType<HashSet<T>, T> hashSet(Class<? extends T> clazz) {
         return HashSet::new;
     }
 
@@ -116,7 +119,7 @@ public class CollectionTypes {
         return LinkedHashSet::new;
     }
 
-    public static <T> CollectionType<LinkedHashSet<T>, T> linkedHashSet(Class<T> clazz) {
+    public static <T> CollectionType<LinkedHashSet<T>, T> linkedHashSet(Class<? extends T> clazz) {
         return LinkedHashSet::new;
     }
 
@@ -124,7 +127,7 @@ public class CollectionTypes {
         return LinkedList::new;
     }
 
-    public static <T> CollectionType<LinkedList<T>, T> linkedList(Class<T> clazz) {
+    public static <T> CollectionType<LinkedList<T>, T> linkedList(Class<? extends T> clazz) {
         return LinkedList::new;
     }
 
@@ -145,7 +148,7 @@ public class CollectionTypes {
      * @param <T> The type of object in the collection which needs to be comparable.
      * @return a CollectionType which can instantiate a PriorityQueue from a list of values.
      */
-    public static <T extends Comparable<T>> CollectionType<PriorityQueue<T>, T> priorityQueue(Class<T> clazz) {
+    public static <T extends Comparable<T>> CollectionType<PriorityQueue<T>, T> priorityQueue(Class<? extends T> clazz) {
         return PriorityQueue::new;
     }
 
@@ -165,7 +168,7 @@ public class CollectionTypes {
         };
     }
 
-    public static <T> CollectionType<Stack<T>, T> stack(Class<T> clazz) {
+    public static <T> CollectionType<Stack<T>, T> stack(Class<? extends T> clazz) {
         return values -> {
             Stack<T> stack = new Stack<>();
             values.forEach(stack::push);
@@ -177,7 +180,7 @@ public class CollectionTypes {
         return TreeSet::new;
     }
 
-    public static <T extends Comparable<T>> CollectionType<TreeSet<T>, T> treeSet(Class<T> clazz) {
+    public static <T extends Comparable<T>> CollectionType<TreeSet<T>, T> treeSet(Class<? extends T> clazz) {
         return TreeSet::new;
     }
 
@@ -193,7 +196,7 @@ public class CollectionTypes {
         return Vector::new;
     }
 
-    public static <T> CollectionType<Vector<T>, T> vector(Class<T> clazz) {
+    public static <T> CollectionType<Vector<T>, T> vector(Class<? extends T> clazz) {
         return Vector::new;
     }
 }
