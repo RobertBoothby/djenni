@@ -82,7 +82,7 @@ public class IntegerSupplierBuilder implements SupplierBuilder<Integer> {
      * @param configuration The configuration to use.
      * @return The configured Supplier, ready to use.
      */
-    public static Supplier<Integer> integerSupplier(Consumer<IntegerSupplierBuilder> configuration){
+    public static StreamableSupplier<Integer> integerSupplier(Consumer<IntegerSupplierBuilder> configuration){
         IntegerSupplierBuilder builder = new IntegerSupplierBuilder();
         configuration.accept(builder);
         return builder.build();

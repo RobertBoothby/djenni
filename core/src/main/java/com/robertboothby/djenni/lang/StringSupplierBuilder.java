@@ -11,7 +11,6 @@ import com.robertboothby.djenni.sugar.And;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.robertboothby.djenni.core.SupplierHelper.stream;
 import static com.robertboothby.djenni.lang.CharacterSupplierBuilder.characterSupplier;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSupplier;
 
@@ -39,19 +38,19 @@ public class StringSupplierBuilder implements SupplierBuilder<String>, Character
     private Distribution<Integer, Integer> characterSelectionDistribution = DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
 
     public StreamableSupplier<String> build() {
-        Supplier<Integer> integerSupplier = integerSupplier(
+        Supplier<Integer> lengths = integerSupplier(
                 builder -> builder
                         .between(minimumLength)
                         .and(maximumLength)
                         .withDistribution(lengthDistribution)
         );
 
-        Supplier<Character> characterSupplier = characterSupplier(
+        StreamableSupplier<Character> characters = characterSupplier(
                 builder -> builder
                         .withCharacters(availableCharacters)
                         .withDistribution(characterSelectionDistribution)
         );
-        return () -> stream(characterSupplier, integerSupplier.get())
+        return () -> characters.stream(lengths.get())
                 .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
     }
 
@@ -184,7 +183,7 @@ public class StringSupplierBuilder implements SupplierBuilder<String>, Character
         return new StringSupplierBuilder();
     }
 
-    public static Supplier<String> arbitraryString(Consumer<StringSupplierBuilder> configuration) {
+    public static StreamableSupplier<String> arbitraryString(Consumer<StringSupplierBuilder> configuration) {
         StringSupplierBuilder builder = new StringSupplierBuilder();
         configuration.accept(builder);
         return builder.build();

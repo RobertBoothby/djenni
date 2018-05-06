@@ -63,7 +63,7 @@ public class CharacterSupplierBuilder implements SupplierBuilder<Character>, Cha
         return new CharacterSupplierBuilder();
     }
 
-    public static Supplier<Character> characterSupplier(Consumer<CharacterSupplierBuilder> consumer){
+    public static StreamableSupplier<Character> characterSupplier(Consumer<CharacterSupplierBuilder> consumer){
         CharacterSupplierBuilder builder = new CharacterSupplierBuilder();
         consumer.accept(builder);
         return builder.build();
