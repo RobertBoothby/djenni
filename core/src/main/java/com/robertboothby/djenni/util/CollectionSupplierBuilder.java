@@ -17,10 +17,10 @@ import java.util.function.Supplier;
  * @param <T> The type of the Collection.
  * @param <U> The type of the values to be held in the collection.
  */
-public class CollectionSupplierBuilder<T extends Collection<U>, U> implements SupplierBuilder<T> {
+public class CollectionSupplierBuilder<T extends Collection<? extends U>, U> implements SupplierBuilder<T> {
 
     private final CollectionType<T, U> collectionType;
-    private Supplier<? extends List<U>> contentSupplier;
+    private Supplier<? extends List<? extends U>> contentSupplier;
 
     /**
      * Create an instance of the builder for the given collection type.
@@ -40,7 +40,7 @@ public class CollectionSupplierBuilder<T extends Collection<U>, U> implements Su
      * @param contentSupplier the content supplier.
      * @return The builder for further configuration.
      */
-    public CollectionSupplierBuilder<T, U> withContent(Supplier<? extends List<U>> contentSupplier) {
+    public CollectionSupplierBuilder<T, U> withContent(Supplier<? extends List<? extends U>> contentSupplier) {
         this.contentSupplier = contentSupplier;
         return this;
     }
@@ -50,7 +50,7 @@ public class CollectionSupplierBuilder<T extends Collection<U>, U> implements Su
      * @param contentSupplierBuilder a content supplier builder that will immediately be built.
      * @return The builder for further configuration.
      */
-    public CollectionSupplierBuilder<T, U> withContent(SupplierBuilder<? extends List<U>> contentSupplierBuilder) {
+    public CollectionSupplierBuilder<T, U> withContent(SupplierBuilder<? extends List<? extends U>> contentSupplierBuilder) {
         this.contentSupplier = contentSupplierBuilder.build();
         return this;
     }
@@ -66,7 +66,7 @@ public class CollectionSupplierBuilder<T extends Collection<U>, U> implements Su
      * @param <U> The type of the values to be held in the collection.
      * @return a configured collection builder.
      */
-    public static <T extends Collection<U>, U> CollectionSupplierBuilder<T, U> collection(CollectionType<T, U> collectionType) {
+    public static <T extends Collection<? extends U>, U> CollectionSupplierBuilder<T, U> collection(CollectionType<T, U> collectionType) {
         return new CollectionSupplierBuilder<>(collectionType);
     }
 

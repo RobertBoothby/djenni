@@ -171,6 +171,7 @@ public class SupplierHelper {
      * @param <T> The type of value to be supplied.
      * @return A supplier that randomly picks one of the suppliers to create the value.
      */
+    @SafeVarargs
     public static <T> StreamableSupplier<T> fromRandomSuppliers(Supplier<T> ... suppliers){
         return fromRandomSuppliers(integerSupplier($ -> $.between(0).and(suppliers.length)), suppliers);
     }
@@ -182,6 +183,7 @@ public class SupplierHelper {
      * @param <T> The type of value to be supplied.
      * @return A supplier that randomly picks one of the suppliers to create the value.
      */
+    @SafeVarargs
     public static <T> StreamableSupplier<T> fromRandomSuppliers(Supplier<Integer> positionSupplier, Supplier<T> ... suppliers) {
         return () -> suppliers[positionSupplier.get()].get();
     }
@@ -201,5 +203,19 @@ public class SupplierHelper {
             peeker.accept(value);
             return value;
         };
+    }
+
+    /**
+     * Turn a Supplier into a StreamableSupplier either by casting or by creating a StreamableSupplier instance.
+     * @param supplier the Supplier to use.
+     * @param <T> The type of values to be supplied.
+     * @return A StreamableSupplier derived from the passed in supplier.
+     */
+    public static <T> StreamableSupplier<T> asStreamable(Supplier<T> supplier){
+        if(supplier instanceof StreamableSupplier){ //Cast it.
+            return (StreamableSupplier<T>) supplier;
+        } else { //Make is a Streamable.
+            return supplier::get;
+        }
     }
 }

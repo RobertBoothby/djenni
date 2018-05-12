@@ -3,10 +3,13 @@ package com.robertboothby.djenni.util;
 import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.WeakHashMap;
 
 public class MapTypes {
 
@@ -45,7 +48,15 @@ public class MapTypes {
     }
 
     public static <K, V> MapType<HashMap<K,V>, K, V> hashMap() {
-        return HashMap::new;
+        return m -> new HashMap<>(m);
+    }
+
+    public static <K, V> MapType<IdentityHashMap<K, V>, K, V> identityHashMap() {
+        return m -> new IdentityHashMap<>(m);
+    }
+
+    public static <K, V> MapType<LinkedHashMap<K, V>, K, V> linkedHashMap() {
+        return m -> new LinkedHashMap<>(m);
     }
 
     public static <K,V> MapType<TreeMap<K,V>, K, V> treeMap() {
@@ -64,6 +75,10 @@ public class MapTypes {
             treeMap.putAll(map);
             return treeMap;
         };
+    }
+
+    public static <K, V> MapType<WeakHashMap<K, V>, K, V> weakHashMap() {
+        return m -> new WeakHashMap<>(m);
     }
 
 }

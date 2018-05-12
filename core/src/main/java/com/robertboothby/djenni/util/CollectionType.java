@@ -13,7 +13,7 @@ import java.util.List;
  * @param <T> The type of the Collection being represented.
  * @param <U> The type of the values contained in the collection.
  */
-public interface CollectionType<T extends Collection<U>, U> {
+public interface CollectionType<T extends Collection<? extends U>, U> {
 
     /**
      * Implementations of this interface will instantiate a the relevant collection type based on the values in the
