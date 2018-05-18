@@ -196,6 +196,7 @@ public class SupplierHelper {
      * @param peeker The consumer that will peek at the values created by the wrapped supplier
      * @param <T> The type of the values being supplied.
      * @return A supplier that will allow peeking at the values.
+     * TODO work out how to do a linked, thread safe consumer.
      */
     public static <T> StreamableSupplier<T> peek(Supplier<T> supplier, Consumer<T> peeker) {
         return () -> {
@@ -218,4 +219,16 @@ public class SupplierHelper {
             return supplier::get;
         }
     }
+
+    /**
+     * Get an instance of a Supplier that uses an instance of an underlying supplier per thread. This is used to make
+     * a non-thread safe supplier thread safe.
+     * @param instanceSupplier The supplier of suppliers used to instantiate the Thread Local... I loved typing that!
+     * @param <T> The type of the values to be returned.
+     * @return A configured, thread safe supplier.
+     */
+    public static <T> ThreadLocalSupplier<T> threadLocal(Supplier<Supplier<T>> instanceSupplier){
+        return new ThreadLocalSupplier<>(instanceSupplier);
+    }
+
 }

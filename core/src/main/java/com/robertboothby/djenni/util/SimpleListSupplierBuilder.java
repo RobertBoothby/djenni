@@ -16,7 +16,7 @@ import static java.util.stream.Collectors.toList;
 public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
 
     private Range<SimpleListSupplierBuilder<T>, Integer> range = Range.inclusive(this);
-    private Supplier<T> entries;
+    private Supplier<? extends T> entries;
 
     @Override
     public StreamableSupplier<List<T>> build() {
@@ -29,20 +29,24 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
         return () -> stream(entries, sizes.get()).collect(toList());
     }
 
-    public SimpleListSupplierBuilder<T> withEntries(Supplier<T> entries) {
+    public SimpleListSupplierBuilder<T> withEntries(Supplier<? extends T> entries) {
         this.entries = entries;
         return this;
     }
 
-    public SimpleListSupplierBuilder<T> withEntries(SupplierBuilder<T> entriesBuilder) {
+    public SimpleListSupplierBuilder<T> withEntries(SupplierBuilder<? extends T> entriesBuilder) {
         this.entries = entriesBuilder.build();
         return this;
     }
 
-    public static <T> SimpleListSupplierBuilder<T> simpleList(Consumer<SimpleListSupplierBuilder<T>> configuration) {
-        SimpleListSupplierBuilder<T> builder = new SimpleListSupplierBuilder<>();
+    public static <T> StreamableSupplier<List<T>> simpleList(Consumer<SimpleListSupplierBuilder<T>> configuration) {
+        SimpleListSupplierBuilder<T> builder = simpleList();
         configuration.accept(builder);
-        return builder;
+        return builder.build();
+    }
+
+    public static <T> SimpleListSupplierBuilder<T> simpleList() {
+        return new SimpleListSupplierBuilder<>();
     }
 
     public And<SimpleListSupplierBuilder<T>, Integer> withSizeBetween(int value) {

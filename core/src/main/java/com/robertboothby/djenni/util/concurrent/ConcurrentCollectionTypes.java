@@ -72,7 +72,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ArrayBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<ArrayBlockingQueue<T>, T> arrayBlockingQueue(){
+    public static <T> CollectionType<ArrayBlockingQueue<? extends T>, T> arrayBlockingQueue(){
         return values -> {
             ArrayBlockingQueue<T> queue = new ArrayBlockingQueue<>(values.size());
             queue.addAll(values);
@@ -88,7 +88,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ArrayBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<ArrayBlockingQueue<T>, T> arrayBlockingQueue(Class<T> tClass){
+    public static <T> CollectionType<ArrayBlockingQueue<? extends T>, T> arrayBlockingQueue(Class<T> tClass){
         return arrayBlockingQueue();
     }
 
@@ -102,7 +102,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ArrayBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<ArrayBlockingQueue<T>, T> arrayBlockingQueue(int capacity){
+    public static <T> CollectionType<ArrayBlockingQueue<? extends T>, T> arrayBlockingQueue(int capacity){
         return values -> {
             if(values.size() > capacity){
                 throw new IllegalArgumentException("The number of values being used to create the ArrayBlockingQueue was greater than its capacity");
@@ -124,7 +124,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ArrayBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<ArrayBlockingQueue<T>, T> arrayBlockingQueue(int capacity, Class<T> tClass){
+    public static <T> CollectionType<ArrayBlockingQueue<? extends T>, T> arrayBlockingQueue(int capacity, Class<T> tClass){
         return arrayBlockingQueue(capacity);
     }
 
@@ -139,7 +139,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ArrayBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<ArrayBlockingQueue<T>, T> arrayBlockingQueue(int capacity, boolean fair){
+    public static <T> CollectionType<ArrayBlockingQueue<? extends T>, T> arrayBlockingQueue(int capacity, boolean fair){
         return values -> {
             if(values.size() > capacity){
                 throw new IllegalArgumentException("The number of values being used to create the ArrayBlockingQueue was greater than its capacity");
@@ -160,7 +160,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ArrayBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<ArrayBlockingQueue<T>, T> arrayBlockingQueue(int capacity, boolean fair, Class<T> tClass){
+    public static <T> CollectionType<ArrayBlockingQueue<? extends T>, T> arrayBlockingQueue(int capacity, boolean fair, Class<T> tClass){
         return arrayBlockingQueue(capacity, fair);
     }
 
@@ -170,7 +170,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentLinkedDeque from the passed in values.
      */
-    public static <T> CollectionType<ConcurrentLinkedDeque<T>, T> concurrentLinkedDeque(){
+    public static <T> CollectionType<ConcurrentLinkedDeque<? extends T>, T> concurrentLinkedDeque(){
         return ConcurrentLinkedDeque::new;
     }
 
@@ -181,7 +181,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentLinkedDeque from the passed in values.
      */
-    public static <T> CollectionType<ConcurrentLinkedDeque<T>, T> concurrentLinkedDeque(Class<T> tClass){
+    public static <T> CollectionType<ConcurrentLinkedDeque<? extends T>, T> concurrentLinkedDeque(Class<T> tClass){
         return ConcurrentLinkedDeque::new;
     }
 
@@ -191,7 +191,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentLinkedQueue from the passed in values.
      */
-    public static <T> CollectionType<ConcurrentLinkedQueue<T>, T> concurrentLinkedQueue(){
+    public static <T> CollectionType<ConcurrentLinkedQueue<? extends T>, T> concurrentLinkedQueue(){
         return ConcurrentLinkedQueue::new;
     }
 
@@ -202,7 +202,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentLinkedQueue from the passed in values.
      */
-    public static <T> CollectionType<ConcurrentLinkedQueue<T>, T> concurrentLinkedQueue(Class<T> tClass){
+    public static <T> CollectionType<ConcurrentLinkedQueue<? extends T>, T> concurrentLinkedQueue(Class<T> tClass){
         return ConcurrentLinkedQueue::new;
     }
 
@@ -211,7 +211,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentSkipListSet from the passed in values.
      */
-    public static <T extends Comparable> CollectionType<ConcurrentSkipListSet<T>, T> concurrentSkipListSet(){
+    public static <T extends Comparable> CollectionType<ConcurrentSkipListSet<? extends T>, T> concurrentSkipListSet(){
         return ConcurrentSkipListSet::new;
     }
 
@@ -221,7 +221,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentSkipListSet from the passed in values.
      */
-    public static <T extends Comparable> CollectionType<ConcurrentSkipListSet<T>, T> concurrentSkipListSet(Class<T> tClass){
+    public static <T extends Comparable> CollectionType<ConcurrentSkipListSet<? extends T>, T> concurrentSkipListSet(Class<T> tClass){
         return ConcurrentSkipListSet::new;
     }
 
@@ -232,7 +232,7 @@ public class ConcurrentCollectionTypes {
      * @return A CollectionType instance that will create an ConcurrentSkipListSet from the passed in values.
      * @todo think about comparators of super types.
      */
-    public static <T> CollectionType<ConcurrentSkipListSet<T>, T> concurrentSkipListSet(Comparator<T> comparator){
+    public static <T> CollectionType<ConcurrentSkipListSet<? extends T>, T> concurrentSkipListSet(Comparator<T> comparator){
         return values -> new ConcurrentSkipListSet<>(comparator);
     }
 
@@ -242,7 +242,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an CopyOnWriteArrayList from the passed in values.
      */
-    public static <T> CollectionType<CopyOnWriteArrayList<T>, T> copyOnWriteArrayList(){
+    public static <T> CollectionType<CopyOnWriteArrayList<? extends T>, T> copyOnWriteArrayList(){
         return CopyOnWriteArrayList::new;
     }
 
@@ -253,7 +253,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an CopyOnWriteArrayList from the passed in values.
      */
-    public static <T> CollectionType<CopyOnWriteArrayList<T>, T> copyOnWriteArrayList(Class<T> tClass){
+    public static <T> CollectionType<CopyOnWriteArrayList<? extends T>, T> copyOnWriteArrayList(Class<T> tClass){
         return CopyOnWriteArrayList::new;
     }
 
@@ -262,7 +262,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an CopyOnWriteArraySet from the passed in values.
      */
-    public static <T> CollectionType<CopyOnWriteArraySet<T>, T> copyOnWriteArraySet(){
+    public static <T> CollectionType<CopyOnWriteArraySet<? extends T>, T> copyOnWriteArraySet(){
         return CopyOnWriteArraySet::new;
     }
 
@@ -272,7 +272,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an CopyOnWriteArraySet from the passed in values.
      */
-    public static <T> CollectionType<CopyOnWriteArraySet<T>, T> copyOnWriteArraySet(Class<T> tClass){
+    public static <T> CollectionType<CopyOnWriteArraySet<? extends T>, T> copyOnWriteArraySet(Class<T> tClass){
         return CopyOnWriteArraySet::new;
     }
 
@@ -282,7 +282,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an DelayQueue from the passed in values.
      */
-    public static <T extends Delayed> CollectionType<DelayQueue<T>, T> delayQueue(){
+    public static <T extends Delayed> CollectionType<DelayQueue<? extends T>, T> delayQueue(){
         return DelayQueue::new;
     }
 
@@ -293,7 +293,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an DelayQueue from the passed in values.
      */
-    public static <T extends Delayed> CollectionType<DelayQueue<T>, T> delayQueue(Class<T> tClass){
+    public static <T extends Delayed> CollectionType<DelayQueue<? extends T>, T> delayQueue(Class<T> tClass){
         return DelayQueue::new;
     }
 
@@ -303,7 +303,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(){
+    public static <T> CollectionType<LinkedBlockingDeque<? extends T>, T> linkedBlockingDeque(){
         return LinkedBlockingDeque::new;
     }
 
@@ -314,7 +314,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(Class<T> tClass){
+    public static <T> CollectionType<LinkedBlockingDeque<? extends T>, T> linkedBlockingDeque(Class<T> tClass){
         return LinkedBlockingDeque::new;
     }
 
@@ -325,7 +325,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(int capacity){
+    public static <T> CollectionType<LinkedBlockingDeque<? extends T>, T> linkedBlockingDeque(int capacity){
         return values -> {
             LinkedBlockingDeque<T> blockingDeque = new LinkedBlockingDeque<>(capacity);
             blockingDeque.addAll(values);
@@ -341,7 +341,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an LinkedBlockingDeque from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingDeque<T>, T> linkedBlockingDeque(int capacity, Class<T> tClass){
+    public static <T> CollectionType<LinkedBlockingDeque<? extends T>, T> linkedBlockingDeque(int capacity, Class<T> tClass){
         return linkedBlockingDeque(capacity);
     }
 
@@ -351,7 +351,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a LinkedBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(){
+    public static <T> CollectionType<LinkedBlockingQueue<? extends T>, T> linkedBlockingQueue(){
         return LinkedBlockingQueue::new;
     }
 
@@ -362,7 +362,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a LinkedBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(Class<T> tClass){
+    public static <T> CollectionType<LinkedBlockingQueue<? extends T>, T> linkedBlockingQueue(Class<T> tClass){
         return LinkedBlockingQueue::new;
     }
 
@@ -373,7 +373,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an LinkedBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(int capacity){
+    public static <T> CollectionType<LinkedBlockingQueue<? extends T>, T> linkedBlockingQueue(int capacity){
         return values -> {
             LinkedBlockingQueue<T> blockingQueue = new LinkedBlockingQueue<>(capacity);
             blockingQueue.addAll(values);
@@ -389,7 +389,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an LinkedBlockingQueue from the passed in values.
      */
-    public static <T> CollectionType<LinkedBlockingQueue<T>, T> linkedBlockingQueue(int capacity, Class<T> tClass){
+    public static <T> CollectionType<LinkedBlockingQueue<? extends T>, T> linkedBlockingQueue(int capacity, Class<T> tClass){
         return linkedBlockingQueue(capacity);
     }
 
@@ -399,7 +399,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a LinkedTransferQueue from the passed in values.
      */
-    public static <T> CollectionType<LinkedTransferQueue<T>, T> linkedTransferQueue(){
+    public static <T> CollectionType<LinkedTransferQueue<? extends T>, T> linkedTransferQueue(){
         return LinkedTransferQueue::new;
     }
 
@@ -410,7 +410,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a LinkedTransferQueue from the passed in values.
      */
-    public static <T> CollectionType<LinkedTransferQueue<T>, T> linkedTransferQueue(Class<T> tClass){
+    public static <T> CollectionType<LinkedTransferQueue<? extends T>, T> linkedTransferQueue(Class<T> tClass){
         return LinkedTransferQueue::new;
     }
 
@@ -420,7 +420,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a PriorityBlockingQueue from the passed in values.
      */
-    public static <T extends Comparable> CollectionType<PriorityBlockingQueue<T>, T> priorityBlockingQueue(){
+    public static <T extends Comparable> CollectionType<PriorityBlockingQueue<? extends T>, T> priorityBlockingQueue(){
         return PriorityBlockingQueue::new;
     }
 
@@ -431,7 +431,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a PriorityBlockingQueue from the passed in values.
      */
-    public static <T extends Comparable> CollectionType<PriorityBlockingQueue<T>, T> priorityBlockingQueue(Class<T> tClass){
+    public static <T extends Comparable> CollectionType<PriorityBlockingQueue<? extends T>, T> priorityBlockingQueue(Class<T> tClass){
         return PriorityBlockingQueue::new;
     }
 
@@ -443,7 +443,7 @@ public class ConcurrentCollectionTypes {
      * @return A CollectionType instance that will create an PriorityBlockingQueue from the passed in values.
      * @todo think about comparators of super types.
      */
-    public static <T> CollectionType<PriorityBlockingQueue<T>, T> priorityBlockingQueue(Comparator<T> comparator){
+    public static <T> CollectionType<PriorityBlockingQueue<? extends T>, T> priorityBlockingQueue(Comparator<T> comparator){
         return values -> {
             PriorityBlockingQueue<T> blockingQueue = new PriorityBlockingQueue<>(values.size(), comparator);
             blockingQueue.addAll(values);
@@ -457,7 +457,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
      */
-    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(){
+    public static <T> CollectionType<SynchronousQueue<? extends T>, T> synchronousQueue(){
         return values -> {
             SynchronousQueue<T> queue = new SynchronousQueue<>();
             queue.addAll(values);
@@ -472,7 +472,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
      */
-    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(Class<T> tClass){
+    public static <T> CollectionType<SynchronousQueue<? extends T>, T> synchronousQueue(Class<T> tClass){
         return synchronousQueue();
     }
 
@@ -483,7 +483,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
      */
-    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(boolean fair){
+    public static <T> CollectionType<SynchronousQueue<? extends T>, T> synchronousQueue(boolean fair){
         return values -> {
             SynchronousQueue<T> queue = new SynchronousQueue<>(fair);
             queue.addAll(values);
@@ -499,7 +499,7 @@ public class ConcurrentCollectionTypes {
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create a SynchronousQueue from the passed in values.
      */
-    public static <T> CollectionType<SynchronousQueue<T>, T> synchronousQueue(boolean fair, Class<T> tClass){
+    public static <T> CollectionType<SynchronousQueue<? extends T>, T> synchronousQueue(boolean fair, Class<T> tClass){
         return synchronousQueue(fair);
     }
 }

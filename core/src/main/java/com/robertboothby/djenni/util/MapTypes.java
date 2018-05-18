@@ -28,13 +28,21 @@ public class MapTypes {
         return (MapType<SortedMap<K, V>, K, V>) underlying;
     }
 
+    /**
+     * Creates an EnumMap MapType. Use this method when you are certain that there will always be keys in the map at
+     * creation.
+     * @param <K> The type of the key which must be an enum.
+     * @param <V> The type of the value in the map.
+     * @return A MapType instance that will create maps of the desired type.
+     */
     @SuppressWarnings("unchecked")
     public static <K extends Enum<K>, V> MapType<EnumMap<K,V>, K, V> enumMap(){
-        return m -> new EnumMap<K, V>((EnumMap<K, ? extends V>)m);
+        return m -> new EnumMap<K, V>((Map<K, ? extends V>) m );
     }
 
     /**
-     * Use this method when you want to handle cases where there may be no entries in the map at creation.
+     * Creates an EnumMap MapType. Use this method when you want to handle cases where there may be no entries in the
+     * map at creation.
      * @param <K> The type of the key which must be an enum.
      * @param <V> The type of the value in the map.
      * @return A MapType instance that will create maps of the desired type.
@@ -47,6 +55,12 @@ public class MapTypes {
         };
     }
 
+    /**
+     * Creates a HashMap MapType.
+     * @param <K> The type of the map keys.
+     * @param <V> The type of the map values.
+     * @return A MapType instance that will create maps of the desired type.
+     */
     public static <K, V> MapType<HashMap<K,V>, K, V> hashMap() {
         return m -> new HashMap<>(m);
     }

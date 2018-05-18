@@ -4,12 +4,17 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.Stack;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -17,13 +22,42 @@ import java.util.Vector;
 /**
  * This class contains static factory methods for creating CollectionTypes for all collections in the java.util.concurrent
  * package.
- * @todo Add static methods for the List, Set, SortedSet etc. interfaces.
  */
 public class CollectionTypes {
 
     @SuppressWarnings("unchecked")
-    public static <T extends List<U>, U> CollectionType<List<U>, U> asList(CollectionType<T, U> underlying) {
-        return (CollectionType<List<U>, U>) underlying;
+    public static <T extends Collection<? extends U>, U> CollectionType<Collection<? extends U>, U> asCollection(CollectionType<T, U> underlying) {
+        return (CollectionType<Collection<? extends U>, U>) underlying;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Deque<? extends U>, U> CollectionType<Deque<? extends U>, U> asDeque(CollectionType<T, U> underlying) {
+        return (CollectionType<Deque<? extends U>, U>) underlying;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends List<? extends U>, U> CollectionType<List<? extends U>, U> asList(CollectionType<T, U> underlying) {
+        return (CollectionType<List<? extends U>, U>) underlying;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends NavigableSet<? extends U>, U> CollectionType<NavigableSet<? extends U>, U> asNavigableSet(CollectionType<T, U> underlying) {
+        return (CollectionType<NavigableSet<? extends U>, U>) underlying;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Queue<? extends U>, U> CollectionType<Queue<? extends U>, U> asQueue(CollectionType<T, U> underlying) {
+        return (CollectionType<Queue<? extends U>, U>) underlying;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Set<? extends U>, U> CollectionType<Set<? extends U>, U> asSet(CollectionType<T, U> underlying) {
+        return (CollectionType<Set<? extends U>, U>) underlying;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends SortedSet<? extends U>, U> CollectionType<SortedSet<? extends U>, U> asSortedSet(CollectionType<T, U> underlying) {
+        return (CollectionType<SortedSet<? extends U>, U>) underlying;
     }
 
     /**
@@ -32,7 +66,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the ArrayList from the passed in values.
      */
-    public static <T> CollectionType<ArrayList<T>, T> arrayList() {
+    public static <T> CollectionType<ArrayList<? extends T>, T> arrayList() {
         return ArrayList::new;
     }
 
@@ -43,7 +77,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the ArrayList from the passed in values.
      */
-    public static <T> CollectionType<ArrayList<T>, T> arrayList(Class<? extends T> clazz) {
+    public static <T> CollectionType<ArrayList<? extends T>, T> arrayList(Class<? extends T> clazz) {
         return ArrayList::new;
     }
 
@@ -53,7 +87,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the ArrayDeque from the passed in values.
      */
-    public static <T> CollectionType<ArrayDeque<T>, T> arrayDeque() {
+    public static <T> CollectionType<ArrayDeque<? extends T>, T> arrayDeque() {
         return ArrayDeque::new;
     }
 
@@ -64,7 +98,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the ArrayDeque from the passed in values.
      */
-    public static <T> CollectionType<ArrayDeque<T>, T> arrayDeque(Class<? extends T> clazz) {
+    public static <T> CollectionType<ArrayDeque<? extends T>, T> arrayDeque(Class<? extends T> clazz) {
         return ArrayDeque::new;
     }
 
@@ -100,7 +134,7 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the HashSet from the passed in values.
      */
-    public static <T> CollectionType<HashSet<T>, T> hashSet() {
+    public static <T> CollectionType<HashSet<? extends T>, T> hashSet() {
         return HashSet::new;
     }
 
@@ -111,23 +145,23 @@ public class CollectionTypes {
      * @param <T> The type of the values in the collections.
      * @return A CollectionType instance that will create the HashSet from the passed in values.
      */
-    public static <T> CollectionType<HashSet<T>, T> hashSet(Class<? extends T> clazz) {
+    public static <T> CollectionType<HashSet<? extends T>, T> hashSet(Class<? extends T> clazz) {
         return HashSet::new;
     }
 
-    public static <T> CollectionType<LinkedHashSet<T>, T> linkedHashSet() {
+    public static <T> CollectionType<LinkedHashSet<? extends T>, T> linkedHashSet() {
         return LinkedHashSet::new;
     }
 
-    public static <T> CollectionType<LinkedHashSet<T>, T> linkedHashSet(Class<? extends T> clazz) {
+    public static <T> CollectionType<LinkedHashSet<? extends T>, T> linkedHashSet(Class<? extends T> clazz) {
         return LinkedHashSet::new;
     }
 
-    public static <T> CollectionType<LinkedList<T>, T> linkedList() {
+    public static <T> CollectionType<LinkedList<? extends T>, T> linkedList() {
         return LinkedList::new;
     }
 
-    public static <T> CollectionType<LinkedList<T>, T> linkedList(Class<? extends T> clazz) {
+    public static <T> CollectionType<LinkedList<? extends T>, T> linkedList(Class<? extends T> clazz) {
         return LinkedList::new;
     }
 
@@ -137,7 +171,7 @@ public class CollectionTypes {
      * @param <T> The type of object in the collection which needs to be comparable.
      * @return a CollectionType which can instantiate a PriorityQueue from a list of values.
      */
-    public static <T extends Comparable<T>> CollectionType<PriorityQueue<T>, T> priorityQueue() {
+    public static <T extends Comparable<T>> CollectionType<PriorityQueue<? extends T>, T> priorityQueue() {
         return PriorityQueue::new;
     }
 
@@ -148,11 +182,11 @@ public class CollectionTypes {
      * @param <T> The type of object in the collection which needs to be comparable.
      * @return a CollectionType which can instantiate a PriorityQueue from a list of values.
      */
-    public static <T extends Comparable<T>> CollectionType<PriorityQueue<T>, T> priorityQueue(Class<? extends T> clazz) {
+    public static <T extends Comparable<T>> CollectionType<PriorityQueue<? extends T>, T> priorityQueue(Class<? extends T> clazz) {
         return PriorityQueue::new;
     }
 
-    public static <T, U extends Comparator<T>> CollectionType<PriorityQueue<T>, T> priorityQueue(U comparator) {
+    public static <T, U extends Comparator<T>> CollectionType<PriorityQueue<? extends T>, T> priorityQueue(U comparator) {
         return (values) -> {
            PriorityQueue<T> priorityQueue = new PriorityQueue<>(comparator);
            priorityQueue.addAll(values);
@@ -160,7 +194,7 @@ public class CollectionTypes {
         };
     }
 
-    public static <T> CollectionType<Stack<T>, T> stack() {
+    public static <T> CollectionType<Stack<? extends T>, T> stack() {
         return values -> {
             Stack<T> stack = new Stack<>();
             values.forEach(stack::push);
@@ -168,7 +202,7 @@ public class CollectionTypes {
         };
     }
 
-    public static <T> CollectionType<Stack<T>, T> stack(Class<? extends T> clazz) {
+    public static <T> CollectionType<Stack<? extends T>, T> stack(Class<? extends T> clazz) {
         return values -> {
             Stack<T> stack = new Stack<>();
             values.forEach(stack::push);
@@ -176,15 +210,15 @@ public class CollectionTypes {
         };
     }
 
-    public static <T extends Comparable<T>> CollectionType<TreeSet<T>, T> treeSet() {
+    public static <T extends Comparable<T>> CollectionType<TreeSet<? extends T>, T> treeSet() {
         return TreeSet::new;
     }
 
-    public static <T extends Comparable<T>> CollectionType<TreeSet<T>, T> treeSet(Class<? extends T> clazz) {
+    public static <T extends Comparable<T>> CollectionType<TreeSet<? extends T>, T> treeSet(Class<? extends T> clazz) {
         return TreeSet::new;
     }
 
-    public static <T, U extends Comparator<T>> CollectionType<TreeSet<T>, T> treeSet(U comparator) {
+    public static <T, U extends Comparator<T>> CollectionType<TreeSet<? extends T>, T> treeSet(U comparator) {
         return values -> {
             TreeSet<T> treeSet = new TreeSet<>(comparator);
             treeSet.addAll(values);
@@ -192,11 +226,11 @@ public class CollectionTypes {
         };
     }
 
-    public static <T> CollectionType<Vector<T>, T> vector() {
+    public static <T> CollectionType<Vector<? extends T>, T> vector() {
         return Vector::new;
     }
 
-    public static <T> CollectionType<Vector<T>, T> vector(Class<? extends T> clazz) {
+    public static <T> CollectionType<Vector<? extends T>, T> vector(Class<? extends T> clazz) {
         return Vector::new;
     }
 }

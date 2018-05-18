@@ -30,6 +30,4 @@ public class MapSupplierBuilder<M extends Map<? extends K, ? extends V>, K, V> i
         return this;
     }
 
-
-
 }
