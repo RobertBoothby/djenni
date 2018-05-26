@@ -10,11 +10,14 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static java.lang.String.join;
+import static java.util.stream.Collectors.toList;
+
 /**
  * This SupplierBuilder builds a Supplier that concatenates the {@link Object#toString()}} results of multiple other
  * Suppliers together to supply a String.
  */
-public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<String>, And<ConcatenatingStringSupplierBuilder, Supplier<?>> {
+public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<String> {
 
     private List<Supplier<?>> suppliers = new ArrayList<>();
 
@@ -38,16 +41,6 @@ public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<Strin
     }
 
     /**
-     * Add a supplier the the set of suppliers in the concatenation.
-     * @param value the value to add.
-     * @return the buider for further configuration.
-     */
-    public ConcatenatingStringSupplierBuilder with(Supplier<?> value) {
-        suppliers.add(value);
-        return this;
-    }
-
-    /**
      * Add the suppliers the the set of suppliers in the concatenation.
      * @param values the values to add.
      * @return the buider for further configuration.
@@ -58,39 +51,43 @@ public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<Strin
     }
 
     /**
-     * Add a generator the the set of suppliers in the concatenation.
-     * @param value the value to add.
-     * @return the buider for further configuration.
-     */
-    public ConcatenatingStringSupplierBuilder and(Supplier<?> value) {
-        return with(value);
-    }
-
-    /**
      * Add the suppliers the the set of suppliers in the concatenation.
      * @param values the values to add.
-     * @return the buider for further configuration.
+     * @return the builder for further configuration.
      */
     public ConcatenatingStringSupplierBuilder and(Supplier<?> ...  values) {
         return with(values);
     }
 
-    public ConcatenatingStringSupplierBuilder with(Supplier<?> start, Supplier<?> end, Supplier<?> separator, List<Supplier<?>> values) {
+    /**
+     * Adds the suppliers as a delimited list with starting and ending elements.
+     * @param start The supplier for values that go at the start of the list.
+     * @param end The supplier for values that go at the end of the list.
+     * @param delimiter The supplier for the delimiters.
+     * @param values The suppliers of values in the list.
+     * @return The builder for further configuration.
+     */
+    public ConcatenatingStringSupplierBuilder withList(Supplier<?> start, Supplier<?> end, Supplier<?> delimiter, Supplier<? extends List<?>> values) {
         suppliers.add(start);
-        with(separator, values);
+        withList(delimiter, values);
         suppliers.add(end);
         return this;
     }
 
-    public ConcatenatingStringSupplierBuilder with(Supplier<?> separator, List<Supplier<?>> suppliers) {
-        boolean notFirst = false;
-        for (Supplier<?> supplier : suppliers) {
-            if(notFirst){
-                suppliers.add(separator);
-                notFirst = true;
-            }
-            this.suppliers.add(supplier);
-        }
+    /**
+     * Adds the suppliers as a delimited list.
+     * @param delimiter The supplier for the delimiters.
+     * @param values The suppliers of values in the list.
+     * @return the builder for further configuration.
+     */
+    public ConcatenatingStringSupplierBuilder withList(Supplier<?> delimiter, Supplier<? extends List<?>> values) {
+        //Make a supplier that does the joining for us.
+        this.suppliers.add(
+                () -> join(
+                        delimiter.get().toString(),
+                        values.get().stream()
+                                .map(Object::toString)
+                                .collect(toList())));
         return this;
     }
 

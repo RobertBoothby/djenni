@@ -34,9 +34,4 @@ public class LastValueSupplier<T> implements StreamableSupplier<T> {
     public static <T> LastValueSupplier<T> lastValueSupplier(Supplier<T> nakedSource){
         return new LastValueSupplier<>(nakedSource);
     }
-
-    public static <T> LastValueSupplier<T> lastValueSupplier(SupplierBuilder<T> sourceBuilder){
-        return new LastValueSupplier<>(sourceBuilder.build());
-    }
-
 }

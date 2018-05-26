@@ -29,12 +29,12 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
         return () -> stream(entries, sizes.get()).collect(toList());
     }
 
-    public SimpleListSupplierBuilder<T> withEntries(Supplier<? extends T> entries) {
+    public SimpleListSupplierBuilder<T> entries(Supplier<? extends T> entries) {
         this.entries = entries;
         return this;
     }
 
-    public SimpleListSupplierBuilder<T> withEntries(SupplierBuilder<? extends T> entriesBuilder) {
+    public SimpleListSupplierBuilder<T> entries(SupplierBuilder<? extends T> entriesBuilder) {
         this.entries = entriesBuilder.build();
         return this;
     }
@@ -52,4 +52,8 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
     public And<SimpleListSupplierBuilder<T>, Integer> withSizeBetween(int value) {
         return range.between(value);
     }
-}
+
+    public SimpleListSupplierBuilder<T> size(int size){
+        return range.between(size).and(size);
+    }
+ }

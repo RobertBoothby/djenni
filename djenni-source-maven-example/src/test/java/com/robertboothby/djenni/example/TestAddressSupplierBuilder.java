@@ -32,7 +32,7 @@ public class TestAddressSupplierBuilder {
                         .withRegionSetter(arbitraryString())
                         .withAddressLinesCollection(
                                 simpleList(list ->
-                                        list.withEntries(arbitraryString())
+                                        list.entries(arbitraryString())
                                                 .withSizeBetween(3)
                                                 .and(5)
                                 )

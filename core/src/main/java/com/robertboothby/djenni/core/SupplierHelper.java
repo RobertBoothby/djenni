@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution.UNIFORM;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSupplier;
 
 /**
@@ -39,7 +40,7 @@ public class SupplierHelper {
      */
     @SafeVarargs
     public static <T> StreamableSupplier<T> fromValues(T ...  values) {
-        return fromValues(SimpleRandomIntegerDistribution.UNIFORM, values);
+        return fromValues(UNIFORM, values);
     }
 
     /**
@@ -49,7 +50,7 @@ public class SupplierHelper {
      * @return a Supplier derived from the values.
      */
     public static StreamableSupplier<Character> fromValues(char ...  values) {
-        return fromValues(SimpleRandomIntegerDistribution.UNIFORM, values);
+        return fromValues(UNIFORM, values);
     }
 
     /**
@@ -91,7 +92,7 @@ public class SupplierHelper {
      * @return a generator that will generate values from the enumeration.
      */
     public static <T extends Enum<T>> StreamableSupplier<T> fromEnum(Class<T> enumerationClass) {
-        return fromValues(enumerationClass.getEnumConstants());
+        return fromEnum(enumerationClass, UNIFORM);
     }
 
     /**

@@ -33,7 +33,7 @@ public abstract class SimpleRandomBigIntegerDistribution implements Distribution
 
         @Override
         public void describeTo(Description description) {
-            description.appendText("simple random big integer distribution wrapping: ");
+            description.appendText("Simple random big integer distribution wrapping: ");
             description.appendDescriptionOf(distribution);
             distribution.describeTo(description);
         }
