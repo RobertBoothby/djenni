@@ -26,7 +26,10 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
                         .and(range.getMaximum())
         );
 
-        return () -> stream(entries, sizes.get()).collect(toList());
+        return () -> {
+            Integer numberOfValues = sizes.get();
+            return stream(entries, numberOfValues).collect(toList());
+        };
     }
 
     public SimpleListSupplierBuilder<T> entries(Supplier<? extends T> entries) {

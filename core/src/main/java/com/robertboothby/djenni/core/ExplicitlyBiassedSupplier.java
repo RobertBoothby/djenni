@@ -5,6 +5,7 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistributi
 
 import java.util.List;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 /**
  * <p>Instances of this class supply random values in given relative proportions that are passed in as a bias list.</p>
@@ -19,9 +20,9 @@ import java.util.TreeMap;
  */
 public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
 
-    private final TreeMap<Double, T> lookupMap;
-    private final double proportionsTotal;
-    private final Distribution<Double, Double> distribution = SimpleRandomDoubleDistribution.UNIFORM;
+    protected final TreeMap<Double, Supplier<T>> lookupMap;
+    protected final double proportionsTotal;
+    protected final Distribution<Double, Double> distribution = SimpleRandomDoubleDistribution.UNIFORM;
 
     /**
      * Construct an instance of the generator using the map of values with their biasses
@@ -33,38 +34,16 @@ public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
         double runningProportionsTotal = 0.0D;
         for(BiasDetail<T> biasDetail : biasList){
             runningProportionsTotal += biasDetail.biasProportion;
-            lookupMap.put(runningProportionsTotal, biasDetail.biasedValue);
+            if(biasDetail.biasProportion > 0.0D) { //If someone has slipped in a 0.0D value ignore it otherwise we get an issue.
+                lookupMap.put(runningProportionsTotal, biasDetail.biasedValue);
+            }
         }
         this.proportionsTotal = runningProportionsTotal;
     }
 
     public T get() {
         Double mapKeyValue = distribution.generate(proportionsTotal);
-        return lookupMap.ceilingEntry(mapKeyValue).getValue();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ExplicitlyBiassedSupplier that = (ExplicitlyBiassedSupplier) o;
-
-        return      Double.compare(that.proportionsTotal, proportionsTotal) == 0
-                &&  distribution.equals(that.distribution)
-                &&  lookupMap.equals(that.lookupMap);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result;
-        long temp;
-        result = lookupMap.hashCode();
-        temp = Double.doubleToLongBits(proportionsTotal);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + distribution.hashCode();
-        return result;
+        return lookupMap.ceilingEntry(mapKeyValue).getValue().get();
     }
 
     /**
@@ -73,15 +52,15 @@ public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
      */
     static class BiasDetail<T> {
         private final double biasProportion;
-        private final T biasedValue;
+        private final Supplier<T> biasedValue;
 
-        private BiasDetail(T biasedValue, Double biasProportion) {
+        private BiasDetail(Supplier<T> biasedValue, Double biasProportion) {
             this.biasedValue = biasedValue;
             this.biasProportion = biasProportion;
         }
     }
 
-    static <T> BiasDetail<T> biasDetail(T biasedValue, double biasProportion) {
+    static <T> BiasDetail<T> biasDetail(Supplier<T> biasedValue, double biasProportion) {
         return new BiasDetail<T>(biasedValue, biasProportion);
     }
 }

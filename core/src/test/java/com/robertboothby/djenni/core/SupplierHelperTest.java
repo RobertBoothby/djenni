@@ -1,28 +1,22 @@
-package com.robertboothby.djenni;
+package com.robertboothby.djenni.core;
 
-import com.robertboothby.djenni.core.StreamableSupplier;
-import com.robertboothby.djenni.core.SupplierHelper;
-import com.robertboothby.djenni.core.TestEnum;
 import com.robertboothby.djenni.core.util.Collections;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matchers;
+import com.robertboothby.djenni.core.util.Repeat;
+import com.robertboothby.djenni.core.util.RepeatRule;
+import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.matcher.Matchers.eventuallySuppliesAllValues;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.iterableWithSize;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.hamcrest.Matchers.theInstance;
 
@@ -31,6 +25,10 @@ import static org.hamcrest.Matchers.theInstance;
  * @author robertboothby
  */
 public class SupplierHelperTest {
+
+    public static final String NOT_NULL = "NOT NULL";
+    @Rule
+    public RepeatRule repeatRule = new RepeatRule();
 
     @Test
     public void shouldSupplyFromValues(){
@@ -135,6 +133,46 @@ public class SupplierHelperTest {
 
         //Then
         assertThat(result, is(sameInstance(supplier)));
+    }
+
+    @Test
+    public void shouldSupplyNulls(){
+        //Given
+        StreamableSupplier<String> not_null = fix(NOT_NULL);
+
+        //When
+        StreamableSupplier<String> nulls = SupplierHelper.nulls(not_null, 0.5D);
+
+        //Then
+        assertThat(nulls, eventuallySuppliesAllValues(Collections.asSet(NOT_NULL, null), 100));
+    }
+
+    @Test
+    @Repeat(1000)
+    public void shouldNeverSupplyNulls(){
+        //Given
+        StreamableSupplier<String> not_null = fix(NOT_NULL);
+
+        //When
+        StreamableSupplier<String> nulls = SupplierHelper.nulls(not_null, 0.0D);
+        String value = nulls.get();
+
+        //Then
+        assertThat(value, is(NOT_NULL));
+    }
+
+    @Test
+    @Repeat(1000)
+    public void shouldAlwaysSupplyNulls(){
+        //Given
+        StreamableSupplier<String> not_null = fix(NOT_NULL);
+
+        //When
+        StreamableSupplier<String> nulls = SupplierHelper.nulls(not_null, 1.0D);
+        String value = nulls.get();
+
+        //Then
+        assertThat(value, is(nullValue()));
     }
 
 }

@@ -5,6 +5,9 @@ import com.robertboothby.djenni.SupplierBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
+import static com.robertboothby.djenni.core.SupplierHelper.fix;
 
 /**
  * This builder allows for the configuration of ExplicitlyBiassedSupplier instances.
@@ -19,47 +22,48 @@ public class ExplicitlyBiassedSupplierBuilder<T> implements SupplierBuilder<T> {
     private List<ExplicitlyBiassedSupplier.BiasDetail<T>> biaslist = new ArrayList<>();
 
     /**
-     * Add (or update) a value with the {@link #DEFAULT_WEIGHT}.
-     * @param value The value to add.
+     * Add a supplier with the {@link #DEFAULT_WEIGHT}.
+     * @param supplier The supplier to add.
      * @return the builder for further configuration.
      */
-    public ExplicitlyBiassedSupplierBuilder<T> addValue(T value) {
-        biaslist.add(ExplicitlyBiassedSupplier.biasDetail(value, DEFAULT_WEIGHT));
-        return this;
+    public ExplicitlyBiassedSupplierBuilder addSupplier(Supplier<T> supplier) {
+        return addSupplier(supplier, DEFAULT_WEIGHT);
     }
 
     /**
-     * Add (or update) a value with the passed in weight.
-     * @param value The value to add.
-     * @param weight the weight of the value being added.
+     * Add a supplier with the passed in weight.
+     * @param supplier The supplier to add.
+     * @param weight the weight of the supplier being added.
      * @return the builder for further configuration.
      */
-    public ExplicitlyBiassedSupplierBuilder<T> addValue(T value, double weight) {
-        biaslist.add(ExplicitlyBiassedSupplier.biasDetail(value, weight));
+    public <U extends Supplier<T>> ExplicitlyBiassedSupplierBuilder<T> addSupplier(U supplier, double weight) {
+        biaslist.add(ExplicitlyBiassedSupplier.biasDetail(supplier, weight));
         return this;
     }
 
     /**
      * Add (or update) multiple values with the {@link #DEFAULT_WEIGHT}.
-     * @param values the values to add.
+     * @param suppliers the values to add.
      * @return the builder for further configuration.
      */
-    public ExplicitlyBiassedSupplierBuilder<T> addValues(T ... values) {
-        for (T value : values){
-            biaslist.add(ExplicitlyBiassedSupplier.biasDetail(value, DEFAULT_WEIGHT));
+    @SafeVarargs
+    public final ExplicitlyBiassedSupplierBuilder<T> addSuppliers(Supplier<T> ... suppliers) {
+        for (Supplier<T> supplier : suppliers){
+            addSupplier(supplier);
         }
         return this;
     }
 
     /**
      * Add (or update) multiple values with the passed in weight.
-     * @param values the values to add.
+     * @param suppliers the values to add.
      * @param weight the weight of the values being added.
      * @return the builder for further configuration.
      */
-    public ExplicitlyBiassedSupplierBuilder<T> addValues(double weight, T ... values) {
-        for (T value : values){
-            biaslist.add(ExplicitlyBiassedSupplier.biasDetail(value, weight));
+    @SafeVarargs
+    public final ExplicitlyBiassedSupplierBuilder<T> addSuppliers(double weight, Supplier<T> ... suppliers) {
+        for (Supplier<T> supplier : suppliers){
+            addSupplier(supplier, weight);
         }
         return this;
     }
@@ -89,5 +93,4 @@ public class ExplicitlyBiassedSupplierBuilder<T> implements SupplierBuilder<T> {
         configuration.accept(builder);
         return builder.build();
     }
-
 }

@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder.explicitlyBiassedSupplierFor;
 import static com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution.UNIFORM;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSupplier;
 
@@ -230,6 +231,20 @@ public class SupplierHelper {
      */
     public static <T> ThreadLocalSupplier<T> threadLocal(Supplier<Supplier<T>> instanceSupplier){
         return new ThreadLocalSupplier<>(instanceSupplier);
+    }
+
+    /**
+     * Takes a supplier and make it randomly return null values.
+     * @param supplier The underlying supplier.
+     * @param nullFrequency the frequency to supply nulls defined as a double value between 0.0 (never) and 1.0 (always).
+     * @param <T> The type of value being supplied.
+     * @return A new StreamableSupplier that will randomly return null values.
+     */
+    public static <T> StreamableSupplier<T> nulls(Supplier<T> supplier, Double nullFrequency){
+        return explicitlyBiassedSupplierFor(
+                $ -> $
+                        .addSupplier(() -> null, nullFrequency).addSupplier(supplier, 1.0D - nullFrequency)
+        );
     }
 
 }

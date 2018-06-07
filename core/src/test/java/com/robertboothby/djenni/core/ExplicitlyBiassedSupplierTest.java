@@ -6,9 +6,11 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplier.biasDetail;
 import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder.explicitlyBiassedSupplierFor;
+import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.core.util.Collections.asSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.both;
@@ -28,7 +30,7 @@ public class ExplicitlyBiassedSupplierTest {
         //Given
         List<ExplicitlyBiassedSupplier.BiasDetail<TestEnum>> biasList = new ArrayList<>();
         for(TestEnum value : TestEnum.values()){
-            biasList.add(biasDetail(value, 1.0D));
+            biasList.add(biasDetail(fix(value), 1.0D));
         }
 
         //When
@@ -42,8 +44,8 @@ public class ExplicitlyBiassedSupplierTest {
     public void shouldProducedBiasedValues() {
         //Given
         List<ExplicitlyBiassedSupplier.BiasDetail<Boolean>> biasList = new ArrayList<>();
-        biasList.add(biasDetail(Boolean.TRUE, 0.9D));
-        biasList.add(biasDetail(Boolean.FALSE, 0.1D));
+        biasList.add(biasDetail(fix(Boolean.TRUE), 0.9D));
+        biasList.add(biasDetail(fix(Boolean.FALSE), 0.1D));
 
         //When
         final ExplicitlyBiassedSupplier<Boolean> biasedSupplier = new ExplicitlyBiassedSupplier<Boolean>(biasList);
@@ -52,27 +54,5 @@ public class ExplicitlyBiassedSupplierTest {
         //Then
         assertThat(assessment.proportionGreaterThanOrEqualTo(Boolean.TRUE), is(both(greaterThan(0.85D)).and(lessThan(0.95D))));
         assertThat(assessment.proportionLessThanOrEqualTo(Boolean.FALSE), is(both(greaterThan(0.05D)).and(lessThan(0.15D))));
-    }
-
-    @Test
-    public void shouldGenerateEqualsAndHashCodeSuccessfully(){
-        //Given
-        ExplicitlyBiassedSupplier<String> supplier = explicitlyBiassedSupplierFor($ -> $.addValues("A", "B"));
-        ExplicitlyBiassedSupplier<String> supplier1 = explicitlyBiassedSupplierFor($ -> $.addValues("B", "A"));
-        ExplicitlyBiassedSupplier<String> supplier2 = explicitlyBiassedSupplierFor($ -> $.addValues("A", "C"));
-
-        //When
-        int hashCode = supplier.hashCode();
-        int hashCode1 = supplier1.hashCode();
-        int hashCode2 = supplier2.hashCode();
-
-
-        //Then
-        //Interesting TreeMap bug - equals and hashcode do not tally.
-        assertThat(supplier, is(not(supplier1)));
-        assertThat(supplier1, is(not(supplier2)));
-        assertThat(hashCode, is(hashCode1));
-        assertThat(hashCode, is(not(hashCode2)));
-
     }
 }

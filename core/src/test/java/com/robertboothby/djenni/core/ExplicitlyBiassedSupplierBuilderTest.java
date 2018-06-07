@@ -1,16 +1,15 @@
 package com.robertboothby.djenni.core;
 
+import com.robertboothby.djenni.core.util.Collections;
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplier.biasDetail;
 import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder.explicitlyBiassedSupplierFor;
-import static org.hamcrest.CoreMatchers.instanceOf;
+import static com.robertboothby.djenni.core.SupplierHelper.fix;
+import static com.robertboothby.djenni.core.util.Collections.asSetOfCharacters;
+import static com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution.UNIFORM;
+import static com.robertboothby.djenni.matcher.Matchers.eventuallySuppliesAllValues;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -25,48 +24,38 @@ public class ExplicitlyBiassedSupplierBuilderTest {
         //Given
         final ExplicitlyBiassedSupplierBuilder<Character> generatorBuilder
                 = explicitlyBiassedSupplierFor(Character.class)
-                    .addValue('A')
-                    .addValue('B')
-                    .addValue('C', 0.5D);
+                    .addSupplier(fix('A'))
+                    .addSupplier(fix('B'))
+                    .addSupplier(fix('C'), 0.5D);
 
         //When
-        Object builtGenerator = generatorBuilder.build();
+        ExplicitlyBiassedSupplier<Character> actualSupplier = generatorBuilder.build();
 
         //Then
-        assertThat(builtGenerator,is(instanceOf(ExplicitlyBiassedSupplier.class)));
-        ExplicitlyBiassedSupplier<Character> actualGenerator = (ExplicitlyBiassedSupplier<Character>)builtGenerator;
-
-        List<ExplicitlyBiassedSupplier.BiasDetail<Character>> biasList = new ArrayList<>();
-        biasList.add(biasDetail('A', 1.0D));
-        biasList.add(biasDetail('B', 1.0D));
-        biasList.add(biasDetail('C', 0.5D));
-
-        ExplicitlyBiassedSupplier<Character> expectedGenerator = new ExplicitlyBiassedSupplier<>(biasList);
-
-        assertThat(actualGenerator, is(equalTo(expectedGenerator)));
+        assertThat(actualSupplier.proportionsTotal, is(2.5D));
+        assertThat(actualSupplier.distribution, is(UNIFORM));
+        assertThat(actualSupplier, eventuallySuppliesAllValues(Collections.asSet('A', 'B', 'C'), 100));
     }
 
     @Test
     public void shouldAddValuesCorrectly(){
         //Given
+        StreamableSupplier<String> a = fix("A");
+        StreamableSupplier<String> b = fix("B");
+        StreamableSupplier<String> c = fix("C");
+        StreamableSupplier<String> d = fix("D");
+        StreamableSupplier<String> e = fix("E");
+        StreamableSupplier<String> f = fix("F");
         ExplicitlyBiassedSupplierBuilder<String> generatorBuilder =
                 explicitlyBiassedSupplierFor(String.class)
-                        .addValues("A", "B", "C")
-                        .addValues(0.01D, "D", "E", "F");
+                        .addSuppliers(a, b, c)
+                        .addSuppliers(0.4D, d, e, f);
         //When
-        StreamableSupplier<String> actualGenerator = generatorBuilder.build();
+        ExplicitlyBiassedSupplier<String> actualSupplier = generatorBuilder.build();
 
         //Then
-        List<ExplicitlyBiassedSupplier.BiasDetail<String>> biasList = new ArrayList<>();
-        biasList.add(biasDetail("A", 1.0D));
-        biasList.add(biasDetail("B", 1.0D));
-        biasList.add(biasDetail("C", 1.0D));
-        biasList.add(biasDetail("D", 0.01D));
-        biasList.add(biasDetail("E", 0.01D));
-        biasList.add(biasDetail("F", 0.01D));
-
-        ExplicitlyBiassedSupplier<String> expectedGenerator = new ExplicitlyBiassedSupplier<>(biasList);
-
-        assertThat(actualGenerator, is(equalTo(expectedGenerator)));
+        assertThat(actualSupplier.proportionsTotal, is(4.2D));
+        assertThat(actualSupplier.distribution, is(UNIFORM));
+        assertThat(actualSupplier, eventuallySuppliesAllValues(Collections.asSet("A", "B", "C", "D", "E", "F"), 1000));
     }
 }

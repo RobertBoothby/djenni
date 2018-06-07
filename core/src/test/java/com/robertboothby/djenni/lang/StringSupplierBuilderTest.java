@@ -40,11 +40,7 @@ public class StringSupplierBuilderTest {
         MatcherAssert.assertThat(stringGenerator,
                 Matchers.eventuallySuppliesAllDerivatives(
                         Collections.asSetOfCharacters(CharacterStrings.EUROPEAN_NUMERIC),
-                        new DataCompletenessAssessment.Deriver<Character, String>() {
-                            public Character derive(String original) {
-                                return original.charAt(0);
-                            }
-                        },
+                        original -> original.charAt(0),
                         100
                 )
         );
