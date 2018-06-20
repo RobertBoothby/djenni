@@ -53,35 +53,17 @@ public class SimpleRandomLongDistribution implements Distribution<Long, Long> {
     public static final SimpleRandomLongDistribution RIGHT_INVERTED_NORMAL =
             new SimpleRandomLongDistribution(SimpleRandomDoubleDistribution.RIGHT_INVERTED_NORMAL);
 
+    /**
+     * Construct an instance of the distribution using the underlying distribution.
+     * @param underlyingDistribution The underlying distribution to use.
+     */
     public SimpleRandomLongDistribution(SimpleRandomDoubleDistribution underlyingDistribution) {
         this.underlyingDistribution = underlyingDistribution;
     }
 
+    @Override
     public Long generate(Long bound) {
         return (long) Math.floor(underlyingDistribution.nextDouble() * bound);
     }
 
-    public void describeTo(Description description) {
-        description
-                .appendText("LongDoubleBasedDistribution { ")
-                .appendDescriptionOf(underlyingDistribution)
-                .appendText(" } ");
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        SimpleRandomLongDistribution that = (SimpleRandomLongDistribution) o;
-
-        if (!underlyingDistribution.equals(that.underlyingDistribution)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return underlyingDistribution.hashCode();
-    }
 }

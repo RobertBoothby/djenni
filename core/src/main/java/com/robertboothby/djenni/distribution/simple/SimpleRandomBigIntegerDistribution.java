@@ -30,14 +30,6 @@ public abstract class SimpleRandomBigIntegerDistribution implements Distribution
 
             this.distribution = distribution;
         }
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("Simple random big integer distribution wrapping: ");
-            description.appendDescriptionOf(distribution);
-            distribution.describeTo(description);
-        }
-
         @Override
         public BigInteger generate(Double bound) {
             return BigDecimal.valueOf(distribution.generate(bound)).toBigInteger();

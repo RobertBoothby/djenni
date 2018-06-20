@@ -60,7 +60,7 @@ public class EasyCompare<T extends Comparable<T>> {
      * @return true if the comparable value is ordered after the comparator, false otherwise.
      */
     public boolean after(T comparator){
-        return lessThan(comparator);
+        return greaterThan(comparator);
     }
 
     /**

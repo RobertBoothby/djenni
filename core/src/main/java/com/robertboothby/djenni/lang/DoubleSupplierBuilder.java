@@ -5,7 +5,6 @@ import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
 import com.robertboothby.djenni.sugar.And;
-import com.robertboothby.djenni.sugar.Range;
 
 import java.util.function.Consumer;
 

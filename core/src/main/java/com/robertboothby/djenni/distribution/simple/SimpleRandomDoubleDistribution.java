@@ -1,7 +1,6 @@
 package com.robertboothby.djenni.distribution.simple;
 
 import com.robertboothby.djenni.distribution.Distribution;
-import org.hamcrest.Description;
 
 import java.io.Serializable;
 
@@ -58,10 +57,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         public double nextDouble() {
             return current().nextDouble();
         }
-
-        public void describeTo(Description description) {
-            description.appendText("uniform double based");
-        }
     };
 
     /**
@@ -74,10 +69,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         public double nextDouble() {
             return (current().nextGaussian() % CORE_DISTRIBUTION_SIGMA) / CORE_DISTRIBUTION_SIGMA;
         }
-
-        public void describeTo(Description description) {
-            description.appendText("core normal double based");
-        }
     };
 
     /**
@@ -88,10 +79,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         @Override
         public double nextDouble() {
             return (CORE_NORMAL.nextDouble() + 1.0D) / 2.0D;
-        }
-
-        public void describeTo(Description description) {
-            description.appendText("normal double based");
         }
     };
 
@@ -104,10 +91,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         public double nextDouble() {
             return Math.abs(CORE_NORMAL.nextDouble());
         }
-
-        public void describeTo(Description description) {
-            description.appendText("right normal double based");
-        }
     };
 
     /**
@@ -118,10 +101,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         @Override
         public double nextDouble() {
             return 1.0D - RIGHT_NORMAL.nextDouble();
-        }
-
-        public void describeTo(Description description) {
-            description.appendText("left normal double based");
         }
     };
 
@@ -138,10 +117,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
             double workingCopy = CORE_NORMAL.nextDouble();
             return workingCopy < 0 ? workingCopy + 1.0D : workingCopy -1.0D;
         }
-
-        public void describeTo(Description description) {
-            description.appendText("core inverted normal double based");
-        }
     };
 
     /**
@@ -153,11 +128,7 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         public double nextDouble() {
             return (CORE_INVERTED_NORMAL.nextDouble() + 1.0D) / 2.0D;
          }
-
-        public void describeTo(Description description) {
-            description.appendText("inverted normal double based");
-        }
-    };
+     };
 
     /**
      * This distribution generates values that are distributed in a manner that roughly approximates the right hand side
@@ -167,10 +138,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         @Override
         public double nextDouble() {
             return Math.abs(CORE_INVERTED_NORMAL.nextDouble());
-        }
-
-        public void describeTo(Description description) {
-            description.appendText("right inverted normal double based");
         }
     };
 
@@ -182,10 +149,6 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
         @Override
         public double nextDouble() {
             return 1.0D - RIGHT_INVERTED_NORMAL.nextDouble();
-        }
-
-        public void describeTo(Description description) {
-            description.appendText("left inverted normal double based");
         }
     };
 
