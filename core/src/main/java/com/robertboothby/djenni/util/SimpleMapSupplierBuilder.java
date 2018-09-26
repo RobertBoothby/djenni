@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static java.util.stream.Collectors.toMap;
 
 /**
@@ -15,33 +16,56 @@ import static java.util.stream.Collectors.toMap;
  * @param <K> The type of the keys,
  * @param <V> The type of the values.
  */
-public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<? extends K, ? extends V>> {
+public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<K,V>> {
 
     private StreamableSupplier<? extends Map.Entry<? extends K, ? extends V>> entrySupplier;
-    private Supplier<Integer> numberOfEntries;
+    private Supplier<Integer> numberOfEntries = fix(0);
 
     @Override
-    public StreamableSupplier<Map<? extends K, ? extends V>> build() {
+    public StreamableSupplier<Map<K, V>> build() {
         return () -> entrySupplier.stream(numberOfEntries.get()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
+    /**
+     * Provide a Supplier of entries for the simple map. If the entry supplier may create entries with duplicate keys then
+     * the number of entries in the maps produced may be reduced.
+     * @param entrySupplier The Supplier.
+     * @return the SupplierBuilder for further configuration.
+     */
     public SimpleMapSupplierBuilder<K, V> withEntries(StreamableSupplier<? extends Map.Entry<? extends K, ? extends V>> entrySupplier) {
         this.entrySupplier = entrySupplier;
         return this;
     }
 
+    /**
+     * Provide an Integer Supplier for the number of entries to be created in the map. If the entry supplier provides
+     * duplicate keys then the numbe of entries may be reduced.
+     * @param numberOfEntries the Supplier for the number of entries.
+     * @return The builder for further configuration.
+     */
     public SimpleMapSupplierBuilder<K, V> withNumberOfEntries(Supplier<Integer> numberOfEntries) {
         this.numberOfEntries = numberOfEntries;
         return this;
     }
 
+    /**
+     * Convenience method creating the SupplierBuilder with no configuration.
+     * @param <K> The type of the keys in the supplied maps.
+     * @param <V> The type of the values in the supplied maps.
+     * @return The SupplierBuilder for configuration.
+     */
     public static <K, V> SimpleMapSupplierBuilder<K,V> map(){
         return new SimpleMapSupplierBuilder<>();
     }
 
-    public static <K,V> Supplier<Map<? extends K, ? extends V>> map(Consumer<SimpleMapSupplierBuilder<K,V>> configuration){
-        SimpleMapSupplierBuilder<K,V> builder  = map();
-        configuration.accept(map());
-        return builder.build();
+    /**
+     * Convenience method, creating a Supplier based on the passed in configuration.
+     * @param configuration a consumer that will apply the configuration.
+     * @param <K> The type of the keys in the supplied maps.
+     * @param <V> The type of the values in the supplied maps.
+     * @return The configured supplier.
+     */
+    public static <K,V> Supplier<Map<K, V>> map(Consumer<SimpleMapSupplierBuilder<K,V>> configuration){
+        return SupplierBuilder.buildConfig(map(), configuration);
     }
 }

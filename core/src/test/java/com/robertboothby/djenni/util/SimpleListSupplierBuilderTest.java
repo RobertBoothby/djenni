@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.util;
 
+import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.util.Repeat;
 import com.robertboothby.djenni.core.util.RepeatRule;
@@ -35,13 +36,16 @@ public class SimpleListSupplierBuilderTest {
     public RepeatRule repeatRule = new RepeatRule();
 
     @Mock
-    private Supplier<String> testSupplier;
+    private StreamableSupplier<String> testSupplier;
+
+    @Mock
+    private SupplierBuilder<String> testSupplierBuilder;
 
     @Test
     public void shouldCreateSimpleListFromSupplier(){
         //Given
         given(testSupplier.get()).willReturn("VALUE");
-        StreamableSupplier<List<String>> lists = simpleList($ -> $.entries(testSupplier).withSizeBetween(5).and(5));
+        StreamableSupplier<List<String>> lists = simpleList($ -> $.entries(testSupplier).size(5));
 
         //When
         List<String> strings = lists.get();
@@ -79,5 +83,17 @@ public class SimpleListSupplierBuilderTest {
         then(testSupplier).should(atMost(3)).get();
         //Need to reset the mock due to the use of a repeat rule.
         Mockito.reset(testSupplier);
+    }
+
+    @Test
+    public void shouldCreateEntriesSupplierFromSupplierBuilder(){
+        //Given
+        given(testSupplierBuilder.build()).willReturn(testSupplier);
+
+        //When
+        simpleList().entries(testSupplierBuilder);
+
+        //Then
+        then(testSupplierBuilder).should(times(1)).build();
     }
 }
