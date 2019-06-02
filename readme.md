@@ -53,4 +53,4 @@ your test object as you want, usually on as many threads as you want.
 By implementing your own Suppliers and SupplierBuilders you can rapidly build up a data generation suite for your entire
 domain that will make testing a lot easier.
 
-In addition Djenn contains a Maven plugin that can generate a lot of the Suppliers and SupplierBuilders for your domain. 
+In addition Djenni contains a Maven plugin that can generate a lot of the Suppliers and SupplierBuilders for your domain. 
