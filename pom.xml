@@ -8,6 +8,7 @@
     <artifactId>djenni-parent</artifactId>
     <packaging>pom</packaging>
     <version>0.1.0</version>
+    <name>Djenni - Data Generator Framework</name>
     <description>
         This is the parent module for all components of the Djenni framework - a test data generation framework that
         sets
