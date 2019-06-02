@@ -1,8 +1,5 @@
 package com.robertboothby.djenni.util;
 
-import com.robertboothby.djenni.core.StreamableSupplier;
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.Matcher;
 import org.junit.Test;
 
 import java.util.HashMap;
