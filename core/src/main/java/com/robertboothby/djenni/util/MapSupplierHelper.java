@@ -1,5 +1,7 @@
 package com.robertboothby.djenni.util;
 
+import com.robertboothby.djenni.core.StreamableSupplier;
+
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -18,7 +20,7 @@ public class MapSupplierHelper {
      * @param <V> The type of the values.
      * @return A supplier of map entries.
      */
-    public static <K,V> Supplier<Map.Entry<? extends K,? extends V>> map(Supplier<? extends K> keys, Supplier<? extends V> values){
+    public static <K,V> Supplier<Map.Entry<? extends K,? extends V>> supplyEntries(Supplier<? extends K> keys, Supplier<? extends V> values){
         return () -> new AbstractMap.SimpleImmutableEntry<>(keys.get(), values.get());
     }
 
@@ -30,7 +32,7 @@ public class MapSupplierHelper {
      * @param <V> THe type of the value.
      * @return A supplier of map entries.
      */
-    public static <K,V> Supplier<Map.Entry<K, V>> map(Supplier<K> keys, Function<K, V> values) {
+    public static <K,V> StreamableSupplier<Map.Entry<K, V>> supplyEntries(Supplier<K> keys, Function<K, V> values) {
         return () -> {
             K key = keys.get();
             return new AbstractMap.SimpleImmutableEntry<>(key, values.apply(key));
@@ -45,7 +47,7 @@ public class MapSupplierHelper {
      * @param <V> THe type of the value.
      * @return A supplier of map entries.
      */
-    public static <K,V> Supplier<Map.Entry<K,V>> map(Function<V,K> keys, Supplier<V> values) {
+    public static <K,V> Supplier<Map.Entry<K,V>> supplyEntries(Function<V,K> keys, Supplier<V> values) {
         return () -> {
             V value = values.get();
             return new AbstractMap.SimpleImmutableEntry<>(keys.apply(value), value);

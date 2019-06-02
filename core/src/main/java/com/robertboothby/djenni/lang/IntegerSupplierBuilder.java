@@ -6,6 +6,7 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.sugar.And;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -25,10 +26,22 @@ public class IntegerSupplierBuilder implements SupplierBuilder<Integer> {
     private int minInclusiveValue = MIN_INCLUSIVE_VALUE_DEFAULT;
     private int maxExclusiveValue = MAX_EXCLUSIVE_VALUE_DEFAULT;
     private Distribution<Integer, Integer> distribution = DISTRIBUTION_DEFAULT;
+    private boolean sequential = false;
 
     public StreamableSupplier<Integer> build() {
         if(maxExclusiveValue - minInclusiveValue == 1){
             return fix(minInclusiveValue);
+        } else if (sequential){
+            ThreadLocal<Integer> perThread = ThreadLocal.withInitial(() -> minInclusiveValue);
+            return () -> {
+                int value = perThread.get();
+                int newValue = value + 1;
+                if(newValue >= maxExclusiveValue){
+                    newValue = minInclusiveValue;
+                }
+                perThread.set(newValue);
+                return value;
+            };
         } else {
             int range = maxExclusiveValue - minInclusiveValue;
             return () -> minInclusiveValue + distribution.generate(range);
@@ -57,6 +70,26 @@ public class IntegerSupplierBuilder implements SupplierBuilder<Integer> {
         this.distribution = distribution;
         return this;
     }
+
+    /**
+     * Configure the supplier being built to supply the range sequentially within the range of values rolling over to
+     * the beginning when the range is exhausted.
+     * @return this builder for further configuration.
+     */
+    public IntegerSupplierBuilder sequential() {
+        this.sequential = true;
+        return this;
+    }
+
+    /**
+     * Configure the supplier being built to be random within the range of values. This is the default configuration.
+     * @return this builder for further configuration.
+     */
+    public IntegerSupplierBuilder random() {
+        this.sequential = false;
+        return this;
+    }
+
 
     /**
      * Configure the integer generator to return a single, exact value;

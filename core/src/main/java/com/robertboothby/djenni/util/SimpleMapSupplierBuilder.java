@@ -32,7 +32,7 @@ public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<K,V>> 
      * @param entrySupplier The Supplier.
      * @return the SupplierBuilder for further configuration.
      */
-    public SimpleMapSupplierBuilder<K, V> withEntries(StreamableSupplier<? extends Map.Entry<? extends K, ? extends V>> entrySupplier) {
+    public <E extends Map.Entry<K,V>> SimpleMapSupplierBuilder<K, V> withEntries(StreamableSupplier<E> entrySupplier) {
         this.entrySupplier = entrySupplier;
         return this;
     }
@@ -65,7 +65,7 @@ public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<K,V>> 
      * @param <V> The type of the values in the supplied maps.
      * @return The configured supplier.
      */
-    public static <K,V> Supplier<Map<K, V>> map(Consumer<SimpleMapSupplierBuilder<K,V>> configuration){
+    public static <K,V> Supplier<Map<K, V>> configure(Consumer<SimpleMapSupplierBuilder<K,V>> configuration){
         return SupplierBuilder.buildConfig(map(), configuration);
     }
 }
