@@ -30,6 +30,7 @@ public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<K,V>> 
      * Provide a Supplier of entries for the simple map. If the entry supplier may create entries with duplicate keys then
      * the number of entries in the maps produced may be reduced.
      * @param entrySupplier The Supplier.
+     * @param <E> The type of the entry that will be supplied.
      * @return the SupplierBuilder for further configuration.
      */
     public <E extends Map.Entry<K,V>> SimpleMapSupplierBuilder<K, V> withEntries(StreamableSupplier<E> entrySupplier) {

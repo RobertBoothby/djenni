@@ -5,7 +5,7 @@
 </head>
 <body>
 <p>
-    This package contains {@link com.robertboothby.djenni.Generator} and {@link com.robertboothby.djenni.GeneratorBuilder} instances for the core java
+    This package contains {@link com.robertboothby.djenni.SupplierBuilder} instances for the core java
     types in the java.lang package.
 </p>
 <p>
@@ -21,7 +21,7 @@
     Probably the best approach is to have two instances of these types of generators that can be built one being the
     &quot;fast&quot; one that deals with ranges that can be randomised simply (in the case of long the range is less than
     Long.MAX_VALUE) and a &quot;slow&quot; one that deals with the greater ranges and does the appropriate calculation.
-    These two types can then be automatically be selected between by the appropriate GeneratorBuilder.
+    These two types can then be automatically be selected between by the appropriate SupplierBuilder.
 </p>
 <p>
     Of course a good question to ask is how often do we, when generating random data, need Longs and similar types generated

@@ -71,7 +71,7 @@ public class NameSupplierBuilder implements SupplierBuilder<Name> {
 
     /**
      * Convenience method to get a builder instance with default configuration.
-     * @return A new instance of NameGeneratorBuilder.
+     * @return A new instance of NameSupplierBuilder.
      */
     public static NameSupplierBuilder nameSupplierBuilder(){
         return new NameSupplierBuilder();

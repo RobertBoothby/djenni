@@ -59,7 +59,7 @@ public class CollectionSupplierBuilder<T extends Collection<? extends U>, U> imp
      * Get an instance of the builder configured to create instances of a particular Collection type.
      * <p>
      * This method will need extra Generic typing information
-     * (<pre>CollectionSupplierBuilder.<LinkedList<String>, String>collection(linkedList())</pre>)
+     * (<pre>CollectionSupplierBuilder.&lt;LinkedList&lt;String&gt;, String&gt;collection(linkedList())</pre>)
      * to be used successfully.
      * @param collectionType The type of Collection to build.
      * @param <T> The type of the collection.

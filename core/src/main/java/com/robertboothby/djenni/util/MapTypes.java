@@ -43,6 +43,7 @@ public class MapTypes {
     /**
      * Creates an EnumMap MapType. Use this method when you want to handle cases where there may be no entries in the
      * map at creation.
+     * @param keyClass The class of the key that will be used in the map.
      * @param <K> The type of the key which must be an enum.
      * @param <V> The type of the value in the map.
      * @return A MapType instance that will create maps of the desired type.

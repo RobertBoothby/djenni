@@ -22,14 +22,14 @@ public class ExplicitlyBiassedSupplierBuilderTest {
     @SuppressWarnings("unchecked")
     public void shouldGenerateExplicitlyBiassedGenerator() {
         //Given
-        final ExplicitlyBiassedSupplierBuilder<Character> generatorBuilder
+        final ExplicitlyBiassedSupplierBuilder<Character> supplierBuilder
                 = explicitlyBiassedSupplierFor(Character.class)
                     .addSupplier(fix('A'))
                     .addSupplier(fix('B'))
                     .addSupplier(fix('C'), 0.5D);
 
         //When
-        ExplicitlyBiassedSupplier<Character> actualSupplier = generatorBuilder.build();
+        ExplicitlyBiassedSupplier<Character> actualSupplier = supplierBuilder.build();
 
         //Then
         assertThat(actualSupplier.proportionsTotal, is(2.5D));
@@ -46,12 +46,12 @@ public class ExplicitlyBiassedSupplierBuilderTest {
         StreamableSupplier<String> d = fix("D");
         StreamableSupplier<String> e = fix("E");
         StreamableSupplier<String> f = fix("F");
-        ExplicitlyBiassedSupplierBuilder<String> generatorBuilder =
+        ExplicitlyBiassedSupplierBuilder<String> supplierBuilder =
                 explicitlyBiassedSupplierFor(String.class)
                         .addSuppliers(a, b, c)
                         .addSuppliers(0.4D, d, e, f);
         //When
-        ExplicitlyBiassedSupplier<String> actualSupplier = generatorBuilder.build();
+        ExplicitlyBiassedSupplier<String> actualSupplier = supplierBuilder.build();
 
         //Then
         assertThat(actualSupplier.proportionsTotal, is(4.2D));

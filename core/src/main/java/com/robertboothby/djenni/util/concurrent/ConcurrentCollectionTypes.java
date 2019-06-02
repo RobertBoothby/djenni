@@ -230,7 +230,7 @@ public class ConcurrentCollectionTypes {
      * @param comparator the comparator used in the ConcurrentSkipListSet.
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an ConcurrentSkipListSet from the passed in values.
-     * @todo think about comparators of super types.
+     * todo think about comparators of super types.
      */
     public static <T> CollectionType<ConcurrentSkipListSet<? extends T>, T> concurrentSkipListSet(Comparator<T> comparator){
         return values -> new ConcurrentSkipListSet<>(comparator);
@@ -441,7 +441,7 @@ public class ConcurrentCollectionTypes {
      * @param comparator the comparator used in the PriorityBlockingQueue.
      * @param <T> The type of the values in the collections created.
      * @return A CollectionType instance that will create an PriorityBlockingQueue from the passed in values.
-     * @todo think about comparators of super types.
+     * todo think about comparators of super types.
      */
     public static <T> CollectionType<PriorityBlockingQueue<? extends T>, T> priorityBlockingQueue(Comparator<T> comparator){
         return values -> {

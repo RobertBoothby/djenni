@@ -13,7 +13,7 @@
   <description>
     This module holds the core components of the Djenni data generator framework. By itself it provides most of the
     components to create an efficient end to end data generation framework for a specific domain. It contains the core
-    Generator and GeneratorBuilder interfaces, implementations for the core Java data types and useful test components.
+    SupplierBuilder interfaces, implementations for the core Java data types and useful test components.
     It is intended to be used in conjunction with the source-generator module that will speed up delivery of domain
     specific data generation and also with common domain modules (TBD) that deliver standard generators for common
     frameworks such as JAXB.

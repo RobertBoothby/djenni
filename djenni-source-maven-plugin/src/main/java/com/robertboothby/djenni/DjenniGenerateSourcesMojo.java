@@ -5,7 +5,6 @@ import com.robertboothby.template.AbstractGeneratorMojo;
 import com.robertboothby.template.model.GenerationModel;
 import com.robertboothby.utilities.lambda.FunctionResult;
 import com.robertboothby.template.model.GenerationModelRetriever;
-import com.robertboothby.utilities.lambda.LambdaUtilities;
 import com.thoughtworks.qdox.JavaProjectBuilder;
 import com.thoughtworks.qdox.model.BeanProperty;
 import com.thoughtworks.qdox.model.JavaClass;
@@ -21,7 +20,6 @@ import org.apache.maven.shared.model.fileset.util.FileSetManager;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -94,10 +92,10 @@ public class DjenniGenerateSourcesMojo extends AbstractGeneratorMojo {
                 .filter(JavaClass::isPublic)
                 .collect(Collectors.toList());
 
-        return Stream.concat(getGeneratorModels(javaSource, filteredJavaClasses), getGeneratorBuilderModels(javaSource, filteredJavaClasses));
+        return Stream.concat(getGeneratorModels(javaSource, filteredJavaClasses), getSupplierBuilderModels(javaSource, filteredJavaClasses));
     }
 
-    private Stream<GenerationModel> getGeneratorBuilderModels(JavaSource javaSource, List<JavaClass> filteredJavaClasses) {
+    private Stream<GenerationModel> getSupplierBuilderModels(JavaSource javaSource, List<JavaClass> filteredJavaClasses) {
         return filteredJavaClasses
                 .stream()
                 .map(javaClass ->
