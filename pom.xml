@@ -7,7 +7,7 @@
     <groupId>com.robertboothby.djenni</groupId>
     <artifactId>djenni-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <description>
         This is the parent module for all components of the Djenni framework - a test data generation framework that
         sets
