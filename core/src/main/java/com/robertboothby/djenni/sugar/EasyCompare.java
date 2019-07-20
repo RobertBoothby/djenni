@@ -94,7 +94,7 @@ public class EasyCompare<T extends Comparable<T>> {
      * @param <T> The Comparable type.
      * @return an instance of this class for usage.
      */
-    public static <T extends Comparable<T>> EasyCompare<T> $(T comparableValue) {
+    public static <T extends Comparable<T>> EasyCompare<T> eC(T comparableValue) {
         return new EasyCompare<T>(comparableValue);
     }
 

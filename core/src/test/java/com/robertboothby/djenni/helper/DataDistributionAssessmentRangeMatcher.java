@@ -5,7 +5,7 @@ import com.robertboothby.djenni.sugar.And;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeDiagnosingMatcher;
 
-import static com.robertboothby.djenni.sugar.EasyCompare.$;
+import static com.robertboothby.djenni.sugar.EasyCompare.eC;
 
 /**
  *
@@ -24,7 +24,7 @@ public class DataDistributionAssessmentRangeMatcher<T extends Comparable<T>> ext
 
     @Override
     protected boolean matchesSafely(DataDistributionAssessment<T> assessment, Description mismatchDescription) {
-        if($(leastValue).lessThanOrEqualTo(assessment.leastValue()) && $(maximumValue).greaterThan(assessment.greatestValue())){
+        if(eC(leastValue).lessThanOrEqualTo(assessment.leastValue()) && eC(maximumValue).greaterThan(assessment.greatestValue())){
             return true;
         }
 
