@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.lang;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
 import com.robertboothby.djenni.core.StreamableSupplier;
@@ -19,7 +20,7 @@ import static java.util.Arrays.copyOf;
  * Builder intended to make it expressive and easy to configure a Supplier of Characters.
  * @author robertboothby
  */
-public class CharacterSupplierBuilder implements SupplierBuilder<Character>, CharacterStrings {
+public class CharacterSupplierBuilder implements ConfigurableSupplierBuilder<Character, CharacterSupplierBuilder>, CharacterStrings {
 
     //The default values used by the generator
     public static final String DEFAULT_AVAILABLE_CHARACTERS = ENGLISH_ALPHABETIC_UPPER;
@@ -64,7 +65,7 @@ public class CharacterSupplierBuilder implements SupplierBuilder<Character>, Cha
     }
 
     public static StreamableSupplier<Character> characterSupplier(Consumer<CharacterSupplierBuilder> config){
-        return SupplierBuilder.buildConfig(new CharacterSupplierBuilder(), config);
+        return new CharacterSupplierBuilder().build(config);
     }
 
 }

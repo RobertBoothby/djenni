@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.math;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
  *
  * @author robertboothby
  */
-public class BigDecimalSupplierBuilder implements SupplierBuilder<BigDecimal> {
+public class BigDecimalSupplierBuilder implements ConfigurableSupplierBuilder<BigDecimal, BigDecimalSupplierBuilder> {
 
     @Override
     public StreamableSupplier<BigDecimal> build() {

@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.core;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import static com.robertboothby.djenni.core.SupplierHelper.fix;
 /**
  * This builder allows for the configuration of ExplicitlyBiassedSupplier instances.
  */
-public class ExplicitlyBiassedSupplierBuilder<T> implements SupplierBuilder<T> {
+public class ExplicitlyBiassedSupplierBuilder<T> implements ConfigurableSupplierBuilder<T, ExplicitlyBiassedSupplierBuilder<T>> {
 
     /**
      * A default weight of 1.0D.

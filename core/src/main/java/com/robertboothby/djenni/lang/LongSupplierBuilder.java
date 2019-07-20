@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.lang;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.SupplierHelper;
@@ -18,7 +19,7 @@ import static org.hamcrest.Matchers.is;
  * defined by the maximum value of a Long.
  * @author robertboothby
  */
-public class LongSupplierBuilder implements SupplierBuilder<Long> {
+public class LongSupplierBuilder implements ConfigurableSupplierBuilder<Long, LongSupplierBuilder> {
 
     public static final long MIN_INCLUSIVE_VALUE_DEFAULT = 0;
     public static final long MAX_EXCLUSIVE_VALUE_DEFAULT = Long.MAX_VALUE;

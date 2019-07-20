@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.lang;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
 import com.robertboothby.djenni.core.StreamableSupplier;
@@ -22,7 +23,7 @@ import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSuppli
  * <p>
  * @author robertboothby
  */
-public class StringSupplierBuilder implements SupplierBuilder<String>, CharacterStrings {
+public class StringSupplierBuilder implements ConfigurableSupplierBuilder<String, StringSupplierBuilder>, CharacterStrings {
 
 
     public static final int DEFAULT_MINIMUM_LENGTH = 6;

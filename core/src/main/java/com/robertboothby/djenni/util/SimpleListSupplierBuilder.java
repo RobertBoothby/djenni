@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.util;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.sugar.And;
@@ -18,7 +19,7 @@ import static java.util.stream.Collectors.toList;
  * entries in the list. This is a foundational class for the supply of collections.
  * @param <T> The type of entries that will be held by the list.
  */
-public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
+public class SimpleListSupplierBuilder<T> implements ConfigurableSupplierBuilder<List<T>, SimpleListSupplierBuilder<T>> {
 
     //TODO consider moving over to an integer supplier which will make it possible
     //to use the builder to trivially create empty lists.
@@ -66,7 +67,7 @@ public class SimpleListSupplierBuilder<T> implements SupplierBuilder<List<T>> {
      * @return the configured Supplier.
      */
     public static <T> StreamableSupplier<List<T>> simpleList(Consumer<SimpleListSupplierBuilder<T>> configuration) {
-        return SupplierBuilder.buildConfig(simpleList(), configuration);
+        return SimpleListSupplierBuilder.<T>simpleList().build(configuration);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.util;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
@@ -16,7 +17,7 @@ import static java.util.stream.Collectors.toMap;
  * @param <K> The type of the keys,
  * @param <V> The type of the values.
  */
-public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<K,V>> {
+public class SimpleMapSupplierBuilder<K,V> implements ConfigurableSupplierBuilder<Map<K,V>, SimpleMapSupplierBuilder<K, V>> {
 
     private StreamableSupplier<? extends Map.Entry<? extends K, ? extends V>> entrySupplier;
     private Supplier<Integer> numberOfEntries = fix(0);
@@ -55,18 +56,7 @@ public class SimpleMapSupplierBuilder<K,V> implements SupplierBuilder<Map<K,V>> 
      * @param <V> The type of the values in the supplied maps.
      * @return The SupplierBuilder for configuration.
      */
-    public static <K, V> SimpleMapSupplierBuilder<K,V> map(){
+    public static <K, V> SimpleMapSupplierBuilder<K,V> mapSupplierBuilder(){
         return new SimpleMapSupplierBuilder<>();
-    }
-
-    /**
-     * Convenience method, creating a Supplier based on the passed in configuration.
-     * @param configuration a consumer that will apply the configuration.
-     * @param <K> The type of the keys in the supplied maps.
-     * @param <V> The type of the values in the supplied maps.
-     * @return The configured supplier.
-     */
-    public static <K,V> Supplier<Map<K, V>> configure(Consumer<SimpleMapSupplierBuilder<K,V>> configuration){
-        return SupplierBuilder.buildConfig(map(), configuration);
     }
 }

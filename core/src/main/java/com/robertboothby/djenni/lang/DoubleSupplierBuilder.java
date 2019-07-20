@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.lang;
 
-import com.robertboothby.djenni.SupplierBuilder;
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
@@ -8,13 +8,12 @@ import com.robertboothby.djenni.sugar.And;
 
 import java.util.function.Consumer;
 
-import static com.robertboothby.djenni.SupplierBuilder.buildConfig;
 
 /**
  * Simple implementation of a Double Supplier. It cannot supply the full range of values as it works on an exclusive basis
  * and can only gwnerate a range of values constrained by {@link Double#MAX_VALUE}.
  */
-public class DoubleSupplierBuilder implements SupplierBuilder<Double> {
+public class DoubleSupplierBuilder implements ConfigurableSupplierBuilder<Double, DoubleSupplierBuilder> {
 
     private Distribution<Double, Double> distribution = SimpleRandomDoubleDistribution.UNIFORM;
 
@@ -67,6 +66,6 @@ public class DoubleSupplierBuilder implements SupplierBuilder<Double> {
      * @return A configured StreamableSupplier of Doubles.
      */
     public static StreamableSupplier<Double> doubles(Consumer<DoubleSupplierBuilder> configuration){
-        return buildConfig(doubles(), configuration);
+        return doubles().build(configuration);
     }
 }

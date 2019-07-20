@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.common;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
@@ -16,7 +17,7 @@ import static java.util.stream.StreamSupport.stream;
 /**
  * Builder class for a Supplier of Names.
  */
-public class NameSupplierBuilder implements SupplierBuilder<Name> {
+public class NameSupplierBuilder implements ConfigurableSupplierBuilder<Name, NameSupplierBuilder> {
 
     /**
      * An array containing the default given name list from Given_Names.csv.
@@ -78,17 +79,6 @@ public class NameSupplierBuilder implements SupplierBuilder<Name> {
     }
 
     /**
-     * Convenience method to get a builder instance with the desired configuration.
-     * @param configuration a consumer that applies the configuration to the newly created builder.
-     * @return the newly created, configured builder.
-     */
-    public static NameSupplierBuilder nameSupplierBuilder(Consumer<NameSupplierBuilder> configuration){
-        NameSupplierBuilder builder = nameSupplierBuilder();
-        configuration.accept(builder);
-        return builder;
-    }
-
-    /**
      * Convenience method to get a Supplier instance with default configuration.
      * @return A new Name Supplier with the desired configuration.
      */
@@ -102,6 +92,6 @@ public class NameSupplierBuilder implements SupplierBuilder<Name> {
      * @return the newly created Name Supplier.
      */
     public static Supplier<Name> names(Consumer<NameSupplierBuilder> configuration){
-        return nameSupplierBuilder(configuration).build();
+        return nameSupplierBuilder().build(configuration);
     }
 }
