@@ -23,6 +23,9 @@ public class DoubleSupplierBuilder implements ConfigurableSupplierBuilder<Double
 
     @Override
     public StreamableSupplier<Double> build() {
+        Double minimumValue = this.minimumValue;
+        Double range = this.range;
+        Distribution<Double, Double> distribution = this.distribution;
         return () -> minimumValue + distribution.generate(range);
     }
 

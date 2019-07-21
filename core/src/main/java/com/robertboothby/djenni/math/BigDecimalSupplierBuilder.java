@@ -2,14 +2,13 @@ package com.robertboothby.djenni.math;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.sugar.And;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.DoubleSummaryStatistics;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.math.BigIntegerSupplierBuilder.bigIntegers;
@@ -22,14 +21,14 @@ import static com.robertboothby.djenni.math.BigIntegerSupplierBuilder.bigInteger
  */
 public class BigDecimalSupplierBuilder implements ConfigurableSupplierBuilder<BigDecimal, BigDecimalSupplierBuilder> {
 
-    private BigDecimal minimumValue = BigDecimal.ZERO;
+    private BigDecimal minimumInclusiveValue = BigDecimal.ZERO;
     private BigDecimal maximumExclusiveValue = BigDecimal.TEN;
     private Supplier<Integer> scaleSupplier = fix(1);
 
 
     @Override
     public StreamableSupplier<BigDecimal> build() {
-        BigDecimal actualMinimumValue = minimumValue;
+        BigDecimal actualMinimumValue = minimumInclusiveValue;
         BigDecimal actualMaximumExclusiveValue = maximumExclusiveValue;
 
         //Create new references.
@@ -64,8 +63,8 @@ public class BigDecimalSupplierBuilder implements ConfigurableSupplierBuilder<Bi
                 .multiply(exponent);
     }
 
-    public BigDecimalSupplierBuilder minimumValue(BigDecimal minimumValue) {
-        this.minimumValue = minimumValue;
+    public BigDecimalSupplierBuilder minimumInclusiveValue(BigDecimal minimumValue) {
+        this.minimumInclusiveValue = minimumValue;
         return this;
     }
 
@@ -77,6 +76,14 @@ public class BigDecimalSupplierBuilder implements ConfigurableSupplierBuilder<Bi
     public BigDecimalSupplierBuilder scale(Supplier<Integer> scaleSupplier) {
         this.scaleSupplier = scaleSupplier;
         return this;
+    }
+
+    public And<BigDecimalSupplierBuilder, BigDecimal> between(BigDecimal minimumInclusiveValue) {
+        return maximumExclusiveValue -> {
+            this.minimumInclusiveValue = minimumInclusiveValue;
+            this.maximumExclusiveValue = maximumExclusiveValue;
+            return this;
+        };
     }
 
     public static BigDecimalSupplierBuilder bigDecimals(){

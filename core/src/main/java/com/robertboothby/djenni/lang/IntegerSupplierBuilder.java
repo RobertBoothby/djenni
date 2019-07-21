@@ -30,6 +30,11 @@ public class IntegerSupplierBuilder implements ConfigurableSupplierBuilder<Integ
     private boolean sequential = false;
 
     public StreamableSupplier<Integer> build() {
+        int minInclusiveValue = this.minInclusiveValue;
+        int maxExclusiveValue = this.maxExclusiveValue;
+        Distribution<Integer, Integer> distribution = this.distribution;
+        boolean sequential = this.sequential;
+
         if(maxExclusiveValue - minInclusiveValue == 1){
             return fix(minInclusiveValue);
         } else if (sequential){

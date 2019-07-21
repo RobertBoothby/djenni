@@ -72,7 +72,7 @@ public class ExplicitlyBiassedSupplierBuilder<T> implements ConfigurableSupplier
 
     @Override
     public ExplicitlyBiassedSupplier<T> build() {
-        return new ExplicitlyBiassedSupplier<T>(biaslist);
+        return new ExplicitlyBiassedSupplier<T>(new ArrayList<>(biaslist));
     }
 
     /**

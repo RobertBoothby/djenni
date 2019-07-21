@@ -69,7 +69,7 @@ public class SupplierHelper {
                 .between(0)
                 .and(values.length)
                 .withDistribution(distribution));
-        T[] copy = Arrays.copyOf(values, values.length);
+        T[] copy = copy(values);
         return () -> copy[selectionGenerator.get()];
     }
 
@@ -187,18 +187,32 @@ public class SupplierHelper {
      */
     @SafeVarargs
     public static <T> StreamableSupplier<T> fromRandomSuppliers(Supplier<Integer> positionSupplier, Supplier<T> ... suppliers) {
-        return () -> suppliers[positionSupplier.get()].get();
+        Supplier<T>[] suppliersCopy = copy(suppliers);
+        return () -> suppliersCopy[positionSupplier.get()].get();
+    }
+
+    public static <T> T[] copy(T ... values){
+        return Arrays.copyOf(values, values.length);
+    }
+
+    public static char[] copy(char ... values){
+        return Arrays.copyOf(values, values.length);
     }
 
     /**
-     * Create a supplier wrapping another supplier that allows you to 'peek' at the values as they are supplied. It is
-     * strongly advised that you do not alter the values as you peek at them as this may cause thread safety and other
-     * issues.
+     * <p>
+     *     Create a supplier wrapping another supplier that allows you to 'peek' at the values as they are supplied. It is
+     *     strongly advised that you do not alter the values as you peek at them as this may cause thread safety and other
+     *     issues.
+     * </p>
+     * <p>
+     *     This can be used to create a set of linked values within a domain model but I have already provided an implementation
+     *     {@link LinkableSupplier}.
+     * </p>
      * @param supplier The supplier to wrap and peek at.
      * @param peeker The consumer that will peek at the values created by the wrapped supplier
      * @param <T> The type of the values being supplied.
      * @return A supplier that will allow peeking at the values.
-     * TODO work out how to do a linked, thread safe consumer.
      */
     public static <T> StreamableSupplier<T> peek(Supplier<T> supplier, Consumer<T> peeker) {
         return () -> {

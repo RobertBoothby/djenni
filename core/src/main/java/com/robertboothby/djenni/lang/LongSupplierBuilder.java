@@ -30,6 +30,9 @@ public class LongSupplierBuilder implements ConfigurableSupplierBuilder<Long, Lo
     private Distribution<Long, Long> distribution = DISTRIBUTION_DEFAULT;
 
     public StreamableSupplier<Long> build() {
+        long minInclusiveValue = this.minInclusiveValue;
+        long maxExclusiveValue = this.maxExclusiveValue;
+        Distribution<Long, Long> distribution = this.distribution;
         if(maxExclusiveValue - minInclusiveValue == 1){
             return SupplierHelper.fix(minInclusiveValue);
         } else {

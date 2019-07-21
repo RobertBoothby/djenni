@@ -4,6 +4,7 @@ import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
@@ -30,6 +31,7 @@ public class CharacterSupplierBuilder implements ConfigurableSupplierBuilder<Cha
     private Distribution<Integer, Integer> distribution = DEFAULT_CHARACTER_SELECTION_DISTRIBUTION;
 
     public StreamableSupplier<Character> build() {
+        char[] characters = SupplierHelper.copy(this.characters);
         if(characters.length == 1){
             return fix(characters[0]);
         } else if (characters.length > 1) {

@@ -24,8 +24,8 @@ public class BooleanSupplierBuilder implements ConfigurableSupplierBuilder<Boole
     }
 
     public StreamableSupplier<Boolean> build() {
-        return () -> distribution.generate(1.0D) < 0.5D;
-
+        Distribution<Double, Double> actualDistribution = distribution;
+        return () -> actualDistribution.generate(1.0D) < 0.5D;
     }
 
     /**

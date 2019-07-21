@@ -3,6 +3,7 @@ package com.robertboothby.djenni.math;
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.lang.ByteSupplierBuilder;
+import com.robertboothby.djenni.sugar.And;
 
 import java.math.BigInteger;
 import java.util.LongSummaryStatistics;
@@ -28,7 +29,7 @@ public class BigIntegerSupplierBuilder implements ConfigurableSupplierBuilder<Bi
         byte mostSignificantByteMask = remainderBits == 0 ? (byte) 0 : (byte)(-1 >>> (32 - remainderBits));
 
         StreamableSupplier<Byte> byteSupplier = ByteSupplierBuilder.byteSupplier().build();
-        final BigInteger actualMinimum = minimumInclusiveValue;
+        final BigInteger actualMinimumInclusiveValue = minimumInclusiveValue;
         return () -> {
             BigInteger offsetFromMinimum = range;
             while(offsetFromMinimum.compareTo(range) >= 0) {
@@ -39,7 +40,15 @@ public class BigIntegerSupplierBuilder implements ConfigurableSupplierBuilder<Bi
                 valueBytes[0] &= mostSignificantByteMask;
                 offsetFromMinimum = new BigInteger(valueBytes);
             }
-            return actualMinimum.add(offsetFromMinimum);
+            return actualMinimumInclusiveValue.add(offsetFromMinimum);
+        };
+    }
+
+    public And<BigIntegerSupplierBuilder, BigInteger> between(BigInteger minimumInclusiveValue) {
+        return maximumExclusiveValue -> {
+            this.minimumInclusiveValue = minimumInclusiveValue;
+            this.maximumExclusiveValue = maximumExclusiveValue;
+            return this;
         };
     }
 
