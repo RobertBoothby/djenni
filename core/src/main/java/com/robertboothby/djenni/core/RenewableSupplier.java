@@ -9,11 +9,12 @@ import java.util.function.Supplier;
  */
 public class RenewableSupplier<T> implements StreamableSupplier<T> {
 
-    private final Supplier<Supplier<T>> baseSupplier;
+    private final Supplier<Supplier<T>> supplierSupplier;
     private Supplier<T> currentSupplier;
 
-    public RenewableSupplier(Supplier<Supplier<T>> baseSupplier) {
-        this.baseSupplier = baseSupplier;
+    @SuppressWarnings("unchecked")
+    public RenewableSupplier(Supplier<? extends Supplier<? extends T>> supplierSupplier) {
+        this.supplierSupplier = (Supplier<Supplier<T>>) supplierSupplier;
         renew();
     }
 
@@ -23,6 +24,10 @@ public class RenewableSupplier<T> implements StreamableSupplier<T> {
     }
 
     public void renew(){
-        this.currentSupplier = baseSupplier.get();
+        this.currentSupplier = supplierSupplier.get();
+    }
+
+    public static <T> RenewableSupplier<T> renewable(Supplier< ? extends Supplier<? extends T>> supplierSupplier ) {
+        return new RenewableSupplier<T>(supplierSupplier);
     }
 }

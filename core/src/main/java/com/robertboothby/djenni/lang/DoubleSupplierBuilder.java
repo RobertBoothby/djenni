@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 /**
  * Simple implementation of a Double Supplier. It cannot supply the full range of values as it works on an exclusive basis
- * and can only gwnerate a range of values constrained by {@link Double#MAX_VALUE}.
+ * and can only generate a range of values constrained by {@link Double#MAX_VALUE}.
  */
 public class DoubleSupplierBuilder implements ConfigurableSupplierBuilder<Double, DoubleSupplierBuilder> {
 

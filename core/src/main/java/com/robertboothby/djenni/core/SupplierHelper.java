@@ -5,6 +5,7 @@ import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,9 +25,9 @@ public class SupplierHelper {
 
     /**
      * Get a Supplier instance that will return a completely fixed value for all time. It will return the exact object.
-     * @param fixedValue the fix value that will always be returned.
-     * @param <T> The type of the fix value and so the supplier.
-     * @return a Supplier that will always return the fix value.
+     * @param fixedValue the fixed value that will always be returned.
+     * @param <T> The type of the fixed value and so the supplier.
+     * @return a Supplier that will always return the fixed value.
      */
     public static <T> StreamableSupplier<T> fix(final T fixedValue){
         return () -> fixedValue;
@@ -42,6 +43,18 @@ public class SupplierHelper {
     @SafeVarargs
     public static <T> StreamableSupplier<T> fromValues(T ...  values) {
         return fromValues(UNIFORM, values);
+    }
+
+    /**
+     * Create a supplier from a collection with an equal chance of generating any of the values.
+     * @see SimpleRandomIntegerDistribution#UNIFORM
+     * @param values The collection of values.
+     * @param <T> The type of the values in the collection and being returned.
+     * @return A supplier supplying values from the collection.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> StreamableSupplier<T> fromCollection(Collection<T> values){
+        return derived($ -> (T)$, fromValues(values.toArray()));
     }
 
     /**
@@ -191,6 +204,7 @@ public class SupplierHelper {
         return () -> suppliersCopy[positionSupplier.get()].get();
     }
 
+    @SafeVarargs
     public static <T> T[] copy(T ... values){
         return Arrays.copyOf(values, values.length);
     }
@@ -214,7 +228,7 @@ public class SupplierHelper {
      * @param <T> The type of the values being supplied.
      * @return A supplier that will allow peeking at the values.
      */
-    public static <T> StreamableSupplier<T> peek(Supplier<T> supplier, Consumer<T> peeker) {
+    public static <T> StreamableSupplier<T> peek(Supplier<? extends T> supplier, Consumer<T> peeker) {
         return () -> {
             T value = supplier.get();
             peeker.accept(value);
