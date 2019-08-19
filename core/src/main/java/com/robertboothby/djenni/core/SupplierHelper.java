@@ -170,7 +170,7 @@ public class SupplierHelper {
     }
 
     /**
-     * Create a stream from a given supplier.
+     * Create a limited stream from a given supplier.
      * @param supplier the supplier
      * @param numberOfValues the number of value to be generated
      * @param <T> The type of the stream.
@@ -178,6 +178,16 @@ public class SupplierHelper {
      */
     public static <T> Stream<T> stream(Supplier<T> supplier, long numberOfValues){
         return Stream.generate(supplier).limit(numberOfValues);
+    }
+
+    /**
+     * Create an infinite stream from a given supplier.
+     * @param supplier the supplier
+     * @param <T> The type of the stream.
+     * @return a stream taking values from the supplier.
+     */
+    public static <T> Stream<T> stream(Supplier<T> supplier){
+        return Stream.generate(supplier);
     }
 
     /**
