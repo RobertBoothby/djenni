@@ -1,12 +1,13 @@
 package com.robertboothby.djenni.util;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class MapSupplierBuilder<M extends Map<? extends K, ? extends V>, K, V> implements SupplierBuilder<M> {
+public class MapSupplierBuilder<M extends Map<? extends K, ? extends V>, K, V> implements ConfigurableSupplierBuilder<M, MapSupplierBuilder<M, K, V>> {
 
     private final MapType<M, K, V> mapType;
     private Supplier<? extends M> contentSupplier;

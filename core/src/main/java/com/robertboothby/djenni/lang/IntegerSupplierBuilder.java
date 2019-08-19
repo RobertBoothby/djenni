@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.lang;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
@@ -17,7 +18,7 @@ import static com.robertboothby.djenni.core.SupplierHelper.fix;
  * TODO consider the range of values.
  * @author robertboothby
  */
-public class IntegerSupplierBuilder implements SupplierBuilder<Integer> {
+public class IntegerSupplierBuilder implements ConfigurableSupplierBuilder<Integer, IntegerSupplierBuilder> {
 
     public static final int MIN_INCLUSIVE_VALUE_DEFAULT = 0;
     public static final int MAX_EXCLUSIVE_VALUE_DEFAULT = Integer.MAX_VALUE;
@@ -29,6 +30,11 @@ public class IntegerSupplierBuilder implements SupplierBuilder<Integer> {
     private boolean sequential = false;
 
     public StreamableSupplier<Integer> build() {
+        int minInclusiveValue = this.minInclusiveValue;
+        int maxExclusiveValue = this.maxExclusiveValue;
+        Distribution<Integer, Integer> distribution = this.distribution;
+        boolean sequential = this.sequential;
+
         if(maxExclusiveValue - minInclusiveValue == 1){
             return fix(minInclusiveValue);
         } else if (sequential){

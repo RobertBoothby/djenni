@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.core;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.sugar.And;
 
@@ -17,7 +18,7 @@ import static java.util.stream.Collectors.toList;
  * This SupplierBuilder builds a Supplier that concatenates the {@link Object#toString()}} results of multiple other
  * Suppliers together to supply a String.
  */
-public class ConcatenatingStringSupplierBuilder implements SupplierBuilder<String> {
+public class ConcatenatingStringSupplierBuilder implements ConfigurableSupplierBuilder<String, ConcatenatingStringSupplierBuilder> {
 
     private List<Supplier<?>> suppliers = new ArrayList<>();
 

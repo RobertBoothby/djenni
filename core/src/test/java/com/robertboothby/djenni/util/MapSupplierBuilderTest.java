@@ -20,7 +20,7 @@ public class MapSupplierBuilderTest {
     public void shouldBuildHashMap(){
         //Given
         SimpleMapSupplierBuilder<Integer, String> mapSupplierBuilder =
-                SimpleMapSupplierBuilder.<Integer, String>map()
+                SimpleMapSupplierBuilder.<Integer, String>mapSupplierBuilder()
                         .withEntries(
                                 supplyEntries(
                                         integerSupplier()

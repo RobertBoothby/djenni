@@ -14,7 +14,7 @@ public interface StreamableSupplier<T> extends Supplier<T> {
      * @param numberOfValues The number of values from this supplier to stream.
      * @return A Stream instance derived from this supplier.
      */
-    default Stream<T> stream(int numberOfValues){
+    default Stream<T> stream(long numberOfValues){
         return SupplierHelper.stream(this, numberOfValues);
     }
 }

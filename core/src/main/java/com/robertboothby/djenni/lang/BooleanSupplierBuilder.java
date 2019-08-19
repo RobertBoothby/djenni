@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.lang;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.ExplicitlyBiassedSupplier;
 import com.robertboothby.djenni.core.StreamableSupplier;
@@ -13,7 +14,7 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistributi
  *
  * @author robertboothby
  */
-public class BooleanSupplierBuilder implements SupplierBuilder<Boolean> {
+public class BooleanSupplierBuilder implements ConfigurableSupplierBuilder<Boolean, BooleanSupplierBuilder> {
 
     private static final Distribution<Double, Double> DISTRIBUTION_DEFAULT = SimpleRandomDoubleDistribution.UNIFORM;
     private Distribution<Double, Double> distribution = DISTRIBUTION_DEFAULT;
@@ -23,8 +24,8 @@ public class BooleanSupplierBuilder implements SupplierBuilder<Boolean> {
     }
 
     public StreamableSupplier<Boolean> build() {
-        return () -> distribution.generate(1.0D) < 0.5D;
-
+        Distribution<Double, Double> actualDistribution = distribution;
+        return () -> actualDistribution.generate(1.0D) < 0.5D;
     }
 
     /**

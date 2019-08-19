@@ -19,7 +19,7 @@ public class SimpleMapSupplierBuilderTest {
     @Test
     public void shouldCreateAMap(){
         //Given
-        Supplier<Map<String,String>> mapSupplier = SimpleMapSupplierBuilder.configure($ -> $
+        Supplier<Map<String,String>> mapSupplier = SimpleMapSupplierBuilder.<String, String>mapSupplierBuilder().build($ -> $
                 .withNumberOfEntries(fix(1))
                 .withEntries(fix(mapEntry("TEST", "TEST")))
         );

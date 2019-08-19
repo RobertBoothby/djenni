@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.util;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
  * @param <T> The type of the Collection.
  * @param <U> The type of the values to be held in the collection.
  */
-public class CollectionSupplierBuilder<T extends Collection<? extends U>, U> implements SupplierBuilder<T> {
+public class CollectionSupplierBuilder<T extends Collection<? extends U>, U> implements ConfigurableSupplierBuilder<T, CollectionSupplierBuilder<T, U>> {
 
     private final CollectionType<T, U> collectionType;
     private Supplier<? extends List<? extends U>> contentSupplier;
