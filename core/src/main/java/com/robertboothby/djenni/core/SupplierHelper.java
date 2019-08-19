@@ -247,4 +247,14 @@ public class SupplierHelper {
         );
     }
 
+    /**
+     * Takes a supplier and derives a new supplier from it using {@link Object#toString()}.
+     * @param supplier The supplier to derive a string from.
+     * @param <T> The type of the value being supplied.
+     * @return A supplier that returns strings derived from the underlying supplier.
+     */
+    public static <T> StreamableSupplier<String> asString(Supplier<T> supplier){
+        return derived(Object::toString, supplier);
+    }
+
 }
