@@ -23,7 +23,7 @@ public class MerchantCategoryCode {
   }
      */
     public MerchantCategoryCode(
-            @JsonProperty("mcc_code") int mccCode,
+            @JsonProperty("mcc") int mccCode,
             @JsonProperty("edited_description") String editedDescription,
             @JsonProperty("combined_description") String combinedDescription,
             @JsonProperty("usda_description") String usdaDescription,
