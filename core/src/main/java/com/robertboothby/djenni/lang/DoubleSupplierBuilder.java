@@ -3,7 +3,7 @@ package com.robertboothby.djenni.lang;
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
-import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;         
+import com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution;
 import com.robertboothby.djenni.sugar.And;
 
 import java.util.function.Consumer;

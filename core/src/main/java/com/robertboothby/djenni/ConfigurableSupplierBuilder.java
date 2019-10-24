@@ -4,7 +4,6 @@ import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.util.Configurable;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Multiple Inheritance interface that combines the SupplierBuilder and Configurable interfaces.

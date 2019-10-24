@@ -1,11 +1,10 @@
 package com.robertboothby.djenni.distribution.simple;
 
 import com.robertboothby.djenni.distribution.Distribution;
-import org.hamcrest.Description;
 
 /**
  * This class holds the current set of simple integer distributions. All the distributions are based on those found in
- * {@link com.robertboothby.djenni.distribution.simple.SimpleRandomBigIntegerDistribution}.
+ * {@link com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution}.
  * @author robertboothby
  */
 public class SimpleRandomIntegerDistribution implements Distribution<Integer, Integer> {

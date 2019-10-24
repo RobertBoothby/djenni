@@ -1,14 +1,11 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
-import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.SupplierHelper;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomLongDistribution;
 import com.robertboothby.djenni.sugar.And;
-
-import java.util.function.Supplier;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;

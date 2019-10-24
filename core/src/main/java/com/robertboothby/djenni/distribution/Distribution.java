@@ -1,7 +1,5 @@
 package com.robertboothby.djenni.distribution;
 
-import org.hamcrest.SelfDescribing;
-
 /**
  * <p>Interface for distributions, objects that provide sources of randomness for Suppliers.</p>
  *
@@ -11,5 +9,5 @@ import org.hamcrest.SelfDescribing;
  */
 public interface Distribution<T  extends Number, U extends Number> {
 
-    public T generate(U bound);
+    T generate(U bound);
 }

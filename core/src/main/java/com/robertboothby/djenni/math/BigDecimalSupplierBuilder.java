@@ -79,11 +79,9 @@ public class BigDecimalSupplierBuilder implements ConfigurableSupplierBuilder<Bi
     }
 
     public And<BigDecimalSupplierBuilder, BigDecimal> between(BigDecimal minimumInclusiveValue) {
-        return maximumExclusiveValue -> {
-            this.minimumInclusiveValue = minimumInclusiveValue;
-            this.maximumExclusiveValue = maximumExclusiveValue;
-            return this;
-        };
+        return maximumExclusiveValue ->
+                minimumInclusiveValue(minimumInclusiveValue)
+                        .maximumExclusiveValue(maximumExclusiveValue);
     }
 
     public static BigDecimalSupplierBuilder bigDecimals(){

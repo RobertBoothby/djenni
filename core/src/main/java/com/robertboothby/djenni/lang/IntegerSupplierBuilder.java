@@ -1,15 +1,12 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
-import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 import com.robertboothby.djenni.sugar.And;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 

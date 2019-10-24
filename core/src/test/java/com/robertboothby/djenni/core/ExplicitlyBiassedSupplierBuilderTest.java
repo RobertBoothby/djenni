@@ -1,12 +1,10 @@
 package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.core.util.Collections;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder.explicitlyBiassedSupplierFor;
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
-import static com.robertboothby.djenni.core.util.Collections.asSetOfCharacters;
 import static com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution.UNIFORM;
 import static com.robertboothby.djenni.matcher.Matchers.eventuallySuppliesAllValues;
 import static org.hamcrest.MatcherAssert.assertThat;

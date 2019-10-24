@@ -1,11 +1,9 @@
 package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
-import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;

@@ -1,7 +1,6 @@
 package com.robertboothby.djenni.lang;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
-import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.CharacterStrings;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.SupplierHelper;

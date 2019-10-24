@@ -1,10 +1,6 @@
 package com.robertboothby.djenni.core;
 
-import com.robertboothby.djenni.util.SimpleListSupplierBuilder;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.ConcatenatingStringSupplierBuilder.supplierOfConcatenatedValues;
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
