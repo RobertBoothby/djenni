@@ -5,12 +5,9 @@ import org.junit.Test;
 
 import java.util.function.Supplier;
 
-import static com.robertboothby.djenni.core.SupplierHelper.derived;
 import static com.robertboothby.djenni.core.SupplierHelper.fromEnum;
 import static com.robertboothby.djenni.example.PostcodeSupplierBuilder.postcodeSupplier;
 import static com.robertboothby.djenni.lang.StringSupplierBuilder.arbitraryString;
-import static com.robertboothby.djenni.util.CollectionSupplierBuilder.collection;
-import static com.robertboothby.djenni.util.CollectionTypes.arrayList;
 import static com.robertboothby.djenni.util.SimpleListSupplierBuilder.simpleList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

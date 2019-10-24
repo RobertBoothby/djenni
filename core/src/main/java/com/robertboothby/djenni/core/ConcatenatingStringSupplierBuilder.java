@@ -1,8 +1,6 @@
 package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
-import com.robertboothby.djenni.SupplierBuilder;
-import com.robertboothby.djenni.sugar.And;
 
 import java.util.ArrayList;
 import java.util.Collections;

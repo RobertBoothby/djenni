@@ -80,11 +80,7 @@ public class EasyCompare<T extends Comparable<T>> {
      * value falls in the range (inclusive)
      */
     public And<Boolean, T> between(final T lowComparator) {
-        return new And<Boolean, T>() {
-            public Boolean and(T highComparator) {
-                return lessThanOrEqualTo(highComparator) && greaterThanOrEqualTo(lowComparator);
-            }
-        };
+        return highComparator -> lessThanOrEqualTo(highComparator) && greaterThanOrEqualTo(lowComparator);
     }
 
     /**

@@ -1,14 +1,11 @@
 package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
-import com.robertboothby.djenni.SupplierBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static com.robertboothby.djenni.core.SupplierHelper.fix;
 
 /**
  * This builder allows for the configuration of ExplicitlyBiassedSupplier instances.

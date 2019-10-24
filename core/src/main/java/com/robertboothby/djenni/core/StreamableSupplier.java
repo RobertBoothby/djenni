@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.core;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -37,4 +38,14 @@ public interface StreamableSupplier<T> extends Supplier<T> {
         return SupplierHelper.derived(derivation, this);
     }
 
+    /**
+     * Return a new Supplier derived from this supplier using the function passed in and a second supplier.
+     * @param derivation The derivation function.
+     * @param otherSupplier The other supplier.
+     * @param <R> The type returned from the derivation function.
+     * @return A new Supplier derived from this one and the other.
+     */
+    default <U,R> StreamableSupplier<R> derive(BiFunction<T, U ,R> derivation, Supplier<U> otherSupplier){
+        return SupplierHelper.derived(derivation, this, otherSupplier);
+    }
 }
