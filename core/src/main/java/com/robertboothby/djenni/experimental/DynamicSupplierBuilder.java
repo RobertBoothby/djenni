@@ -3,60 +3,118 @@ package com.robertboothby.djenni.experimental;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
- * @param <T>
+ * //TODO don't forget bean setters.
+ *
+ * @param <R>
  */
-public class DynamicSupplierBuilder<T> implements SupplierBuilder<T> {
+public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
-    private final Class<T> suppliedClass;
+    private final Class<R> suppliedClass;
     private final Map<String, Supplier> getters = new HashMap<>();
+    private final List<Parameter> parameterList = new ArrayList<>();
+    private Function<BuildContext, R> functionThatBuildsTheInstance = $ -> null;
 
-    public DynamicSupplierBuilder(Class<T> suppliedClass) {
+
+    public DynamicSupplierBuilder(Class<R> suppliedClass) {
         this.suppliedClass = suppliedClass;
+
+        Arrays.stream(suppliedClass.getConstructors())
+                .filter($ -> Modifier.isPublic($.getModifiers()))
+                .min((o1, o2) -> -(o1.getParameterCount() - o2.getParameterCount()))
+                .ifPresent(constructor -> useConstructor((Constructor<R>) constructor));
     }
 
     @Override
-    public StreamableSupplier<T> build() {
-        return null;
+    public StreamableSupplier<R> build() {
+        BuildContext normalBuildContext = null;
+        return () -> functionThatBuildsTheInstance.apply(normalBuildContext);
     }
 
-    public static <T> StreamableSupplier<T> supplierOf(Class<T> suppliedClass, SupplierParameterMap<T> supplierParameterMap){
-        return new DynamicSupplierBuilder<T>(suppliedClass).build();
+    private void useConstructor(Constructor<R> constructor) {
+        MethodType constructorMethodType = MethodType.methodType(void.class, constructor.getParameterTypes());
+        try {
+            MethodHandle constructorMethodHandle = MethodHandles.publicLookup().findConstructor(constructor.getDeclaringClass(), constructorMethodType);
+            useFunction($ -> {
+                try {
+                    return (R) constructorMethodHandle.invokeExact(Arrays.stream(constructor.getParameters()).map(parameter -> $.p(parameter.getName(), parameter.getClass())).toArray());
+                } catch (Throwable throwable) {
+                    throw new RuntimeException(throwable);
+                }
+            });
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public <G> For<T,G> willSupply(Supplier<T> supplier){
-        return $ -> {
-            //TODO verify the method is one of the ones declared on the supplied class!
-            getters.put($.getMethodName(), supplier);
-            return this;
-        };
-    }
+    /**
+     * Use this method to select a particular constructor by using the constructor to call it. The parameters of the
+     * constructor must be defined using the $ methods that allow this class to identify them. The parameters may not
+     * need to be explicitly named as they will be automatically derived from the parameter names of the constructor.
+     * If they are not explicitly named it will only be possible to re-configure their Suppliers using the getter method
+     * Lambda syntax if the constructor parameter names correspond exactly with the property names of the getters as defined in the
+     * JavaBean specification. Otherwise you will have to re-configure their suppliers using their property names.
+     *
+     * @param constructorToBeMapped a Supplier defining the constructor to be mapped.
+     */
+    public DynamicSupplierBuilder<R> useConstructor(Function<BuildContext, R> constructorToBeMapped) {
+        IntrospectionBuildContext introspectionBuildContext = new IntrospectionBuildContext();
+        constructorToBeMapped.apply(introspectionBuildContext);
 
-    public DynamicSupplierBuilder<T> constructorSupplier(SupplierParameterMap<T> supplierParameterMap){
-        //Do something with the constructor parameter mapping.
+        List<Parameter> parameterList = introspectionBuildContext.getParameterList();
+        if (parameterList.stream().anyMatch($ -> $.getMappedName() == null)) { //try to derive the underlying parameter name from a matching constructor.
+            try {
+                Class[] constructorParameterClasses = parameterList.stream().map(Parameter::getParameterClass).toArray(Class[]::new);
+                Constructor<R> constructor = suppliedClass.getConstructor(constructorParameterClasses);
+                java.lang.reflect.Parameter[] parameters = constructor.getParameters();
+                for (int i = 0; i < parameters.length; i++) {
+                    parameterList.get(i).setParameterName(parameters[i].getName());
+                }
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException("No constructor identifiable from the parameters called on the supplier and not all the property names are explicitly defined ", e);
+            }
+        }
+        this.functionThatBuildsTheInstance = constructorToBeMapped;
         return this;
     }
 
-    public interface For<T, G>{
-        DynamicSupplierBuilder<T> forGetter(IntrospectableSupplier<G> getter);
+    /**
+     * Use this method to supply an arbitrary function to be used when constructing instances for this supplier. It
+     * will not attempt to infer names for the parameters and so you must either explicitly define the names or you can
+     * only specify a new Supplier for the parameter by the 'position' of the parameter in the supplied function.
+     *
+     * @param functionToBeUsed the function to be used when constructing this
+     * @return
+     */
+    public DynamicSupplierBuilder<R> useFunction(Function<BuildContext, R> functionToBeUsed) {
+        IntrospectionBuildContext introspectionBuildContext = new IntrospectionBuildContext();
+        functionToBeUsed.apply(introspectionBuildContext);
+
+        List<Parameter> parameterList = introspectionBuildContext.getParameterList();
+
+        this.functionThatBuildsTheInstance = functionToBeUsed;
+        return this;
     }
 
     public static void main(String[] args) {
-        SupplierParameterMap<TestClass> supplierParameterMap = new SupplierParameterMap<>() {{
-            mapSupplier(() -> new TestClass($("One"), $(Integer.class)));
-        }};
+        DynamicSupplierBuilder<TestClass> supplierParameterMap =
+                new DynamicSupplierBuilder<>(TestClass.class)
+                        .useConstructor($ -> new TestClass($.p("One"), $.p(Integer.class)))/*.for(TestClass::getValueOne).use(arbitraryString().ofLength....*/;
     }
-
 
     public static class TestClass {
         private final String valueOne;
+
         private final Integer valueTwo;
 
 
@@ -72,98 +130,88 @@ public class DynamicSupplierBuilder<T> implements SupplierBuilder<T> {
         public Integer getValueTwo() {
             return valueTwo;
         }
+
     }
 
-    public static abstract class SupplierParameterMap<T> {
+    public interface BuildContext {
 
-        private final List<Parameter> parameterList = new ArrayList<>();
-        private Supplier<T> mappedSupplier;
-
-        protected void mapSupplier(Supplier<T> supplierToBeMapped) {
-            supplierToBeMapped.get(); //First pass to get the parameter list...
-            //Assuming a constructor as a first pass, look for mathing constructor.
-
-            this.mappedSupplier = supplierToBeMapped;
-        }
-
-        public <P> P $(Class<P> parameterClass){
-            addParameterToConstructorList(new Parameter<>(parameterClass));
-            return null;
-        }
+        /**
+         * Use this parameter definition when there is no bad side effect to having a null value for the parameter.
+         *
+         * @param parameterClass The class of the parameter.
+         * @param <P>            The type of the parameter
+         * @return a null value.
+         */
+        <P> P p(Class<P> parameterClass);
 
         /**
          * Use this parameter definition when there is no bad side effect to having a null value for the parameter and
-         * you want to override the name of the parameter to make auto-mapping easier oryour code more legible.
-         * @param name an override to the default name of the parameter to the constructor to help with the mapping.
+         * you want to override the name of the parameter to make auto-mapping work or your code more legible.
+         *
+         * @param name           an override to the default name of the parameter to the constructor to help with the mapping.
          * @param parameterClass The class of the parameter.
-         * @param <P> The type of the parameter
+         * @param <P>            The type of the parameter
          * @return a null value.
          */
-        public <P> P $(String name, Class<P> parameterClass){
-            addParameterToConstructorList(new Parameter<>(name, parameterClass));
-            return null;
-        }
+        <P> P p(String name, Class<P> parameterClass);
 
         /**
          * Use this parameter definition when you want to supply a default value that can be overridden.
+         *
          * @param fixedParameter a fixed value that can be overridden.
-         * @param <P> The type of the parameter.
+         * @param <P>            The type of the parameter.
          * @return the fixed value.
          */
-        public <P> P $(P fixedParameter){
-            addParameterToConstructorList(new Parameter<>(fixedParameter));
-            return fixedParameter;
-        }
+        <P> P p(P fixedParameter);
 
         /**
          * Use this parameter definition when you want to supply a default value that can be overridden and
-         * you want to override the name of the parameter to make auto-mapping easier oryour code more legible.
-         * @param name an override to the default name of the parameter to the constructor to help with the mapping.
+         * you want to override the name of the parameter to make auto-mapping work or your code more legible.
+         *
+         * @param name           an override to the default name of the parameter to the constructor to help with the mapping.
          * @param fixedParameter a fixed value that can be overridden.
-         * @param <P> The type of the parameter.
+         * @param <P>            The type of the parameter.
          * @return the fixed value.
          */
-        public <P> P $(String name, P fixedParameter){
-            addParameterToConstructorList(new Parameter<>(name, fixedParameter));
-            return fixedParameter;
+        <P> P p(String name, P fixedParameter);
+    }
+
+    /**
+     * This execution context is used when the build constructor or function is being introspected.
+     */
+    public class IntrospectionBuildContext implements BuildContext {
+
+        public List<Parameter> getParameterList() {
+            return parameterList;
         }
 
-        /**
-         * Use this parameter definition when you want to use a supplier that can later be overridden. Be aware that
-         * as part of initial configuration, it will use a value from the passed in supplier; if you want to prevent this
-         * then use one of the other parameter methods and separately override the supplier.
-         * @param parameterSupplier the supplier of the parameter values.
-         * @param <P> The type of the parameter.
-         * @return a value retrieved from the supplier.
-         */
-        public <P> P $(IntrospectableSupplier<P> parameterSupplier){
-            addParameterToConstructorList(new Parameter<>(parameterSupplier));
-            return parameterSupplier.get();
+        private final List<Parameter> parameterList = new ArrayList<>();
+
+        public <P> P p(Class<P> parameterClass) {
+            return addParameterToConstructorList(new Parameter<>(parameterClass));
         }
 
-        /**
-         * Use this parameter definition when you want to use a supplier that can later be overridden and you want to
-         * override the name of the parameter to make auto-mapping easier oryour code more legible. Be aware that as
-         * part of initial configuration, it will use a value from the passed in supplier; if you want to prevent this
-         * then use one of the other parameter methods and separately override the supplier.
-         * @param name an override to the default name of the parameter to the constructor to help with the mapping.
-         * @param parameterSupplier the supplier of the parameter values.
-         * @param <P> The type of the parameter.
-         * @return a value retrieved from the supplier.
-         */
-        public <P> P $(String name, IntrospectableSupplier<P> parameterSupplier){
-            addParameterToConstructorList(new Parameter<>(name, parameterSupplier));
-            return parameterSupplier.get();
+        public <P> P p(String name, Class<P> parameterClass) {
+            return addParameterToConstructorList(new Parameter<>(name, parameterClass));
         }
 
-        void addParameterToConstructorList(Parameter parameter){
+        public <P> P p(P fixedParameter) {
+            return addParameterToConstructorList(new Parameter<>(fixedParameter));
+        }
+
+        public <P> P p(String name, P fixedParameter) {
+            return addParameterToConstructorList(new Parameter<>(name, fixedParameter));
+        }
+
+        private <P> P addParameterToConstructorList(Parameter<P> parameter) {
             parameterList.add(parameter);
+            return parameter.parameterSupplier.get();
         }
     }
 
     public static class Parameter<P> {
-        private String name;
-        private IntrospectableSupplier<P> parameterSupplier = () -> null;
+        private String parameterName;
+        private Supplier<P> parameterSupplier = () -> null;
         private String nameOverride;
         private Class<? extends P> parameterClass;
 
@@ -190,10 +238,43 @@ public class DynamicSupplierBuilder<T> implements SupplierBuilder<T> {
             this(null, defaultParameterValue);
         }
 
+        @SuppressWarnings("unchecked")
         public Parameter(String nameOverride, P defaultParameterValue) {
             this.nameOverride = nameOverride;
             this.parameterClass = (Class<P>) defaultParameterValue.getClass();
             this.parameterSupplier = () -> defaultParameterValue;
+        }
+
+        public Parameter(Parameter<P> original) {
+            this.parameterName = original.parameterName;
+            this.parameterSupplier = original.parameterSupplier;
+            this.nameOverride = original.nameOverride;
+            this.parameterClass = original.parameterClass;
+        }
+
+
+        public String getParameterName() {
+            return parameterName;
+        }
+
+        public Supplier<P> getParameterSupplier() {
+            return parameterSupplier;
+        }
+
+        public Optional<String> getNameOverride() {
+            return Optional.ofNullable(nameOverride);
+        }
+
+        public String getMappedName() {
+            return getNameOverride().orElse(getParameterName());
+        }
+
+        public Class<? extends P> getParameterClass() {
+            return parameterClass;
+        }
+
+        public void setParameterName(String parameterName) {
+            this.parameterName = parameterName;
         }
     }
 
