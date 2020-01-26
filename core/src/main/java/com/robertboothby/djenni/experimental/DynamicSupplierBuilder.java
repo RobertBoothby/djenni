@@ -21,9 +21,9 @@ import static java.util.Comparator.comparingInt;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
- * //TODO don't forget bean setters.
- * //TODO don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied.
- * //TODO don't forget primitive types - while we can get away often with supplying null values for
+ * //TODO don't forget bean setters - We need to add them to the default function if their properties are not already defined by the constructor and only call them if the relevant properties are actually populated.
+ * //DONE-TO DO don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied. Completed by allowing sample / default values for parameters and suppliers.
+ * //TODO don't forget primitive types - while we can get away often with supplying null values for object types we cannot do so for primitive types. We need to create a mechanism to provide a reasonable default.
  *
  * @param <R>
  */
@@ -263,6 +263,10 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         }
     }
 
+    /**
+     * This build context is used when we are actually supplying values, using the configured suppliers for the values
+     * that have been defined.
+     */
     public class RuntimeBuildContext implements BuildContext {
 
         @Override
