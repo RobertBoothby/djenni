@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparingInt;
@@ -52,7 +53,9 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
                 .ifPresent(constructor -> useConstructor((Constructor<R>) constructor));
 
         BeanInfo beanInfo = Introspector.getBeanInfo(suppliedClass);
-        //String collect = stream(beanInfo.getPropertyDescriptors()).map(Object::toString).collect(Collectors.joining(",\n"));
+        String collect = stream(beanInfo.getPropertyDescriptors()).map(Object::toString).collect(Collectors.joining(",\n"));
+
+        System.out.println(collect);
     }
 
     @Override
@@ -115,7 +118,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
      * only specify a new Supplier for the parameter by the 'position' of the parameter in the supplied function.
      *
      * @param functionToBeUsed the function to be used when constructing this
-     * @return
+     * @return the DynamicSupplierBuilder for further configuration.
      */
     public DynamicSupplierBuilder<R> useFunction(Function<BuildContext, R> functionToBeUsed) {
         IntrospectionBuildContext introspectionBuildContext = new IntrospectionBuildContext();
@@ -176,7 +179,8 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         <P> P p(String name, Class<P> parameterClass);
 
         /**
-         * Use this parameter definition when you want to supply a default value that can be overridden.
+         * Use this parameter definition when you want to supply a sample / default value that can be overridden, this
+         * is particularly useful when dealing with parameters that cannot take null values.
          *
          * @param fixedParameter a fixed value that can be overridden.
          * @param <P>            The type of the parameter.
@@ -185,7 +189,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         <P> P p(P fixedParameter);
 
         /**
-         * Use this parameter definition when you want to supply a default value that can be overridden and
+         * Use this parameter definition when you want to supply a sample / default value that can be overridden and
          * you want to override the name of the parameter to make auto-mapping work or your code more legible.
          *
          * @param name           an override to the default name of the parameter to the constructor to help with the mapping.
@@ -194,6 +198,26 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
          * @return the fixed value.
          */
         <P> P p(String name, P fixedParameter);
+
+        /**
+         * Use this parameter definition when you want to supply a default supplier that can be overridden.
+         *
+         * @param defaultSupplier a default supplier that can be overridden.
+         * @param <P>            The type of the parameter.
+         * @return the fixed value.
+         */
+        <P> P p(Supplier<P> defaultSupplier);
+
+        /**
+         * Use this parameter definition when you want to supply a default supplier that can be overridden and
+         * you want to override the name of the parameter to make auto-mapping work or your code more legible.
+         *
+         * @param name           an override to the default name of the parameter to the constructor to help with the mapping.
+         * @param defaultSupplier a default supplier that can be overridden.
+         * @param <P>            The type of the parameter.
+         * @return the fixed value.
+         */
+        <P> P p(String name, Supplier<P> defaultSupplier);
     }
 
     /**
@@ -208,22 +232,32 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         private final List<Parameter<?>> parameterList = new ArrayList<>();
 
         public <P> P p(Class<P> parameterClass) {
-            return addParameterToConstructorList(new Parameter<>(parameterClass));
+            return addParameterToList(new Parameter<>(parameterClass));
         }
 
         public <P> P p(String name, Class<P> parameterClass) {
-            return addParameterToConstructorList(new Parameter<>(name, parameterClass));
+            return addParameterToList(new Parameter<P>(name, parameterClass));
         }
 
         public <P> P p(P fixedParameter) {
-            return addParameterToConstructorList(new Parameter<>(fixedParameter));
+            return addParameterToList(new Parameter<P>(fixedParameter));
         }
 
         public <P> P p(String name, P fixedParameter) {
-            return addParameterToConstructorList(new Parameter<>(name, fixedParameter));
+            return addParameterToList(new Parameter<P>(name, fixedParameter));
         }
 
-        private <P> P addParameterToConstructorList(Parameter<P> parameter) {
+        @Override
+        public <P> P p(Supplier<P> defaultSupplier) {
+            return addParameterToList(new Parameter<P>(defaultSupplier));
+        }
+
+        @Override
+        public <P> P p(String name, Supplier<P> defaultSupplier) {
+            return addParameterToList(new Parameter<P>(name, defaultSupplier));
+        }
+
+        private <P> P addParameterToList(Parameter<P> parameter) {
             parameterList.add(parameter);
             return parameter.parameterSupplier.get();
         }
@@ -248,6 +282,16 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
         @Override
         public <P> P p(String name, P fixedParameter) {
+            return null;
+        }
+
+        @Override
+        public <P> P p(Supplier<P> defaultSupplier) {
+            return null;
+        }
+
+        @Override
+        public <P> P p(String name, Supplier<P> defaultSupplier) {
             return null;
         }
     }
@@ -281,11 +325,22 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
             this(null, defaultParameterValue);
         }
 
+        public Parameter(Supplier<P> defaultParameterSupplier) {
+            this(null, defaultParameterSupplier);
+        }
+
         @SuppressWarnings("unchecked")
         public Parameter(String nameOverride, P defaultParameterValue) {
             this.nameOverride = nameOverride;
             this.parameterClass = (Class<P>) defaultParameterValue.getClass();
             this.parameterSupplier = () -> defaultParameterValue;
+        }
+
+        @SuppressWarnings("unchecked")
+        public Parameter(String nameOverride, Supplier<P> defaultParameterSupplier) {
+            this.nameOverride = nameOverride;
+            this.parameterClass = (Class<P>)defaultParameterSupplier.get().getClass();
+            this.parameterSupplier = defaultParameterSupplier;
         }
 
         public Parameter(Parameter<P> original) {
