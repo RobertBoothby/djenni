@@ -14,40 +14,50 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
+import static java.util.Comparator.comparingInt;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
  * //TODO don't forget bean setters.
+ * //TODO don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied.
+ * //TODO don't forget primitive types - while we can get away often with supplying null values for
  *
  * @param <R>
  */
 public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
     private final Class<R> suppliedClass;
-    private final List<Parameter> parameterList = new ArrayList<>();
+    private final List<Parameter<?>> parameterList = new ArrayList<>();
     private Function<BuildContext, R> functionThatBuildsTheInstance = $ -> null;
     private Map<String, Function<BuildContext, ?>> instantiationParameterSupplierOverrides = new HashMap<>();
     private Map<String, Function<BuildContext, ?>> setterParameters = new HashMap<>();
 
 
+    /**
+     * @param suppliedClass The class to be supplied. If it is a class with public constructors, it will automatically
+     *                      set the DynamicSupplierBuilder up to use the constructor with the longest argument list. If
+     *                      there is more than one constructor with the same, longest argument list then the behaviour
+     *                      is undefined.
+     * @throws IntrospectionException An exception if we are unable to introspect the constructor.
+     */
+    @SuppressWarnings("unchecked")
     public DynamicSupplierBuilder(Class<R> suppliedClass) throws IntrospectionException {
         this.suppliedClass = suppliedClass;
 
         stream(suppliedClass.getConstructors())
                 .filter($ -> Modifier.isPublic($.getModifiers()))
-                .min((o1, o2) -> -(o1.getParameterCount() - o2.getParameterCount()))
+                .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
                 .ifPresent(constructor -> useConstructor((Constructor<R>) constructor));
 
         BeanInfo beanInfo = Introspector.getBeanInfo(suppliedClass);
-        stream(beanInfo.getPropertyDescriptors()).map(Object::toString).collect(Collectors.joining(",\n"));
+        //String collect = stream(beanInfo.getPropertyDescriptors()).map(Object::toString).collect(Collectors.joining(",\n"));
     }
 
     @Override
     public StreamableSupplier<R> build() {
-        BuildContext normalBuildContext = null;
+        BuildContext normalBuildContext = new RuntimeBuildContext();
         return () -> functionThatBuildsTheInstance.apply(normalBuildContext);
     }
 
@@ -68,7 +78,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         this.parameterList.addAll(introspectionBuildContext.getParameterList());
         if (parameterList.stream().anyMatch($ -> $.getMappedName() == null)) { //try to derive the underlying parameter name from a matching constructor.
             try {
-                Class[] constructorParameterClasses = parameterList.stream().map(Parameter::getParameterClass).toArray(Class[]::new);
+                Class<?>[] constructorParameterClasses = parameterList.stream().map(Parameter::getParameterClass).toArray(Class[]::new);
                 Constructor<R> constructor = suppliedClass.getConstructor(constructorParameterClasses);
                 java.lang.reflect.Parameter[] parameters = constructor.getParameters();
                 for (int i = 0; i < parameters.length; i++) {
@@ -82,13 +92,14 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     private void useConstructor(Constructor<R> constructor) {
         MethodType constructorMethodType = MethodType.methodType(void.class, constructor.getParameterTypes());
         try {
             MethodHandle constructorMethodHandle = MethodHandles.publicLookup().findConstructor(constructor.getDeclaringClass(), constructorMethodType);
             useFunction($ -> {
                 try {
-                    return (R) constructorMethodHandle.invokeWithArguments(stream(constructor.getParameters()).map(parameter -> $.p(parameter.getName(), parameter.getClass())).toArray());
+                    return (R) constructorMethodHandle.invokeWithArguments(stream(constructor.getParameters()).map(parameter -> $.p(parameter.getName(), parameter.getType())).toArray());
                 } catch (Throwable throwable) {
                     throw new RuntimeException(throwable);
                 }
@@ -190,11 +201,11 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
      */
     public class IntrospectionBuildContext implements BuildContext {
 
-        public List<Parameter> getParameterList() {
+        public List<Parameter<?>> getParameterList() {
             return parameterList;
         }
 
-        private final List<Parameter> parameterList = new ArrayList<>();
+        private final List<Parameter<?>> parameterList = new ArrayList<>();
 
         public <P> P p(Class<P> parameterClass) {
             return addParameterToConstructorList(new Parameter<>(parameterClass));
