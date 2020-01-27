@@ -6,6 +6,7 @@ import com.robertboothby.djenni.core.StreamableSupplier;
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -14,7 +15,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparingInt;
@@ -38,9 +39,11 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
     /**
      * @param suppliedClass The class to be supplied. If it is a class with public constructors, it will automatically
-     *                      set the DynamicSupplierBuilder up to use the constructor with the longest argument list. If
-     *                      there is more than one constructor with the same, longest argument list then the behaviour
-     *                      is undefined.
+     *                      set the DynamicSupplierBuilder up to use the parameters of the constructor with the longest
+     *                      parameter list and any JavaBean properties that are accessed by a setter that are not already
+     *                      defined on the constructor. If there is more than one constructor with the same, longest
+     *                      parameter list then one of the constructors will be arbitrarily selected and it is recommended
+     *                      that the .
      * @throws IntrospectionException An exception if we are unable to introspect the constructor.
      */
     @SuppressWarnings("unchecked")
@@ -50,12 +53,15 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         stream(suppliedClass.getConstructors())
                 .filter($ -> Modifier.isPublic($.getModifiers()))
                 .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
-                .ifPresent(constructor -> useConstructor((Constructor<R>) constructor));
+                .ifPresent(constructor -> useDefaultedConstructor((Constructor<R>) constructor));
 
         BeanInfo beanInfo = Introspector.getBeanInfo(suppliedClass);
-        String collect = stream(beanInfo.getPropertyDescriptors()).map(Object::toString).collect(Collectors.joining(",\n"));
-
-        System.out.println(collect);
+        Stream<PropertyDescriptor> writeablePropertiesNotDefinedInTheConstructor = stream(beanInfo.getPropertyDescriptors())
+                .filter($ -> $.getWriteMethod() != null)    //Only setters.
+                //.filter() //only setters that are not already handled in the default constructor
+                // Now add parameters for the setters AND invoke them as part of the supply phase.
+                ;
+        //this.functionThatBuildsTheInstance = functionThatBuildsTheInstance.andThen(<<function that conditionally populates the setters if their parameters have suppliers.>>)
     }
 
     @Override
@@ -67,11 +73,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
     /**
      * Use this method to select a particular constructor by using the constructor to call it. The parameters of the
      * constructor must be defined using the $ methods that allow this class to identify them. The parameters may not
-     * need to be explicitly named as they will be automatically derived from the parameter names of the constructor.
-     * If they are not explicitly named it will only be possible to re-configure their Suppliers using the getter method
-     * Lambda syntax if the constructor parameter names correspond exactly with the property names of the getters as defined in the
-     * JavaBean specification. Otherwise you will have to re-configure their suppliers using their property names.
-     *
+     * need to be explicitly named as they will be automatically derived from the parameter names of the constructor
      * @param constructorToBeMapped a Supplier defining the constructor to be mapped.
      */
     public DynamicSupplierBuilder<R> useConstructor(Function<BuildContext, R> constructorToBeMapped) {
@@ -88,7 +90,8 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
                     parameterList.get(i).setParameterName(parameters[i].getName());
                 }
             } catch (NoSuchMethodException e) {
-                throw new RuntimeException("No constructor identifiable from the parameters called on the supplier and not all the property names are explicitly defined ", e);
+                throw new RuntimeException("No constructor was identifiable from the parameters called on the supplier," +
+                        "did you call additional methods with parameters not in the constructor?", e);
             }
         }
         this.functionThatBuildsTheInstance = constructorToBeMapped;
@@ -96,7 +99,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
     }
 
     @SuppressWarnings("unchecked")
-    private void useConstructor(Constructor<R> constructor) {
+    private void useDefaultedConstructor(Constructor<R> constructor) {
         MethodType constructorMethodType = MethodType.methodType(void.class, constructor.getParameterTypes());
         try {
             MethodHandle constructorMethodHandle = MethodHandles.publicLookup().findConstructor(constructor.getDeclaringClass(), constructorMethodType);
@@ -104,7 +107,14 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
                 try {
                     return (R) constructorMethodHandle.invokeWithArguments(stream(constructor.getParameters()).map(parameter -> $.p(parameter.getName(), parameter.getType())).toArray());
                 } catch (Throwable throwable) {
-                    throw new RuntimeException(throwable);
+                    //Try and avoid unnecessary wrapping.
+                    if(throwable instanceof Error) {
+                        throw (Error) throwable;
+                    } else if (throwable instanceof RuntimeException) {
+                        throw (RuntimeException) throwable;
+                    } else {
+                        throw new RuntimeException(throwable);
+                    }
                 }
             });
         } catch (NoSuchMethodException | IllegalAccessException e) {
@@ -203,7 +213,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
          * Use this parameter definition when you want to supply a default supplier that can be overridden.
          *
          * @param defaultSupplier a default supplier that can be overridden.
-         * @param <P>            The type of the parameter.
+         * @param <P>             The type of the parameter.
          * @return the fixed value.
          */
         <P> P p(Supplier<P> defaultSupplier);
@@ -212,9 +222,9 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
          * Use this parameter definition when you want to supply a default supplier that can be overridden and
          * you want to override the name of the parameter to make auto-mapping work or your code more legible.
          *
-         * @param name           an override to the default name of the parameter to the constructor to help with the mapping.
+         * @param name            an override to the default name of the parameter to the constructor to help with the mapping.
          * @param defaultSupplier a default supplier that can be overridden.
-         * @param <P>            The type of the parameter.
+         * @param <P>             The type of the parameter.
          * @return the fixed value.
          */
         <P> P p(String name, Supplier<P> defaultSupplier);
@@ -343,7 +353,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         @SuppressWarnings("unchecked")
         public Parameter(String nameOverride, Supplier<P> defaultParameterSupplier) {
             this.nameOverride = nameOverride;
-            this.parameterClass = (Class<P>)defaultParameterSupplier.get().getClass();
+            this.parameterClass = (Class<P>) defaultParameterSupplier.get().getClass();
             this.parameterSupplier = defaultParameterSupplier;
         }
 
