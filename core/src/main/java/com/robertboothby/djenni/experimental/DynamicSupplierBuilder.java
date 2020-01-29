@@ -11,14 +11,17 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
@@ -56,12 +59,25 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
                 .ifPresent(constructor -> useDefaultedConstructor((Constructor<R>) constructor));
 
         BeanInfo beanInfo = Introspector.getBeanInfo(suppliedClass);
-        Stream<PropertyDescriptor> writeablePropertiesNotDefinedInTheConstructor = stream(beanInfo.getPropertyDescriptors())
-                .filter($ -> $.getWriteMethod() != null)    //Only setters.
-                //.filter() //only setters that are not already handled in the default constructor
-                // Now add parameters for the setters AND invoke them as part of the supply phase.
-                ;
-        //this.functionThatBuildsTheInstance = functionThatBuildsTheInstance.andThen(<<function that conditionally populates the setters if their parameters have suppliers.>>)
+        stream(beanInfo.getPropertyDescriptors())
+                .filter($ -> $.getWriteMethod() != null)
+                .filter($ -> !parameterList.stream().map(Parameter::getMappedName).collect(toSet()).contains($.getName()))
+                .forEach($ -> {
+                    Function<BuildContext, R> oldFunction = functionThatBuildsTheInstance;
+                    functionThatBuildsTheInstance = bc -> {
+                        R result = oldFunction.apply(bc);
+                        try {
+                            $.getWriteMethod().invoke(result, bc.p($.getName(), $.getPropertyType()));
+                        } catch (Exception e) {
+                            if(e instanceof RuntimeException) {
+                                throw (RuntimeException) e;
+                            } else {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        return result;
+                    };
+                });
     }
 
     @Override
