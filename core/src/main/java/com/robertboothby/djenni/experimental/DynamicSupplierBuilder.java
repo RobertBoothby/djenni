@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.*;
@@ -199,15 +200,30 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
     }
 
+    public static <T> DynamicSupplierBuilder<T> supplierFor(Class<T> tClass) throws IntrospectionException {
+        return new DynamicSupplierBuilder<>(tClass);
+    }
+
+
     public static void main(String[] args) throws IntrospectionException {
                         //.useConstructor($ -> new TestClass($.p("One"), $.p(Integer.class)));
-        
-        DynamicSupplierBuilder<TestClass> supplierBuilder = new DynamicSupplierBuilder<>(TestClass.class)
-                .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
-                .byGet($ -> $::getValueOne, fix("One"));
 
-        TestClass testClass = supplierBuilder.build().get();
+        StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class)
+                .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
+                .byGet($ -> $::getValueOne, fix("One"))
+                .build();
+        TestClass testClass = testClassSupplier.get();
+        //OR
+        Stream<TestClass> testClassStream = testClassSupplier.stream();
+        //OR
+        Stream<TestClass> testClassStreamOfTen = testClassSupplier.stream(10);
+
         System.out.println("DUMMY");
+
+
+//        DynamicSupplierBuilder<TestClass> supplierBuilder = new DynamicSupplierBuilder<>(TestClass.class)
+//                .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
+//                .byGet($ -> $::getValueOne, fix("One"));
     }
 
     public static class TestClass {

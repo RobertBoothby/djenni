@@ -29,11 +29,15 @@ Djenni contains a Maven plugin that can generate a lot of the Suppliers and Supp
 Djenni now contains an experimental dynamically introspecting Supplier Builder that works best with classes that implement 
 the JavaBeans getter and setter patterns.
 ```java
-        DynamicSupplierBuilder<TestClass> supplierBuilder = new DynamicSupplierBuilder<>(TestClass.class)
-                .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
-                .byGet($ -> $::getValueOne, fix("One"));
-
-        TestClass testClass = supplierBuilder.build().get();
+        StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class)
+            .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
+            .byGet($ -> $::getValueOne, fix("One"))
+            .build();
+        TestClass testClass = testClassSupplier.get();
+        //OR
+        Stream<TestClass> testClassStream = testClassSupplier.stream();
+        //OR
+        Stream<TestClass> testClassStreamOfTen = testClassSupplier.stream(10);
 ```
 
 <h3>The Core Pattern</h3>
