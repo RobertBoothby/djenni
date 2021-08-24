@@ -2,42 +2,45 @@ package com.robertboothby.djenni.experimental;
 
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
+import com.robertboothby.djenni.lang.IntegerSupplierBuilder;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
+import java.beans.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static com.robertboothby.djenni.core.SupplierHelper.fix;
+import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.*;
 import static java.util.Arrays.stream;
 import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toSet;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
+ *
+ * <em>TO MAKE THE AUTOMATED PARAMETER NAMING WORK, USE -parameters IN THE JAVA COMPILATION. IN INTELLIJ THIS NEEDS TO BE DONE AT THE TOP LEVEL OF THE PROJECT AS WELL AS THE SUB-MODULES!!</em>
  * //TODO don't forget bean setters - We need to add them to the default function if their properties are not already defined by the constructor and only call them if the relevant properties are actually populated.
  * //DONE-TO DO don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied. Completed by allowing sample / default values for parameters and suppliers.
  * //TODO don't forget primitive types - while we can get away often with supplying null values for object types we cannot do so for primitive types. We need to create a mechanism to provide a reasonable default.
- *
  * @param <R>
  */
 public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
     private final Class<R> suppliedClass;
     private final List<Parameter<?>> parameterList = new ArrayList<>();
+    private final BeanInfo beanInfo;
     private Function<BuildContext, R> functionThatBuildsTheInstance = $ -> null;
     private Map<String, Function<BuildContext, ?>> instantiationParameterSupplierOverrides = new HashMap<>();
     private Map<String, Function<BuildContext, ?>> setterParameters = new HashMap<>();
+    //Dummy object used for introspection;
+    private R dummy;
 
 
     /**
@@ -58,7 +61,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
                 .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
                 .ifPresent(constructor -> useDefaultedConstructor((Constructor<R>) constructor));
 
-        BeanInfo beanInfo = Introspector.getBeanInfo(suppliedClass);
+        beanInfo = Introspector.getBeanInfo(suppliedClass);
         stream(beanInfo.getPropertyDescriptors())
                 .filter($ -> $.getWriteMethod() != null)
                 .filter($ -> !parameterList.stream().map(Parameter::getMappedName).collect(toSet()).contains($.getName()))
@@ -82,7 +85,7 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
     @Override
     public StreamableSupplier<R> build() {
-        BuildContext normalBuildContext = new RuntimeBuildContext();
+        BuildContext normalBuildContext = new RuntimeBuildContext(parameterList.stream().map(Parameter::new).collect(Collectors.toList()));
         return () -> functionThatBuildsTheInstance.apply(normalBuildContext);
     }
 
@@ -121,7 +124,8 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
             MethodHandle constructorMethodHandle = MethodHandles.publicLookup().findConstructor(constructor.getDeclaringClass(), constructorMethodType);
             useFunction($ -> {
                 try {
-                    return (R) constructorMethodHandle.invokeWithArguments(stream(constructor.getParameters()).map(parameter -> $.p(parameter.getName(), parameter.getType())).toArray());
+                    dummy = (R) constructorMethodHandle.invokeWithArguments(stream(constructor.getParameters()).map(parameter -> $.p(parameter.getName(), parameter.getType())).toArray());
+                    return dummy;
                 } catch (Throwable throwable) {
                     //Try and avoid unnecessary wrapping.
                     if(throwable instanceof Error) {
@@ -155,10 +159,55 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         return this;
     }
 
+    public <T> DynamicSupplierBuilder<R> byGet(Function<R, IntrospectableSupplier<T>> getter, Supplier<T> parameterSupplier)  {
+        getter(getter).setParameterSupplier(parameterSupplier);
+        return this;
+    }
+
+    public <T> DynamicSupplierBuilder<R> byGet(Function<R, IntrospectableSupplier<T>> getter, SupplierBuilder<T> parameterSupplier)  {
+        getter(getter).setParameterSupplier(parameterSupplier.build());
+        return this;
+    }
+
+    private <T> Parameter<T> getter(Function<R, IntrospectableSupplier<T>> getter) {
+        IntrospectableSupplier<T> introspectableSupplier= getter.apply(dummy);
+        String propertyName = stream(beanInfo.getPropertyDescriptors())
+                .filter($ -> $.getReadMethod().getName().equals(introspectableSupplier.getMethodName()))
+                .findFirst()
+                .map(FeatureDescriptor::getName).orElseThrow();
+
+        return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
+    }
+
+    public <T> DynamicSupplierBuilder<R> bySet(Function<R, IntrospectableConsumer<T>> setter, Supplier<T> parameterSupplier)  {
+        setter(setter).setParameterSupplier(parameterSupplier);
+        return this;
+    }
+
+    public <T> DynamicSupplierBuilder<R> bySet(Function<R, IntrospectableConsumer<T>> setter, SupplierBuilder<T> parameterSupplier)  {
+        setter(setter).setParameterSupplier(parameterSupplier.build());
+        return this;
+    }
+
+    private <T> Parameter<T> setter(Function<R, IntrospectableConsumer<T>> setter) {
+        IntrospectableConsumer<T> introspectableConsumer = setter.apply(dummy);
+        String propertyName = stream(beanInfo.getPropertyDescriptors())
+                .filter($ -> $.getWriteMethod().getName().equals(introspectableConsumer.getMethodName()))
+                .findFirst()
+                .map(FeatureDescriptor::getName).orElseThrow();
+
+        return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
+    }
+
     public static void main(String[] args) throws IntrospectionException {
-        DynamicSupplierBuilder<TestClass> supplierParameterMap =
-                new DynamicSupplierBuilder<>(TestClass.class)
-                        .useConstructor($ -> new TestClass($.p("One"), $.p(Integer.class)))/*.for(TestClass::getValueOne).use(arbitraryString().ofLength....*/;
+                        //.useConstructor($ -> new TestClass($.p("One"), $.p(Integer.class)));
+        
+        DynamicSupplierBuilder<TestClass> supplierBuilder = new DynamicSupplierBuilder<>(TestClass.class)
+                .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
+                .byGet($ -> $::getValueOne, fix("One"));
+
+        TestClass testClass = supplierBuilder.build().get();
+        System.out.println("DUMMY");
     }
 
     public static class TestClass {
@@ -179,7 +228,6 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
         public Integer getValueTwo() {
             return valueTwo;
         }
-
     }
 
     public interface BuildContext {
@@ -295,34 +343,41 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
      */
     public class RuntimeBuildContext implements BuildContext {
 
+        private final List<? extends Parameter<?>> parameters;
+        private int parameterPosition = 0;
+
+        public RuntimeBuildContext(List<? extends Parameter<?>> parameters) {
+            this.parameters = parameters;
+        }
+
         @Override
         public <P> P p(Class<P> parameterClass) {
-            return null;
+            return (P) parameterList.get(parameterPosition++).getParameterSupplier().get();
         }
 
         @Override
         public <P> P p(String name, Class<P> parameterClass) {
-            return null;
+            return  (P) parameterList.get(parameterPosition++).getParameterSupplier().get();
         }
 
         @Override
         public <P> P p(P fixedParameter) {
-            return null;
+            return  (P) parameterList.get(parameterPosition++).getParameterSupplier().get();
         }
 
         @Override
         public <P> P p(String name, P fixedParameter) {
-            return null;
+            return  (P) parameterList.get(parameterPosition++).getParameterSupplier().get();
         }
 
         @Override
         public <P> P p(Supplier<P> defaultSupplier) {
-            return null;
+            return  (P) parameterList.get(parameterPosition++).getParameterSupplier().get();
         }
 
         @Override
         public <P> P p(String name, Supplier<P> defaultSupplier) {
-            return null;
+            return  (P) parameterList.get(parameterPosition++).getParameterSupplier().get();
         }
     }
 
@@ -387,6 +442,10 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
 
         public Supplier<P> getParameterSupplier() {
             return parameterSupplier;
+        }
+
+        public void setParameterSupplier(Supplier<P> parameterSupplier) {
+            this.parameterSupplier = parameterSupplier;
         }
 
         public Optional<String> getNameOverride() {
