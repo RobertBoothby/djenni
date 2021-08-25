@@ -229,9 +229,9 @@ public class DynamicSupplierBuilder<R> implements SupplierBuilder<R> {
                 .bySet(TestClass::setValueThree, fix("Three"))
                 .build();
         TestClass testClass = testClassSupplier.get();
-        //OR
+        //OR Infinite stream
         Stream<TestClass> testClassStream = testClassSupplier.stream();
-        //OR
+        //OR Stream of 10
         Stream<TestClass> testClassStreamOfTen = testClassSupplier.stream(10);
 
         System.out.println("DUMMY");
