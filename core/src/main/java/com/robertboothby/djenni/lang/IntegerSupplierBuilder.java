@@ -114,6 +114,14 @@ public class IntegerSupplierBuilder implements ConfigurableSupplierBuilder<Integ
     }
 
     /**
+     * Create an instance of the IntegerSupplierBuilder for configuration.
+     * @return the builder for configuration.
+     */
+    public static IntegerSupplierBuilder anyInteger() {
+        return new IntegerSupplierBuilder();
+    }
+
+    /**
      * Create a Supplier of Integers using the given configuration.
      * @param configuration The configuration to use.
      * @return The configured Supplier, ready to use.

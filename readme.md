@@ -30,9 +30,10 @@ Djenni now contains an experimental dynamically introspecting Supplier Builder t
 the JavaBeans getter and setter patterns.
 ```java
         StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class)
-            .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
-            .byGet($ -> $::getValueOne, fix("One"))
-            .build();
+        .byGet(TestClass::getValueTwo, anyInteger().between(1).and(10))
+        .byGet(TestClass::getValueOne, fix("One"))
+        .bySet(TestClass::setValueThree, fix("Three"))
+        .build();
         TestClass testClass = testClassSupplier.get();
         //OR
         Stream<TestClass> testClassStream = testClassSupplier.stream();
