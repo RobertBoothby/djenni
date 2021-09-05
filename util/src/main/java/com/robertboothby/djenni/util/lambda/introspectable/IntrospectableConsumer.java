@@ -1,17 +1,16 @@
-package com.robertboothby.djenni.experimental;
+package com.robertboothby.djenni.util.lambda.introspectable;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
- * An introspectable Lambda function for a setter (or similar method).
+ * An introspectable Lambda function for a getter (or similar method).
  */
 @FunctionalInterface
-public interface IntrospectableBiConsumer<T,R> extends BiConsumer<T,R>, Serializable {
+public interface IntrospectableConsumer<T> extends Consumer<T>, Serializable {
 
     default Class getImplementingClass() {
         try {

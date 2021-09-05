@@ -1,4 +1,4 @@
-package com.robertboothby.djenni.experimental;
+package com.robertboothby.djenni.util.lambda.introspectable;
 
 /**
  * This exception is thrown when there are problems introspecting a Lambda using this framework.
