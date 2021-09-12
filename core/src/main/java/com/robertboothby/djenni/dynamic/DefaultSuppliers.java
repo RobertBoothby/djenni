@@ -1,40 +1,50 @@
 package com.robertboothby.djenni.dynamic;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.robertboothby.djenni.core.StreamableSupplier;
+
 import java.util.function.Supplier;
 
 /**
- * This serves as the repository of all default suppiers used by the DynamicSupplierBuilder. There are three tiers of defaults,
- * a default supplier for a class <em>and</em> named property, a default supplier for a class in isolation or a supplier
- * of nulls if no other default supplier can be found.
+ * This defines the controct for a repository of default suppliers used by the DynamicSupplierBuilder. There are three
+ * tiers of defaults, a default supplier for a class <em>and</em> named property, a default supplier for a class in
+ * isolation or a supplier of nulls if no other default supplier can be found.
  *
- * TODO consider making the DefaultSuppliers an abstract class that can be overridden...
+ * Be careful with instantiating
  */
-public class DefaultSuppliers {
+public abstract class DefaultSuppliers {
+
+    private static volatile DefaultSuppliers instance;
+    private static final Object instanceMutex = new Object();
 
     /**
      * Static default string used to key for NO_PROPERTY. Calling {@link #getSupplierForClassAndProperty(Class, String)}
      * with NO_PROPERTY in the String parameter is the equivalent of calling {@link #getSupplierForClass(Class)}.
      */
     public static final String NO_PROPERTY = "";
-    private static final DefaultSuppliers instance = new DefaultSuppliers();
 
-    static { // set up defaults for the primitive types... nulls will break things.
-        instance.setClassSupplier(byte.class, () -> (byte) 0);
-        instance.setClassSupplier(short.class, () -> (short) 0);
-        instance.setClassSupplier(int.class, () -> 0);
-        instance.setClassSupplier(long.class, () -> 0L);
-        instance.setClassSupplier(float.class, () -> 0.0f);
-        instance.setClassSupplier(double.class, () -> 0.0d);
-        instance.setClassSupplier(boolean.class, () -> false);
-        instance.setClassSupplier(char.class, () -> '\u0000');
+    /**
+     * Get the singleton instance of DefaultSuppliers
+     *
+     * @return the singleton instance of DefaultSuppliers
+     */
+    public static DefaultSuppliers defaultSuppliers() {
+        if(instance == null) {
+            synchronized (instanceMutex) {
+                instance = new DefaultSuppliersImpl();
+            }
+        }
+        return instance;
     }
 
-    private DefaultSuppliers() {
+    /**
+     * Override the instance of DefaultSuppliers used.
+     * @param overrideInstance The new instance of DefaultSuppliers to use.
+     */
+    public static void overrideInstance(DefaultSuppliers overrideInstance) {
+        synchronized (instanceMutex) {
+            instance = overrideInstance;
+        }
     }
-
-    public final Map<Class<?>, Map<String, Supplier<?>>> classAndPropertyDefaults = new HashMap<>();
 
     /**
      * Get the supplier for a class.
@@ -43,9 +53,7 @@ public class DefaultSuppliers {
      * @param <T>   The type being returned.
      * @return The default supplier for the given class.
      */
-    public <T> Supplier<T> getSupplierForClass(Class<T> clazz) {
-        return getSupplierForClassAndProperty(clazz, NO_PROPERTY);
-    }
+    public abstract <T> StreamableSupplier<T> getSupplierForClass(Class<T> clazz);
 
     /**
      * Get the supplier for a given property name and a given class.
@@ -55,31 +63,29 @@ public class DefaultSuppliers {
      * @param <T>      The type of the class and property.
      * @return The default supplier
      */
-    @SuppressWarnings("unchecked")
-    public <T> Supplier<T> getSupplierForClassAndProperty(Class<T> clazz, String property) {
-        return (Supplier<T>) classAndPropertyDefaults.computeIfAbsent(clazz, $ -> new HashMap<>())
-                .computeIfAbsent(property, $ -> { //If there is no default supplier for the specific class and property combination create one or find one.
-                    if ("".equals(property)) { //If the value of property indicates that it is for any class return a null Supplier.
-                        return () -> null;
-                    } else { //Else get whatever supplier there is for the class ignoring the property.
-                        return getSupplierForClassAndProperty(clazz, NO_PROPERTY); // return the default for the class
-                    }
-                });
-    }
-
-    public <T> void setClassSupplier(Class<T> clazz, Supplier<? extends T> supplier) {
-        setClassAndPropertySupplier(clazz, NO_PROPERTY, supplier);
-    }
-
-    public <T> void setClassAndPropertySupplier(Class<T> clazz, String propertyName, Supplier<? extends T> supplier) {
-        classAndPropertyDefaults.computeIfAbsent(clazz, $ -> new HashMap<>()).put(propertyName, supplier);
-    }
+    public abstract <T> StreamableSupplier<T> getSupplierForClassAndProperty(Class<T> clazz, String property);
 
     /**
-     * Get the singleton instance of DefaultSuppliers
-     * @return the singleton instance of DefaultSuppliers
+     * Sets the default supplier for a particular class. Will be superseded if a more specific supplier is specified for
+     * class and propertyName.
+     * @param clazz The class for which to definite the default supplier.
+     * @param supplier The default supplier to use for the class.
+     * @param <T> The type of the value supplied.
      */
-    public static DefaultSuppliers defaultSuppliers() {
-        return instance;
-    }
+    public abstract <T> void setClassSupplier(Class<T> clazz, StreamableSupplier<? extends T> supplier);
+
+    /**
+     * Sets the default supplier for a particular class and property name. Supersedes the default supplier for the class
+     * in isolation when selecting using property name too.
+     * @param clazz The class for which to definite the default supplier.
+     * @param propertyName The name of the property for which to define the default supplier.
+     * @param supplier The default supplier to use for the class.
+     * @param <T> The type of the value supplied.
+     */
+    public abstract <T> void setClassAndPropertySupplier(Class<T> clazz, String propertyName, StreamableSupplier<? extends T> supplier);
+
+    /**
+     * Reset the DefaultSupplier to original defaults.
+     */
+    public abstract void reset();
 }
