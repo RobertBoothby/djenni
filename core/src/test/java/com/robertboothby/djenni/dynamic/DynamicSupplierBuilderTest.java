@@ -16,11 +16,10 @@ public class DynamicSupplierBuilderTest {
     @Test
     public void shouldGenerateAClass() throws IntrospectionException {
         //.useConstructor($ -> new TestClass($.p("One"), $.p(Integer.class)));
-
         StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class)
-                .byGet(TestClass::getValueTwo, anyInteger().between(1).and(10))
-                .byGet(TestClass::getValueOne, fix("One"))
-                .bySet(TestClass::setValueThree, fix("Three"))
+                .property(TestClass::getValueTwo, anyInteger().between(1).and(10))
+                .property(TestClass::getValueOne, fix("One"))
+                .property(TestClass::setValueThree, fix("Three"))
                 .build();
         TestClass testClass = testClassSupplier.get();
 
@@ -35,8 +34,16 @@ public class DynamicSupplierBuilderTest {
 //        Stream<TestClass> testClassStreamOfTen = testClassSupplier.stream(10);
 
 //        DynamicSupplierBuilder<TestClass> supplierBuilder = new DynamicSupplierBuilder<>(TestClass.class)
-//                .byGet($ -> $::getValueTwo, integerSupplier().between(1).and(10))
-//                .byGet($ -> $::getValueOne, fix("One"));
+//                .property($ -> $::getValueTwo, integerSupplier().between(1).and(10))
+//                .property($ -> $::getValueOne, fix("One"));
+
+        testClassSupplier = supplierFor(TestClass.class)
+                .property(TestClass::setValueFour, anyInteger().between(1).and(2))
+                .build();
+
+        testClass = testClassSupplier.get();
+
+        assertThat(testClass.getValueFour(), is(1));
 
     }
     public static class TestClass {
@@ -47,7 +54,7 @@ public class DynamicSupplierBuilderTest {
         private int valueFour;
 
 
-        public TestClass(String valueOne, Integer valueTwo, int valueFour) {
+        public TestClass(String valueOne, Integer valueTwo) {
             this.valueOne = valueOne;
             this.valueTwo = valueTwo;
 
@@ -70,6 +77,10 @@ public class DynamicSupplierBuilderTest {
         }
         public int getValueFour() {
             return valueFour;
+        }
+
+        public void setValueFour (int valueFour){
+            this.valueFour = valueFour;
         }
 
     }
