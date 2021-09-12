@@ -28,6 +28,7 @@ public class DynamicSupplierBuilderTest {
         assertThat(testClass.getValueOne(), is("One"));
         assertThat(testClass.getValueTwo(), is(notNullValue()));
         assertThat(testClass.getValueThree(), is("Three"));
+        assertThat(testClass.getValueFour(), is(0));
 //        //OR Infinite stream
 //        Stream<TestClass> testClassStream = testClassSupplier.stream();
 //        //OR Stream of 10
@@ -43,11 +44,13 @@ public class DynamicSupplierBuilderTest {
 
         private final Integer valueTwo;
         private String valueThree = "";
+        private int valueFour;
 
 
-        public TestClass(String valueOne, Integer valueTwo) {
+        public TestClass(String valueOne, Integer valueTwo, int valueFour) {
             this.valueOne = valueOne;
             this.valueTwo = valueTwo;
+
         }
 
         public String getValueOne() {
@@ -65,6 +68,10 @@ public class DynamicSupplierBuilderTest {
         public String getValueThree() {
             return valueThree;
         }
+        public int getValueFour() {
+            return valueFour;
+        }
+
     }
 
 }
