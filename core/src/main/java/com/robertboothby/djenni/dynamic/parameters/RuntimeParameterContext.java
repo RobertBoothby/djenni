@@ -1,5 +1,7 @@
 package com.robertboothby.djenni.dynamic.parameters;
 
+import com.robertboothby.djenni.core.StreamableSupplier;
+
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -38,12 +40,12 @@ public class RuntimeParameterContext implements ParameterContext {
     }
 
     @Override
-    public <P> P p(Supplier<P> defaultSupplier) {
+    public <P> P p(StreamableSupplier<P> defaultSupplier) {
         return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
     }
 
     @Override
-    public <P> P p(String name, Supplier<P> defaultSupplier) {
+    public <P> P p(String name, StreamableSupplier<P> defaultSupplier) {
         return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
     }
 }

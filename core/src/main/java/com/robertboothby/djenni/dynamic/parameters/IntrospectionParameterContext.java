@@ -1,5 +1,7 @@
 package com.robertboothby.djenni.dynamic.parameters;
 
+import com.robertboothby.djenni.core.StreamableSupplier;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -32,13 +34,13 @@ public class IntrospectionParameterContext implements ParameterContext {
     }
 
     @Override
-    public <P> P p(Supplier<P> defaultSupplier) {
-        return addParameterToList(new Parameter<P>(defaultSupplier));
+    public <P> P p(StreamableSupplier<P> defaultSupplier) {
+        return addParameterToList(new Parameter<>(defaultSupplier));
     }
 
     @Override
-    public <P> P p(String name, Supplier<P> defaultSupplier) {
-        return addParameterToList(new Parameter<P>(name, defaultSupplier));
+    public <P> P p(String name, StreamableSupplier<P> defaultSupplier) {
+        return addParameterToList(new Parameter<>(name, defaultSupplier));
     }
 
     private <P> P addParameterToList(Parameter<P> parameter) {

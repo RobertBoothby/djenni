@@ -4,7 +4,6 @@ import com.robertboothby.djenni.core.StreamableSupplier;
 import org.junit.Test;
 
 import java.beans.IntrospectionException;
-import java.util.stream.Stream;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.dynamic.DynamicSupplierBuilder.supplierFor;

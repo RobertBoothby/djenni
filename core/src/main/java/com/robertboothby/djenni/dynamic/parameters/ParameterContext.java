@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.dynamic.parameters;
 
-import java.util.function.Supplier;
+import com.robertboothby.djenni.core.StreamableSupplier;
 
 /**
  * This defines the contract of a BuildContext that is used to configure the parameters of a DynamicSupplierBuilder.
@@ -55,7 +55,7 @@ public interface ParameterContext {
      * @param <P>             The type of the parameter.
      * @return the fixed value.
      */
-    <P> P p(Supplier<P> defaultSupplier);
+    <P> P p(StreamableSupplier<P> defaultSupplier);
 
     /**
      * Use this parameter definition when you want to supply a default supplier that can be overridden and
@@ -66,5 +66,5 @@ public interface ParameterContext {
      * @param <P>             The type of the parameter.
      * @return the fixed value.
      */
-    <P> P p(String name, Supplier<P> defaultSupplier);
+    <P> P p(String name, StreamableSupplier<P> defaultSupplier);
 }

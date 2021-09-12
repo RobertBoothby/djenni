@@ -1,10 +1,7 @@
 package com.robertboothby.djenni.dynamic;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
-
-import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.dynamic.DefaultSuppliersImpl.defaultObjectSupplier;
 import static org.hamcrest.CoreMatchers.is;

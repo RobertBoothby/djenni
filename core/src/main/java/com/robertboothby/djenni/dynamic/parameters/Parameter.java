@@ -1,7 +1,11 @@
 package com.robertboothby.djenni.dynamic.parameters;
 
+import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.dynamic.DefaultSuppliers;
+
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * This class encapsulates a parameter involved in the creation of a data class using the DynamicSupplierBuilder.
@@ -9,24 +13,26 @@ import java.util.function.Supplier;
  */
 public class Parameter<P> {
     private String parameterName;
-    private Supplier<P> parameterSupplier = () -> null;
+    private Supplier<P> parameterSupplier;
     private String nameOverride;
     private Class<? extends P> parameterClass;
 
     public Parameter(Class<P> parameterClass) {
         this(null, parameterClass);
+        this.parameterSupplier = DefaultSuppliers.defaultSuppliers().getSupplierForClass(parameterClass);
     }
 
     public Parameter(String nameOverride, Class<P> parameterClass) {
         this.nameOverride = nameOverride;
         this.parameterClass = parameterClass;
+        this.parameterSupplier = DefaultSuppliers.defaultSuppliers().getSupplierForClass(parameterClass);
     }
 
     public Parameter(P defaultParameterValue) {
         this(null, defaultParameterValue);
     }
 
-    public Parameter(Supplier<P> defaultParameterSupplier) {
+    public Parameter(StreamableSupplier<P> defaultParameterSupplier) {
         this(null, defaultParameterSupplier);
     }
 
@@ -38,7 +44,7 @@ public class Parameter<P> {
     }
 
     @SuppressWarnings("unchecked")
-    public Parameter(String nameOverride, Supplier<P> defaultParameterSupplier) {
+    public Parameter(String nameOverride, StreamableSupplier<P> defaultParameterSupplier) {
         this.nameOverride = nameOverride;
         this.parameterClass = (Class<P>) defaultParameterSupplier.get().getClass();
         this.parameterSupplier = defaultParameterSupplier;
