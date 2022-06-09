@@ -1,10 +1,10 @@
-<h1>Djenni Core - User Guide</h1>
+# Djenni Core - User Guide
 Assuming that you have followed the guidance in the Quickstart then this document will walk you through how to use many 
 of the features of Djenni.
 
-<h2>Core Constructs</h2>
+## Core Constructs
 Djenni's core constructs are the SupplierBuilder interface:
-```java
+```
 package com.robertboothby.djenni;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
@@ -25,7 +25,7 @@ public interface SupplierBuilder<T> {
 }
 ```
 And the StreamableSupplier:
-```java
+```
 package com.robertboothby.djenni.core;
 
 import java.util.function.BiFunction;
@@ -83,7 +83,7 @@ of data to provide large quantities of data.
 
 An extension to the SupplierBuilder is the ConfigurableSupplierBuilder that uses the Configurable interface that makes it easy to provide pre-defined
 configurations that can be customised later:
-```java
+```
 package com.robertboothby.djenni.util;
 
 import java.util.function.Consumer;
@@ -111,7 +111,7 @@ public interface Configurable<T extends Configurable<T>> {
     }
 }
 ```
-```java
+```
 package com.robertboothby.djenni;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
@@ -138,14 +138,14 @@ public interface ConfigurableSupplierBuilder <T, U extends ConfigurableSupplierB
 }
 ```
 This extension is the one that you will normally want to use as it will give you most flexibility.
-<h2>My First SupplierBuilder</h2>
+## My First SupplierBuilder
 Let's put this together and create a simple SupplierBuilder for people and show some of the potential usage patterns.
 
 For this example we're going to create this SupplierBuilder longhand, but we can also use the DynamicSupplierBuilder to
 reduce the boilerplate.
 
 First, let's define the Person data class that we're going to be generating.
-```java
+```
 package com.robertboothby.djenni.examples;
 
 import java.time.Instant;
@@ -201,7 +201,7 @@ This has been designed to show how you can generate a number of common construct
 Now let's build a custom SupplierBuilder:
 
 First step is to create the class extending `ConfigurableSupplierBuilder` or `SupplierBuilder`. The first one gives us access to the configure method which can make for a more fluent approach but it is a little more complex to declare.
-```java
+```
 package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
@@ -218,7 +218,7 @@ We have let the IDE implement the build() with a simple null return. Please note
 
 Now let us start fleshing out the builder with the ability to build a concrete instance of the person interface.
 
-```java
+```
 package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
@@ -248,7 +248,7 @@ public class PersonSupplierBuilder implements ConfigurableSupplierBuilder<Person
 So, now we're generating instances of `Person` but all its attributes are `null`. Notice that we are using the instance variables (for now).
 
 Let's add the builder setter methods (Many IDEs have mechanisms to make this really easy!).
-```java
+```
 package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
@@ -299,7 +299,7 @@ This still compiles even though we have added mutators for the instance variable
 
 This can become an issue when you want thread safe suppliers or to derive multiple suppliers from the same supplier builder with different configurations. I'm going to fix this by creating effectively final local variables in the build() method.
 
-```java
+```
 package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
@@ -357,7 +357,7 @@ Another completely reasonable way to handle this issue is to create a concrete `
 Now that we have a PersonSupplierBuilder class we can supply some reasonable defaults for the attributes instead of nulls.
 
 This way we can have 'valid' persons being generated with no additional configuration if the exact values of the attributes are irrelevant to the context in which the `Person` class is being used.
-```java
+```
 package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
@@ -438,10 +438,10 @@ I have slightly optimised these by defining the `arbitraryStrings` and `arbitrar
 
 I have also added a couple of static methods at the end to make the actual usage a bit tidier and more expressive.
 
-<h2>Customising and configuring</h2>
+## Customising and configuring
 Now let's look at customising and configuring this new `PersonSupplierBuilder`.
 
-```java
+```
     public StreamableSupplier<Person> inlineConfig() {
         //Provide a default configuration immediately.
         PersonSupplierBuilder personSupplierBuilder = aPerson($ ->
@@ -492,7 +492,7 @@ Now let's look at customising and configuring this new `PersonSupplierBuilder`.
 This code fragment shows three equivalent ways of customising / configuring the `PersonSupplierBuilder`. The two approaches that take lambda functions are a touch more flexible from a fluent API perspective but it all comes down to personal preference.
 
 It gets a little clearer when we define a method that can then be used as a lambda.
-```java
+```
     public StreamableSupplier<Person> inlineConfig2() {
         //Provide a default configuration immediately.
         return aPerson(this::epochBirthdate).build();
@@ -524,10 +524,12 @@ It gets a little clearer when we define a method that can then be used as a lamb
         );
     }
 ```
-<h2>Advanced Suppliers</h2>
+## Dynamic Supplier Builder
+
+## Advanced Suppliers
 Here we will take a look at some of the more advanced capabilities of Djenni suppliers.
-<h3>Streambable Supplier</h3>
-<h3>Thread Local Supplier</h3>
-<h3>Linkable Supplier</h3>
-<h3>Collection Supplier</h3>
-<h3>Map Supplier</h3>
+### Streamable Supplier
+### Thread Local Supplier
+### Linkable Supplier
+### Collection Supplier
+### Map Supplier
