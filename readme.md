@@ -70,7 +70,8 @@ domain that will make testing a lot easier.
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    ...
+
+    <!-- ... -->
 
     <build>
         <plugins>
@@ -91,6 +92,8 @@ domain that will make testing a lot easier.
         </plugins>
     </build>
 
+    <!-- ... -->
+
     <dependencies>
         <!--
         Core Djenni Dependency including the DynamicSupplierBuilder
@@ -100,7 +103,7 @@ domain that will make testing a lot easier.
             <artifactId>core</artifactId>
             <version>0.3.0</version>
         </dependency>
-        ...
+        <!-- ... -->
     </dependencies>
 </project>
 ```
@@ -120,7 +123,9 @@ import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.dynamic.DefaultSuppliers.defaultSuppliers;
 import static com.robertboothby.djenni.dynamic.DynamicSupplierBuilder.supplierFor;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.anyInteger;
-...
+
+//...
+
     //This will set up a default supplier for an and all int parameters using the primitive class type.
     defaultSuppliers().setClassSupplier(int.class, anyInteger().between(11).and(21).build());
     StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class)
@@ -129,7 +134,5 @@ import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.anyInteger;
         .property(TestClass::setValueThree, fix("Three"))
         .build();
     TestClass testClass = testClassSupplier.get();
-...
-
 ```
 

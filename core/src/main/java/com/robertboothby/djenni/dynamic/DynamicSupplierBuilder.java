@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.dynamic;
 
+import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.dynamic.parameters.IntrospectionParameterContext;
@@ -40,7 +41,7 @@ import static java.util.stream.Collectors.toSet;
  *
  * @param <C> The type of the Class that will be supplied in the Suppliers created by this builder.
  */
-public class DynamicSupplierBuilder<C> implements SupplierBuilder<C> {
+public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C, DynamicSupplierBuilder<C>> {
 
     private final Class<C> suppliedClass;
     private final List<Parameter<?>> parameterList = new ArrayList<>();

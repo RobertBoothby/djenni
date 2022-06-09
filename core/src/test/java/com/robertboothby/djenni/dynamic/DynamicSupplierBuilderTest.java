@@ -32,10 +32,10 @@ public class DynamicSupplierBuilderTest {
 //        Stream<TestClass> testClassStream = testClassSupplier.stream();
 //        //OR Stream of 10
 //        Stream<TestClass> testClassStreamOfTen = testClassSupplier.stream(10);
-
-//        DynamicSupplierBuilder<TestClass> supplierBuilder = new DynamicSupplierBuilder<>(TestClass.class)
-//                .property($ -> $::getValueTwo, integerSupplier().between(1).and(10))
-//                .property($ -> $::getValueOne, fix("One"));
+//
+//        DynamicSupplierBuilder<TestClass> supplierBuilder = supplierFor(TestClass.class)
+//                .property(TestClass::getValueTwo, integerSupplier().between(1).and(10))
+//                .property(TestClass::getValueOne, fix("One"));
 
         testClassSupplier = supplierFor(TestClass.class)
                 .property(TestClass::setValueFour, anyInteger().between(1).and(2))
@@ -46,6 +46,7 @@ public class DynamicSupplierBuilderTest {
         assertThat(testClass.getValueFour(), is(1));
 
     }
+
     public static class TestClass {
         private final String valueOne;
 
@@ -75,11 +76,12 @@ public class DynamicSupplierBuilderTest {
         public String getValueThree() {
             return valueThree;
         }
+
         public int getValueFour() {
             return valueFour;
         }
 
-        public void setValueFour (int valueFour){
+        public void setValueFour(int valueFour) {
             this.valueFour = valueFour;
         }
 
