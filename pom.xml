@@ -55,8 +55,9 @@
     <modules>
         <module>util</module>
         <module>core</module>
-        <module>djenni-source-maven-plugin</module>
+        <module>core-examples</module>
         <module>common-generators</module>
+        <module>djenni-source-maven-plugin</module>
         <module>djenni-source-maven-example</module>
         <!--
         TODO eventually add modules for data generation for types in common frameworks such as JAXB.

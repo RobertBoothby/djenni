@@ -225,20 +225,18 @@ public class SupplierHelper {
 
     /**
      * <p>
-     *     Create a supplier wrapping another supplier that allows you to 'peek' at the values as they are supplied. It is
-     *     strongly advised that you do not alter the values as you peek at them as this may cause thread safety and other
-     *     issues.
+     *     Create a supplier wrapping another supplier that allows you to perform some action after the values are supplied.
      * </p>
      * <p>
      *     This can be used to create a set of linked values within a domain model but I have already provided an implementation
-     *     {@link LinkableSupplier}.
+     *     {@link CachingSupplier}.
      * </p>
      * @param supplier The supplier to wrap and peek at.
      * @param peeker The consumer that will peek at the values created by the wrapped supplier
      * @param <T> The type of the values being supplied.
      * @return A supplier that will allow peeking at the values.
      */
-    public static <T> StreamableSupplier<T> peek(Supplier<? extends T> supplier, Consumer<T> peeker) {
+    public static <T> StreamableSupplier<T> afterGetCalled(Supplier<? extends T> supplier, Consumer<T> peeker) {
         return () -> {
             T value = supplier.get();
             peeker.accept(value);

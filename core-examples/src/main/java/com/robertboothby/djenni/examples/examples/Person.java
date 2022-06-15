@@ -1,4 +1,4 @@
-package com.robertboothby.djenni.examples;
+package com.robertboothby.djenni.examples.examples;
 
 import java.time.Instant;
 import java.util.Arrays;

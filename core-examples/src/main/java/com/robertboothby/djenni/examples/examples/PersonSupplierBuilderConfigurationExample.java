@@ -1,10 +1,14 @@
-package com.robertboothby.djenni.examples;
+package com.robertboothby.djenni.examples.examples;
 
+import com.robertboothby.djenni.common.Name;
+import com.robertboothby.djenni.common.NameSupplierBuilder;
+import com.robertboothby.djenni.core.CachingSupplier;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.time.Instant;
 
-import static com.robertboothby.djenni.examples.PersonSupplierBuilder.aPerson;
+import static com.robertboothby.djenni.core.SupplierHelper.afterGetCalled;
+import static com.robertboothby.djenni.examples.examples.PersonSupplierBuilder.aPerson;
 import static com.robertboothby.djenni.lang.LongSupplierBuilder.generateALong;
 
 public class PersonSupplierBuilderConfigurationExample {
@@ -81,5 +85,19 @@ public class PersonSupplierBuilderConfigurationExample {
                         .build()
                         .derive(Instant::ofEpochMilli)
         );
+    }
+
+    public StreamableSupplier<Person> CachingSupplierConfig() {
+        //Provide a default configuration immediately.
+        CachingSupplier<Name> cachingNameSupplier = CachingSupplier.cacheSuppliedValues(NameSupplierBuilder.names());
+        StreamableSupplier<Person> personStreamableSupplier = aPerson(this::epochBirthdate)
+                .setGivenNamesSupplier(cachingNameSupplier
+                        .derive(Name::getGivenName)
+                        .derive(givenName -> new String[]{givenName}))
+                .setFamilyNameSupplier(cachingNameSupplier
+                        .derive(Name::getFamilyName))
+                .build();
+        //Ensure that the caching name supplier is updated after every call to get a person.
+        return afterGetCalled(personStreamableSupplier, ignored -> cachingNameSupplier.next());
     }
 }

@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * Extension interface to the basic {@link Supplier} interface that adds a stream method.
+ * Extension interface to the basic {@link Supplier} interface that adds stream and derive methods.
  * @param <T> The type of values supplied by the Supplier and any streams derived from it.
  */
 public interface StreamableSupplier<T> extends Supplier<T> {

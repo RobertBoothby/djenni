@@ -1,8 +1,7 @@
-package com.robertboothby.djenni.examples;
+package com.robertboothby.djenni.examples.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
-import com.robertboothby.djenni.lang.StringSupplierBuilder;
 
 import java.time.Instant;
 import java.util.List;

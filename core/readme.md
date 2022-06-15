@@ -488,7 +488,6 @@ Now let's look at customising and configuring this new `PersonSupplierBuilder`.
 
 
 ```
-
 This code fragment shows three equivalent ways of customising / configuring the `PersonSupplierBuilder`. The two approaches that take lambda functions are a touch more flexible from a fluent API perspective but it all comes down to personal preference.
 
 It gets a little clearer when we define a method that can then be used as a lambda.
@@ -524,12 +523,107 @@ It gets a little clearer when we define a method that can then be used as a lamb
         );
     }
 ```
+The use of the `derive(Function)` method is worth highlighting as this provides a neat method for deriving new suppliers from previous suppliers. For example you may have a domain type that you want to get the serialised JSON version of and you can derive a new supplier from the supplier of the base domain type. In addition, there is a `derive(BiFunction)` method that allows for the derivation of new suppliers by composing multiple suppliers.
 ## Dynamic Supplier Builder
 
 ## Advanced Suppliers
 Here we will take a look at some of the more advanced capabilities of Djenni suppliers.
 ### Streamable Supplier
+The `StreamableSupplier` is a Djenni specific extension to the basic Java `Supplier` functional interface and provides for the derivation of both streams and other suppliers.
+```
+package com.robertboothby.djenni.core;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+/**
+ * Extension interface to the basic {@link Supplier} interface that adds stream and derive methods.
+ * @param <T> The type of values supplied by the Supplier and any streams derived from it.
+ */
+public interface StreamableSupplier<T> extends Supplier<T> {
+
+    /**
+     * Return a limited Stream using this supplier as a source.
+     * @param numberOfValues The number of values from this supplier to stream.
+     * @return A Stream instance derived from this supplier.
+     */
+    default Stream<T> stream(long numberOfValues){
+        return SupplierHelper.stream(this, numberOfValues);
+    }
+
+    /**
+     * Return an infinite Stream using this supplier as a source.
+     * @return A Stream instance derived from this supplier.
+     */
+    default Stream<T> stream() {
+        return SupplierHelper.stream(this);
+    }
+
+    /**
+     * Return a new Supplier derived from this supplier using the function passed in.
+     * @param derivation The derivation function.
+     * @param <R> The type returned from the derivation function.
+     * @return A new Supplier derived from this one.
+     */
+    default <R> StreamableSupplier<R> derive(Function<T, R> derivation){
+        return SupplierHelper.derived(derivation, this);
+    }
+
+    /**
+     * Return a new Supplier derived from this supplier using the function passed in and a second supplier.
+     * @param derivation The derivation function.
+     * @param otherSupplier The other supplier.
+     * @param <R> The type returned from the derivation function.
+     * @return A new Supplier derived from this one and the other.
+     */
+    default <U,R> StreamableSupplier<R> derive(BiFunction<T, U ,R> derivation, Supplier<U> otherSupplier){
+        return SupplierHelper.derived(derivation, this, otherSupplier);
+    }
+}
+```
 ### Thread Local Supplier
-### Linkable Supplier
-### Collection Supplier
-### Map Supplier
+Unfortunately not all suppliers will be thread safe (for example consider a supplier interacting with a database connection) so the `ThreadLocalSupplier` class provides a mechanism to provide different instances of the thread unsafe supplier on each thread. 
+### Linkable Suppliers
+In some domains there will be scenarios where there are values that need to be consistent within a given set of objects. For example Primary / Foreign Keys or maybe currency in a group of transactions.
+
+The `LinkableSupplier` provides a mechanism for handling these scenarios.
+
+A `LinkableSupplier` wraps an original supplier and when it is constructed or `next()` is called then it stores the value that has been generated and returns it whenever its own `get()` method is called.
+
+If you use the original supplier directly then the `LinkableSupplier` and any linked suppliers derived from it will not see any updates. This is intentional.
+```
+    public StreamableSupplier<Person> LinkableSupplierConfig() {
+        //Provide a default configuration immediately.
+        Supplier<Name> baseSupplier = NameSupplierBuilder.names();
+        LinkableSupplier<Name> linkable = LinkableSupplier.linkable(baseSupplier);
+        //This will work as expected because I know that the given names supplier is called before the family names.
+        //If in doubt, explicitly call the linkable supplier in each step of generation to avoid weird outcomes.
+        return peek(aPerson(this::epochBirthdate)
+                .setGivenNamesSupplier(linkable.derive(Name::getGivenName).derive(givenName -> new String[]{givenName}))
+                .setFamilyNameSupplier(linkable.derive(Name::getFamilyName))
+                .build(), ignored -> linkable.next());
+    }
+```
+The mechanism is based on the `public static <T> StreamableSupplier<T> afterGetCalled(Supplier<? extends T> supplier, Consumer<T> peeker)` that allows you to create a supplier that shares any values it generates with a `Consumer` which can be very useful for logging or capturing the data generated for investigation or replay.
+
+In the example above I have used `whenGetCalled()` to trigger the generation of a new name after each time the `get()` method is called.
+
+You do need to take care to use the `LinkableSupplier.get()` only once in a particular context that needs this type of consistency - if you don't then a new value may be generated unexpectedly.
+
+In order
+
+### Collection Suppliers
+The `CollectionSupplierBuilder` provides mechanisms over and above the `SimpleListSupplier` to create suppliers that supply specific collection types.
+### Map Suppliers
+The `MapSupplierBuilder`
+### Supplier Helper
+Not really a supplier but a useful class when creating your own suppliers as it contains a number of utilities and methods that have proved useful time and again.
+
+## Future Enhancements
+
+Things that I am thinking of adding:
+- Logging mechanisms using `peek()` to capture the generated values easily.
+- Data Storage & replay mechnisms to allow for scenarios to be re-run using the same data for investigation and bug-fixing purposes.
+- SQL Supplier - a mini-framework to access data from a SQL database to feed into the generation other data.

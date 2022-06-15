@@ -6,11 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import static com.robertboothby.djenni.core.SupplierHelper.peek;
+import static com.robertboothby.djenni.core.SupplierHelper.afterGetCalled;
 
 /**
  * Little utility to make it easier to capture and reuse the results of previous rounds of generation. This is intended
- * to supplement the LinkableSupplier capability whe creating more complex domain models.
+ * to supplement the LinkableSupplier capability while creating more complex domain models.
  * @param <T> The type of the values to be stored.
  */
 public class ValueStore<T> {
@@ -37,7 +37,7 @@ public class ValueStore<T> {
      * ValueStore.
      */
     public StreamableSupplier<T> storesValuesFromSupplier(Supplier<? extends T> valueSupplier){
-        return peek(valueSupplier, this::storeValue);
+        return afterGetCalled(valueSupplier, this::storeValue);
     }
 
     private void storeValue(T value){
