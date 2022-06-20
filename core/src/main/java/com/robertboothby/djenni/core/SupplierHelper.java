@@ -6,10 +6,7 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribut
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -293,4 +290,15 @@ public class SupplierHelper {
         return derived(Object::toString, supplier);
     }
 
+    /**
+     * Create a supplier of arrays from another supplier of values.
+     * @param underlyingSupplier The supplier that will supply the values in the arrays.
+     * @param arrayLengths A supplier of the lengths of the arrays that will be generated.
+     * @param arrayGenerator The function to use to create the array - typically something like <pre>String[]::new</pre>
+     * @return A supplier of arrays.
+     * @param <T> The type of the arrays that will be generated.
+     */
+    public static <T> StreamableSupplier<T[]> arrays(StreamableSupplier<T> underlyingSupplier, Supplier<Integer> arrayLengths, IntFunction<T[]> arrayGenerator){
+        return () -> underlyingSupplier.stream(arrayLengths.get()).toArray(arrayGenerator);
+    }
 }

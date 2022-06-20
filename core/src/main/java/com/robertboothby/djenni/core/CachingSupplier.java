@@ -16,6 +16,10 @@ public class CachingSupplier<T> implements StreamableSupplier<T> {
 
     private final StreamableSupplier<T> source;
 
+    /**
+     * Construct an instance of caching supplier using the passed in source supplier
+     * @param source the source supplier.
+     */
     public CachingSupplier(Supplier<T> source) {
         this.source = afterGetCalled(source, this::setLastValue);
         next();
@@ -26,15 +30,24 @@ public class CachingSupplier<T> implements StreamableSupplier<T> {
         return lastValue.get();
     }
 
-    public void next() {
-        source.get();
+    /**
+     * Get the next value from the wrapped supplier and cache it.
+     */
+    public T next() {
+        return source.get();
     }
 
     private void setLastValue(T value){
         lastValue.set(value);
     }
 
-    public static <T> CachingSupplier<T> cacheSuppliedValues(Supplier<T> nakedSource){
-        return new CachingSupplier<>(nakedSource);
+    /**
+     * Wrap a source supplier in a caching supplier.
+     * @param source The source to be wrapped.
+     * @return The source wrapped in a caching supplier
+     * @param <T> The type of values returned by the source supplier and the newly created caching supplier.
+     */
+    public static <T> CachingSupplier<T> cacheSuppliedValues(Supplier<T> source){
+        return new CachingSupplier<>(source);
     }
 }
