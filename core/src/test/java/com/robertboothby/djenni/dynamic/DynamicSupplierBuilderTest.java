@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.beans.IntrospectionException;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
+import static com.robertboothby.djenni.dynamic.DefaultSuppliers.defaultSuppliers;
 import static com.robertboothby.djenni.dynamic.DynamicSupplierBuilder.supplierFor;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.anyInteger;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,6 +45,22 @@ public class DynamicSupplierBuilderTest {
         testClass = testClassSupplier.get();
 
         assertThat(testClass.getValueFour(), is(1));
+
+    }
+
+    @Test
+    public void shouldGenerateClassWithDefaults() throws IntrospectionException {
+        defaultSuppliers().setClassAndPropertySupplier(String.class, "valueOne", fix("One"));
+        defaultSuppliers().setClassAndPropertySupplier(Integer.class, "valueTwo", fix(2));
+        defaultSuppliers().setClassSupplier(String.class, fix("STRING"));
+        defaultSuppliers().setClassSupplier(int.class, fix(4));
+        StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class).build();
+        TestClass testClass = testClassSupplier.get();
+
+        assertThat(testClass.getValueOne(), is("One"));
+        assertThat(testClass.getValueTwo(), is(2));
+        assertThat(testClass.getValueThree(), is("STRING"));
+        assertThat(testClass.getValueFour(), is(4));
 
     }
 

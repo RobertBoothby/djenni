@@ -25,7 +25,7 @@ public class Parameter<P> {
     public Parameter(String nameOverride, Class<P> parameterClass) {
         this.nameOverride = nameOverride;
         this.parameterClass = parameterClass;
-        this.parameterSupplier = DefaultSuppliers.defaultSuppliers().getSupplierForClass(parameterClass);
+        this.parameterSupplier = DefaultSuppliers.defaultSuppliers().getSupplierForClassAndProperty(parameterClass, nameOverride);
     }
 
     public Parameter(P defaultParameterValue) {

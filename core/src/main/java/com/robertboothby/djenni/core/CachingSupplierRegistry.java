@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Utility class to manage large numbers of caching suppliers.
  *
  * It is intended to allow you to register caching suppliers in named groups that can be ticked over into new values on demand.
+ *
+ * Currently runs next() in series due to needing to support {@link ThreadLocalSupplier}s.
  */
 public class CachingSupplierRegistry {
 

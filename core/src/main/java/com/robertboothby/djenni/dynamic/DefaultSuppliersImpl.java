@@ -12,7 +12,7 @@ import java.util.function.Supplier;
  */
 public class DefaultSuppliersImpl extends DefaultSuppliers {
 
-    private final Map<Class<?>, Map<String, Supplier<?>>> classAndPropertyDefaults = new HashMap<>();
+    private final Map<Class<?>, Map<String, StreamableSupplier<?>>> classAndPropertyDefaults = new HashMap<>();
 
     public static final StreamableSupplier<?> defaultObjectSupplier = () -> null;
 
@@ -39,15 +39,11 @@ public class DefaultSuppliersImpl extends DefaultSuppliers {
     @Override
     @SuppressWarnings("unchecked")
     public <T> StreamableSupplier<T> getSupplierForClassAndProperty(Class<T> clazz, String property) {
-        Map<String, Supplier<?>> supplierMap = classAndPropertyDefaults.computeIfAbsent(clazz, $ -> new HashMap<>());
-        return (StreamableSupplier<T>) supplierMap
-                .computeIfAbsent(property, $ -> { //If there is no default supplier for the specific class and property combination create one or find one.
-                    if ("".equals(property)) { //If the value of property indicates that it is for any class return the default supplier.
-                        return defaultObjectSupplier;
-                    } else { //Else get whatever supplier there is for the class ignoring the property or the default supplier.
-                        return supplierMap.getOrDefault("", defaultObjectSupplier);
-                    }
-                });
+        return (StreamableSupplier<T>) classAndPropertyDefaults
+                .computeIfAbsent(clazz, $ -> new HashMap<>())
+                .getOrDefault(property, classAndPropertyDefaults
+                        .computeIfAbsent(clazz, $1 -> new HashMap<>())
+                        .getOrDefault(NO_PROPERTY, defaultObjectSupplier));
     }
 
     @Override

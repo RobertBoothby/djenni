@@ -585,34 +585,36 @@ public interface StreamableSupplier<T> extends Supplier<T> {
 ```
 ### Thread Local Supplier
 Unfortunately not all suppliers will be thread safe (for example consider a supplier interacting with a database connection) so the `ThreadLocalSupplier` class provides a mechanism to provide different instances of the thread unsafe supplier on each thread. 
-### Linkable Suppliers
+### Caching Suppliers
 In some domains there will be scenarios where there are values that need to be consistent within a given set of objects. For example Primary / Foreign Keys or maybe currency in a group of transactions.
 
-The `LinkableSupplier` provides a mechanism for handling these scenarios.
+The `CachingSupplier` provides a mechanism for handling these scenarios.
 
-A `LinkableSupplier` wraps an original supplier and when it is constructed or `next()` is called then it stores the value that has been generated and returns it whenever its own `get()` method is called.
+A `CachingSupplier` wraps an original supplier and when it is constructed or `next()` is called then it stores the value that has been generated and returns it whenever its own `get()` method is called.
 
-If you use the original supplier directly then the `LinkableSupplier` and any linked suppliers derived from it will not see any updates. This is intentional.
+If you use the original supplier directly then the `CachingSupplier` and any linked suppliers derived from it will not see any updates. This is intentional.
 ```
-    public StreamableSupplier<Person> LinkableSupplierConfig() {
+    public StreamableSupplier<Person> CachingSupplierConfig() {
         //Provide a default configuration immediately.
-        Supplier<Name> baseSupplier = NameSupplierBuilder.names();
-        LinkableSupplier<Name> linkable = LinkableSupplier.linkable(baseSupplier);
-        //This will work as expected because I know that the given names supplier is called before the family names.
-        //If in doubt, explicitly call the linkable supplier in each step of generation to avoid weird outcomes.
-        return peek(aPerson(this::epochBirthdate)
-                .setGivenNamesSupplier(linkable.derive(Name::getGivenName).derive(givenName -> new String[]{givenName}))
-                .setFamilyNameSupplier(linkable.derive(Name::getFamilyName))
-                .build(), ignored -> linkable.next());
+        CachingSupplier<Name> cachingNameSupplier = CachingSupplier.cacheSuppliedValues(NameSupplierBuilder.names());
+        StreamableSupplier<Person> personStreamableSupplier = aPerson(this::epochBirthdate)
+                .setGivenNamesSupplier(cachingNameSupplier
+                        .derive(Name::getGivenName)
+                        .derive(givenName -> new String[]{givenName}))
+                .setFamilyNameSupplier(cachingNameSupplier
+                        .derive(Name::getFamilyName))
+                .build();
+        //Ensure that the caching name supplier is updated after every call to get a person.
+        return afterGetCalled(personStreamableSupplier, ignored -> cachingNameSupplier.next());
     }
 ```
 The mechanism is based on the `public static <T> StreamableSupplier<T> afterGetCalled(Supplier<? extends T> supplier, Consumer<T> peeker)` that allows you to create a supplier that shares any values it generates with a `Consumer` which can be very useful for logging or capturing the data generated for investigation or replay.
 
 In the example above I have used `whenGetCalled()` to trigger the generation of a new name after each time the `get()` method is called.
 
-You do need to take care to use the `LinkableSupplier.get()` only once in a particular context that needs this type of consistency - if you don't then a new value may be generated unexpectedly.
+You do need to take care to use the `CachingSupplier.next()` only once in a particular context that needs this type of consistency - if you don't then a new value may be generated unexpectedly.
 
-In order
+To make it easier to deal with multiple CachingSuppliers concurrently there is a `CachingSupplierRegistry` that allows you to register and coordinate them more easily.
 
 ### Collection Suppliers
 The `CollectionSupplierBuilder` provides mechanisms over and above the `SimpleListSupplier` to create suppliers that supply specific collection types.
