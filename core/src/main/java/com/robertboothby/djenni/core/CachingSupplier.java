@@ -9,6 +9,10 @@ import static com.robertboothby.djenni.core.SupplierHelper.afterGetCalled;
  *     A Supplier that wraps another supplier returning the latest value that the CachingSupplier has retrieved from
  *     the underlying supplier from the {@link #get()}  method until {@link #next()} is called.
  * </p>
+ * <p>
+ *     The underlying supplier can still be used directly via its {@link Supplier#get()} method but that will not update
+ *     the cached value. The cached value is only updated when {@link #next()} is called.
+ * </p>
  */
 public class CachingSupplier<T> implements StreamableSupplier<T> {
 

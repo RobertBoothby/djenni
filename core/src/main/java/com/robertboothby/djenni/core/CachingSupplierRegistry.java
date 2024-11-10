@@ -10,7 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * It is intended to allow you to register caching suppliers in named groups that can be ticked over into new values on demand.
  *
- * Currently runs next() in series due to needing to support {@link ThreadLocalSupplier}s.
+ * Currently runs next() in series due to needing to support {@link ThreadLocalSupplier}s, we may be able to improve
+ * this behaviour with the introduction of ScopedValues in the future and deprecating ThreadLocalSupplier.
  */
 public class CachingSupplierRegistry {
 
@@ -19,7 +20,11 @@ public class CachingSupplierRegistry {
      */
     public static final String DEFAULT = "";
 
-    private final static Map<String, Set<CachingSupplier<?>>> registeredSuppliers = new ConcurrentHashMap<>();
+    private final Map<String, Set<CachingSupplier<?>>> registeredSuppliers = new ConcurrentHashMap<>();
+
+    public static CachingSupplierRegistry registry() {
+        return new CachingSupplierRegistry();
+    }
 
     /**
      * Add a Caching supplier to a particular group.
