@@ -1,6 +1,5 @@
 package com.robertboothby.djenni.core;
 
-import com.robertboothby.djenni.lang.IntegerSupplierBuilder;
 import org.junit.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;

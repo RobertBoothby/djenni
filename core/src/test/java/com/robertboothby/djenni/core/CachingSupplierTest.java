@@ -7,10 +7,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.CachingSupplier.cacheSuppliedValues;
-import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSupplier;
 import static com.robertboothby.djenni.lang.StringSupplierBuilder.arbitraryString;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
