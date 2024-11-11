@@ -16,7 +16,7 @@ import static com.robertboothby.djenni.core.SupplierHelper.afterGetCalled;
  */
 public class CachingSupplier<T> implements StreamableSupplier<T> {
 
-    private final ThreadLocal<T> lastValue = new ThreadLocal<>();
+    private final ThreadLocal<T> lastValue;
 
     private final StreamableSupplier<T> source;
 
@@ -26,7 +26,7 @@ public class CachingSupplier<T> implements StreamableSupplier<T> {
      */
     public CachingSupplier(Supplier<T> source) {
         this.source = afterGetCalled(source, this::setLastValue);
-        next();
+        lastValue = ThreadLocal.withInitial(() -> source.get());
     }
 
     @Override
