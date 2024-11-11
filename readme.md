@@ -3,23 +3,20 @@
 Djenni is the distillation of many years building diverse systems that all needed testing and, as a result, needed test data.
 ### Why Djenni?
 
-<em>"The test outcome is often unaffected by the exact values of many of the inputs"</em>
+<em>"Why didn't the tests fail when my code is breaking in production"</em> OR <em>"That data shouldn't have changed the way my code works"</em>
 
 There is an unstated assumption in most testing that the values of the uninteresting fields will not affect the result of
 the test. In my experience this is usually a dangerous assumption.
 
-### What does this mean?
-
-In the majority of tests the point of the test is usually affected by one or two values. For example if we are testing
+In the majority of tests the outcome is usually affected by one or two values. For example if we are testing
 a validator that says verifies a vehicle is a bicycle only if it has two wheels then the color, the power-train and the
-style of the frame should be irrelevant to validation. How do we prove that they are?
+style of the frame should be irrelevant to validation. How do we prove that they are, actually, irrelevant?
 
-We should be able to put random values into the irrelevant data elements in a test and there should be no
-change in outcome.
+By putting random values into the irrelevant attributes of a test we can prove that the assumed irrelevant values are actually irrelevant.
 
 ### What does Djenni do?
 Djenni is designed to make it easy to set up test data for all types of testing and effectively assert which test data
-is irrelevant to the outome and which data matters.
+is irrelevant to the outcome and which data matters.
 
 Djenni also makes it easy to generate large volumes of test data for rich domains and can scale well to support
 everything from unit testing to large scale non-functional testing.
