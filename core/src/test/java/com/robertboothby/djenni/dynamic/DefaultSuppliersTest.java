@@ -1,5 +1,6 @@
 package com.robertboothby.djenni.dynamic;
 
+import com.robertboothby.djenni.core.StreamableSupplier;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -25,4 +26,5 @@ public class DefaultSuppliersTest {
         DefaultSuppliers.overrideInstance(newDefaultSuppliers);
         assertThat(DefaultSuppliers.defaultSuppliers(), is(equalTo(newDefaultSuppliers)));
     }
+
 }

@@ -586,6 +586,8 @@ public interface StreamableSupplier<T> extends Supplier<T> {
 ### Thread Local Supplier
 Unfortunately not all suppliers will be thread safe (for example consider a supplier interacting with a database connection) so the `ThreadLocalSupplier` class provides a mechanism to provide different instances of the thread unsafe supplier on each thread. 
 ### Caching Suppliers
+# TODO Update this section to reflect the new CachingSupplier mechanism.
+
 In some domains there will be scenarios where there are values that need to be consistent within a given set of objects. For example Primary / Foreign Keys or maybe currency in a group of transactions.
 
 The `CachingSupplier` provides a mechanism for handling these scenarios.
