@@ -1,16 +1,16 @@
-package com.robertboothby.djenni.experimental;
+package com.robertboothby.djenni.util.lambda.introspectable;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.function.BiConsumer;
 
 /**
- * An introspectable Lambda function for a getter (or similar method).
+ * An introspectable Lambda function for a setter (or similar method).
  */
 @FunctionalInterface
-public interface IntrospectableSupplier<T> extends Supplier<T>, Serializable {
+public interface IntrospectableBiConsumer<T,R> extends BiConsumer<T,R>, Serializable {
 
     default Class getImplementingClass() {
         try {
@@ -25,16 +25,16 @@ public interface IntrospectableSupplier<T> extends Supplier<T>, Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    default Class<T> getReturnType() {
+    default Class<T> getParameterType() {
         return (Class<T>) Arrays.stream(getImplementingClass()
                 .getMethods())
                 .filter($ -> $
                         .getName().equals(getMethodName())
                         &&
-                        $.getParameterCount() == 0)
+                        $.getParameterCount() == 1)
                 .findFirst()
                 .orElseThrow()
-                .getReturnType();
+                .getParameterTypes()[0];
     }
 
     default SerializedLambda serializeToIntrospectableForm() {

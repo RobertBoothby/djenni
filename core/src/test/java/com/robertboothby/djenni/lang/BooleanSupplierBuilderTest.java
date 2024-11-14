@@ -4,11 +4,10 @@ import com.robertboothby.djenni.distribution.Distribution;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.function.Supplier;
 
-import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessSupplier;
 import static com.robertboothby.djenni.lang.BooleanSupplierBuilder.booleanSupplier;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

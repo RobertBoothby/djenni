@@ -7,7 +7,7 @@ import java.util.function.Consumer;
  *     Useful interface that allows us to trivially add a method that allows a Consumer to configure the class in question.
  * </p>
  * <p>
- *     This is primarily intended to allow us to compose multiple pre-canned configurations together in a fluent style.
+ *     This is primarily intended to allow us to compose multiple pre-canned configurations together.
  * </p>
  * @param <T> The concrete implementation of the Configurable interface.
  */

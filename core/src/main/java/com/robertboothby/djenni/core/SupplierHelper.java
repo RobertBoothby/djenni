@@ -6,10 +6,7 @@ import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribut
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -225,20 +222,18 @@ public class SupplierHelper {
 
     /**
      * <p>
-     *     Create a supplier wrapping another supplier that allows you to 'peek' at the values as they are supplied. It is
-     *     strongly advised that you do not alter the values as you peek at them as this may cause thread safety and other
-     *     issues.
+     *     Create a supplier wrapping another supplier that allows you to perform some action after the values are supplied.
      * </p>
      * <p>
      *     This can be used to create a set of linked values within a domain model but I have already provided an implementation
-     *     {@link LinkableSupplier}.
+     *     {@link CachingSupplier}.
      * </p>
      * @param supplier The supplier to wrap and peek at.
      * @param peeker The consumer that will peek at the values created by the wrapped supplier
      * @param <T> The type of the values being supplied.
      * @return A supplier that will allow peeking at the values.
      */
-    public static <T> StreamableSupplier<T> peek(Supplier<? extends T> supplier, Consumer<T> peeker) {
+    public static <T> StreamableSupplier<T> afterGetCalled(Supplier<? extends T> supplier, Consumer<T> peeker) {
         return () -> {
             T value = supplier.get();
             peeker.accept(value);
@@ -295,4 +290,15 @@ public class SupplierHelper {
         return derived(Object::toString, supplier);
     }
 
+    /**
+     * Create a supplier of arrays from another supplier of values.
+     * @param underlyingSupplier The supplier that will supply the values in the arrays.
+     * @param arrayLengths A supplier of the lengths of the arrays that will be generated.
+     * @param arrayGenerator The function to use to create the array - typically something like <pre>String[]::new</pre>
+     * @return A supplier of arrays.
+     * @param <T> The type of the arrays that will be generated.
+     */
+    public static <T> StreamableSupplier<T[]> arrays(StreamableSupplier<T> underlyingSupplier, Supplier<Integer> arrayLengths, IntFunction<T[]> arrayGenerator){
+        return () -> underlyingSupplier.stream(arrayLengths.get()).toArray(arrayGenerator);
+    }
 }

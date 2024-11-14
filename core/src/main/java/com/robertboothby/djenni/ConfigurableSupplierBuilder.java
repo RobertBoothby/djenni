@@ -13,6 +13,11 @@ import java.util.function.Consumer;
 public interface ConfigurableSupplierBuilder <T, U extends ConfigurableSupplierBuilder<T,U>>
         extends SupplierBuilder<T>, Configurable<U>{
 
+    /**
+     * Convenience method for when you want to get a supplier immediately from a configuration with no later customisation.
+     * @param configuration The configuration to use.
+     * @return A Supplier build from the configuration.
+     */
     default StreamableSupplier<T> build(Consumer<U> configuration){
         return this.configure(configuration).build();
     }

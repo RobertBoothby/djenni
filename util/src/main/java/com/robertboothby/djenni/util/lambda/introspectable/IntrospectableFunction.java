@@ -1,17 +1,16 @@
-package com.robertboothby.djenni.experimental;
+package com.robertboothby.djenni.util.lambda.introspectable;
 
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 /**
  * An introspectable Lambda function for a getter (or similar method).
  */
 @FunctionalInterface
-public interface IntrospectableConsumer<T> extends Consumer<T>, Serializable {
+public interface IntrospectableFunction<T,R> extends Function<T,R>, Serializable {
 
     default Class getImplementingClass() {
         try {
@@ -26,16 +25,16 @@ public interface IntrospectableConsumer<T> extends Consumer<T>, Serializable {
     }
 
     @SuppressWarnings("unchecked")
-    default Class<T> getParameterType() {
+    default Class<T> getReturnType() {
         return (Class<T>) Arrays.stream(getImplementingClass()
                 .getMethods())
                 .filter($ -> $
                         .getName().equals(getMethodName())
                         &&
-                        $.getParameterCount() == 1)
+                        $.getParameterCount() == 0)
                 .findFirst()
                 .orElseThrow()
-                .getParameterTypes()[0];
+                .getReturnType();
     }
 
     default SerializedLambda serializeToIntrospectableForm() {
