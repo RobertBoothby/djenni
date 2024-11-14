@@ -526,6 +526,113 @@ It gets a little clearer when we define a method that can then be used as a lamb
 The use of the `derive(Function)` method is worth highlighting as this provides a neat method for deriving new suppliers from previous suppliers. For example you may have a domain type that you want to get the serialised JSON version of and you can derive a new supplier from the supplier of the base domain type. In addition, there is a `derive(BiFunction)` method that allows for the derivation of new suppliers by composing multiple suppliers.
 ## Dynamic Supplier Builder
 
+The `DynamicSupplierBuilder` is a utility class that allows you to create a Supplier without needing to manually create
+a SupplierBuilder. It accomplishes this using a combination of JavaBeans reflection and some Lambda Introspection.
+
+To use this builder the class that you want to generate instances of, *must* have been compiled using the `-parameters` flag
+so that it can introspect properly the parameter names of any constructor used.
+
+Any suppliers it creates will perform a bit worse than those created by a hand-crafted or code generated SupplierBuilder but for many use
+cases the difference will be negligible.
+
+Here is an example of how to use the `DynamicSupplierBuilder` to create a `Person` supplier.
+
+First the Person class which has been compiled with the `-parameters` flag.
+```
+package com.robertboothby.djenni.examples.examples;
+
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+
+public class Person {
+    private final String[] givenNames;
+    private String familyName;
+    private final Instant timeOfBirth;
+    private final List<String> titlesByPrecedence;
+
+    public Person(String[] givenNames, String familyName, Instant timeOfBirth, List<String> titlesByPrecedence) {
+        this.givenNames = givenNames;
+        this.familyName = familyName;
+        this.timeOfBirth = timeOfBirth;
+        this.titlesByPrecedence = titlesByPrecedence;
+    }
+
+    public String[] getGivenNames() {
+        return givenNames;
+    }
+
+    public String getFamilyName() {
+        return familyName;
+    }
+
+    public Instant getTimeOfBirth() {
+        return timeOfBirth;
+    }
+
+    public List<String> getTitlesByPrecedence() {
+        return titlesByPrecedence;
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Person{");
+        sb.append("givenNames=").append(Arrays.toString(givenNames));
+        sb.append(", familyName='").append(familyName).append('\'');
+        sb.append(", timeOfBirth=").append(timeOfBirth);
+        sb.append(", titlesByPrecedence=").append(titlesByPrecedence);
+        sb.append('}');
+        return sb.toString();
+    }
+}
+```
+Next the code that uses the `DynamicSupplierBuilder` to create a `Person` supplier.
+```
+package com.robertboothby.djenni.examples.examples;
+
+import com.robertboothby.djenni.dynamic.DynamicSupplierBuilder;
+
+import java.util.Collections;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.robertboothby.djenni.common.NameSupplierBuilder.familyNames;
+import static com.robertboothby.djenni.common.NameSupplierBuilder.givenNames;
+import static com.robertboothby.djenni.core.SupplierHelper.arrays;
+import static com.robertboothby.djenni.core.SupplierHelper.fix;
+import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.integerSupplier;
+import static com.robertboothby.djenni.time.InstantSupplierBuilder.anInstant;
+
+public class PersonDynamicSupplierBuilderExample {
+
+    /**
+     * Provides a pre-configured DynamicSupplierBuilder for a Person with between 1 and 5 random given names, a random family name, and a random date of birth.
+     * @return a pre-configured DynamicSupplierBuilder for a Person.
+     */
+    public DynamicSupplierBuilder<Person> defaultPersonDynamicSupplierBuilder(){
+            return DynamicSupplierBuilder.supplierFor(Person.class)
+                    .property(Person::getGivenNames,
+                            arrays(
+                                    givenNames(),
+                                    integerSupplier()
+                                            .between(1)
+                                            .and(6)
+                                            .build(),
+                                    String[]::new
+                            )
+                    )
+                    .property(Person::getFamilyName, familyNames())
+                    .property(Person::getTimeOfBirth, anInstant().build())
+                    .property(Person::getTitlesByPrecedence, fix(Collections.EMPTY_LIST));
+    }
+
+    public static void main(String[] args) {
+        PersonDynamicSupplierBuilderExample personDynamicSupplierBuilderExample = new PersonDynamicSupplierBuilderExample();
+        DynamicSupplierBuilder<Person> personDynamicSupplierBuilder = personDynamicSupplierBuilderExample.defaultPersonDynamicSupplierBuilder();
+        System.out.println(personDynamicSupplierBuilder.build().stream(10).map(Objects::toString).collect(Collectors.joining("\n")));
+    }
+}
+```
 ## Advanced Suppliers
 Here we will take a look at some of the more advanced capabilities of Djenni suppliers.
 ### Streamable Supplier

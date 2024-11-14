@@ -102,8 +102,8 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
 
     @Override
     public StreamableSupplier<C> build() {
-        ParameterContext normalParameterContext = new RuntimeParameterContext( parameterList.stream().map(Parameter::new).collect(Collectors.toList()));
-        return () -> functionThatBuildsTheInstance.apply(normalParameterContext);
+        List<? extends Parameter<?>> parameterList = this.parameterList.stream().map(Parameter::new).collect(Collectors.toList());
+        return () -> functionThatBuildsTheInstance.apply(new RuntimeParameterContext(parameterList));
     }
 
     /**
@@ -228,8 +228,12 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
     }
 
-    public static <T> DynamicSupplierBuilder<T> supplierFor(Class<T> tClass) throws IntrospectionException {
-        return new DynamicSupplierBuilder<>(tClass);
+    public static <T> DynamicSupplierBuilder<T> supplierFor(Class<T> tClass) {
+        try {
+            return new DynamicSupplierBuilder<>(tClass);
+        } catch (IntrospectionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

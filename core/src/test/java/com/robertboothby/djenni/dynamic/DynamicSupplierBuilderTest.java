@@ -64,6 +64,28 @@ public class DynamicSupplierBuilderTest {
 
     }
 
+    @Test
+    public void shouldSupplyMoreThanOnce() {
+        StreamableSupplier<TestClass> testClassSupplier = supplierFor(TestClass.class)
+                .property(TestClass::getValueTwo, anyInteger().between(1).and(10))
+                .property(TestClass::getValueOne, fix("One"))
+                .property(TestClass::setValueThree, fix("Three"))
+                .build();
+        TestClass testClass1 = testClassSupplier.get();
+        TestClass testClass2 = testClassSupplier.get();
+
+        assertThat(testClass1.getValueOne(), is("One"));
+        assertThat(testClass1.getValueTwo(), is(notNullValue()));
+        assertThat(testClass1.getValueThree(), is("Three"));
+        assertThat(testClass1.getValueFour(), is(0));
+
+        assertThat(testClass2.getValueOne(), is("One"));
+        assertThat(testClass2.getValueTwo(), is(notNullValue()));
+        assertThat(testClass2.getValueThree(), is("Three"));
+        assertThat(testClass2.getValueFour(), is(0));
+
+    }
+
     public static class TestClass {
         private final String valueOne;
 

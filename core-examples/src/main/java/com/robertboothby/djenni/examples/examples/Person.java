@@ -25,10 +25,6 @@ public class Person {
         return familyName;
     }
 
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
-
     public Instant getTimeOfBirth() {
         return timeOfBirth;
     }

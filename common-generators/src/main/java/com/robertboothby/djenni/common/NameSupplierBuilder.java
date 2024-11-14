@@ -7,6 +7,7 @@ import java.util.Scanner;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.robertboothby.djenni.core.SupplierHelper.derived;
 import static com.robertboothby.djenni.core.SupplierHelper.fromValues;
@@ -81,7 +82,7 @@ public class NameSupplierBuilder implements ConfigurableSupplierBuilder<Name, Na
      * Convenience method to get a Supplier instance with default configuration.
      * @return A new Name Supplier with the desired configuration.
      */
-    public static Supplier<Name> names(){
+    public static StreamableSupplier<Name> names(){
         return nameSupplierBuilder().build();
     }
 
@@ -90,7 +91,15 @@ public class NameSupplierBuilder implements ConfigurableSupplierBuilder<Name, Na
      * @param configuration a consumer that applies the configuration to the builder used to create the Supplier.
      * @return the newly created Name Supplier.
      */
-    public static Supplier<Name> names(Consumer<NameSupplierBuilder> configuration){
+    public static StreamableSupplier<Name> names(Consumer<NameSupplierBuilder> configuration){
         return nameSupplierBuilder().build(configuration);
+    }
+
+    public static StreamableSupplier<String> givenNames(){
+        return fromValues(DEFAULT_GIVEN_NAMES);
+    }
+
+    public static StreamableSupplier<String> familyNames(){
+        return fromValues(DEFAULT_FAMILY_NAMES);
     }
 }
