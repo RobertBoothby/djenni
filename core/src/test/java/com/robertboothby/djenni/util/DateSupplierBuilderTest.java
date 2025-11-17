@@ -32,4 +32,16 @@ public class DateSupplierBuilderTest {
 
         assertThat(dates.get(), is(new Date(5000L)));
     }
+
+    @Test
+    public void builtDateSuppliersShouldRemainStableAfterBuilderChanges() {
+        DateSupplierBuilder builder = DateSupplierBuilder.dateSupplier()
+                .instantSupplier(() -> Instant.ofEpochMilli(1234L));
+
+        StreamableSupplier<Date> supplier = builder.build();
+
+        builder.instantSupplier(() -> Instant.ofEpochMilli(5678L));
+
+        assertThat(supplier.get(), is(new Date(1234L)));
+    }
 }

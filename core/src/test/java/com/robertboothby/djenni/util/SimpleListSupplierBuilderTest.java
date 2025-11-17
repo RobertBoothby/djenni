@@ -96,4 +96,17 @@ public class SimpleListSupplierBuilderTest {
         //Then
         then(testSupplierBuilder).should(times(1)).build();
     }
+
+    @Test
+    public void builtListSuppliersShouldRemainStableAfterBuilderChanges() {
+        SimpleListSupplierBuilder<String> builder = SimpleListSupplierBuilder.<String>simpleList()
+                .entries(() -> "value")
+                .size(1);
+
+        StreamableSupplier<List<String>> supplier = builder.build();
+
+        builder.entries(() -> "other");
+
+        assertThat(supplier.get(), hasItem("value"));
+    }
 }

@@ -46,4 +46,17 @@ public class OptionalDoubleSupplierBuilderTest {
 
         assertThat(optionalDoubles.get(), is(OptionalDouble.of(1.23D)));
     }
+
+    @Test
+    public void builtOptionalDoubleSuppliersShouldRemainStableAfterBuilderChanges() {
+        OptionalDoubleSupplierBuilder builder = OptionalDoubleSupplierBuilder.optionalDoubleSupplier()
+                .valueSupplier(() -> 1.0D)
+                .presentWithProbability(1.0D);
+
+        StreamableSupplier<OptionalDouble> supplier = builder.build();
+
+        builder.valueSupplier(() -> 2.0D);
+
+        assertThat(supplier.get(), is(OptionalDouble.of(1.0D)));
+    }
 }

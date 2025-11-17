@@ -40,4 +40,19 @@ public class BooleanSupplierBuilderTest {
         assertThat(result, is(equalTo(false)));
         verify(distribution, times(1)).generate(1.0D);
     }
+
+    @Test
+    public void builtBooleanSuppliersShouldRemainStableAfterBuilderChanges() {
+        Distribution<Double, Double> alwaysZero = bound -> 0.0D;
+        Distribution<Double, Double> alwaysOne = bound -> 1.0D;
+
+        BooleanSupplierBuilder builder = booleanSupplier()
+                .withDistribution(alwaysZero);
+
+        Supplier<Boolean> originalSupplier = builder.build();
+
+        builder.withDistribution(alwaysOne);
+
+        assertThat(originalSupplier.get(), is(true));
+    }
 }

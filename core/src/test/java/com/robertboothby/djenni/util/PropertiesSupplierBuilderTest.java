@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 public class PropertiesSupplierBuilderTest {
 
@@ -54,6 +55,19 @@ public class PropertiesSupplierBuilderTest {
                 .withOptionalProperty("feature", fix("enabled"), 0.0D)
                 .build();
 
-        assertThat(supplier.get().getProperty("feature"), is((String) null));
+        assertThat(supplier.get().getProperty("feature"), is(nullValue()));
+    }
+
+    @Test
+    public void builtPropertiesSuppliersShouldRemainStableAfterBuilderChanges() {
+        PropertiesSupplierBuilder builder = PropertiesSupplierBuilder.propertiesSupplier()
+                .includeRandomEntries(false)
+                .withRequiredProperty("env", fix("dev"));
+
+        StreamableSupplier<Properties> supplier = builder.build();
+
+        builder.withRequiredProperty("env", fix("prod"));
+
+        assertThat(supplier.get().getProperty("env"), is("dev"));
     }
 }

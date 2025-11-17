@@ -55,4 +55,16 @@ public class CharacterSupplierBuilderTest {
         assertThat(supplier,
                 Matchers.eventuallySuppliesAllValues(asSetOfCharacters("ABCDEF"), 100));
     }
+
+    @Test
+    public void builtCharacterSuppliersShouldRemainStableAfterBuilderChanges() {
+        CharacterSupplierBuilder builder = characterSupplier()
+                .withCharacters("A");
+
+        Supplier<Character> supplier = builder.build();
+
+        builder.withCharacters("BC");
+
+        assertThat(supplier.get(), is('A'));
+    }
 }

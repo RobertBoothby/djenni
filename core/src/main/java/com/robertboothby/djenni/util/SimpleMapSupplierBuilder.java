@@ -4,6 +4,7 @@ import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
@@ -22,7 +23,9 @@ public class SimpleMapSupplierBuilder<K,V> implements ConfigurableSupplierBuilde
 
     @Override
     public StreamableSupplier<Map<K, V>> build() {
-        return () -> entrySupplier.stream(numberOfEntries.get()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+        StreamableSupplier<? extends Map.Entry<? extends K, ? extends V>> entries = Objects.requireNonNull(this.entrySupplier, "entrySupplier");
+        Supplier<Integer> counts = Objects.requireNonNull(this.numberOfEntries, "numberOfEntries");
+        return () -> entries.stream(counts.get()).collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /**

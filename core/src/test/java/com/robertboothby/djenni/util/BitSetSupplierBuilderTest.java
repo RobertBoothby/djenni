@@ -56,4 +56,20 @@ public class BitSetSupplierBuilderTest {
 
         assertThat(bitSets.get(), is(equalTo(expected)));
     }
+
+    @Test
+    public void builtBitSetSuppliersShouldRemainStableAfterBuilderChanges() {
+        BitSetSupplierBuilder builder = BitSetSupplierBuilder.bitSetSupplier()
+                .bitLengthSupplier(fix(2))
+                .fromBooleans(() -> true);
+
+        StreamableSupplier<BitSet> supplier = builder.build();
+
+        builder.fromBooleans(() -> false);
+
+        BitSet expected = new BitSet(2);
+        expected.set(0);
+        expected.set(1);
+        assertThat(supplier.get(), is(equalTo(expected)));
+    }
 }

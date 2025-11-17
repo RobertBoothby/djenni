@@ -32,4 +32,16 @@ public class UUIDSupplierBuilderTest {
         assertThat(uuids.get(), is(equalTo(new UUID(0L, 1))));
         assertThat(uuids.get(), is(equalTo(new UUID(0L, 2))));
     }
+
+    @Test
+    public void builtUuidSuppliersShouldRemainStableAfterBuilderChanges() {
+        UUIDSupplierBuilder builder = UUIDSupplierBuilder.uuidSupplier()
+                .withGenerator(() -> new UUID(0L, 42L));
+
+        StreamableSupplier<UUID> supplier = builder.build();
+
+        builder.withGenerator(() -> new UUID(0L, 84L));
+
+        assertThat(supplier.get(), is(equalTo(new UUID(0L, 42L))));
+    }
 }

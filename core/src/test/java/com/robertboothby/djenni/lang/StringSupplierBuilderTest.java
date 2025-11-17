@@ -45,4 +45,17 @@ public class StringSupplierBuilderTest {
                 )
         );
     }
+
+    @Test
+    public void builtStringSuppliersShouldRemainStableAfterBuilderChanges() {
+        StringSupplierBuilder builder = arbitraryString()
+                .withFixedLength(1)
+                .withAvailableCharacters("A");
+
+        Supplier<String> supplier = buildA(builder);
+
+        builder.withAvailableCharacters("BC");
+
+        assertThat(supplier.get(), is("A"));
+    }
 }

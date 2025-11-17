@@ -68,4 +68,15 @@ public class LongSupplierBuilderTest {
         verify(distribution, times(1)).generate(20L);
     }
 
+    @Test
+    public void builtLongSuppliersShouldRemainStableAfterBuilderChanges() {
+        LongSupplierBuilder builder = generateALong().onlyValue(7L);
+
+        Supplier<Long> supplier = builder.build();
+
+        builder.onlyValue(9L);
+
+        assertThat(supplier.get(), is(7L));
+    }
+
 }

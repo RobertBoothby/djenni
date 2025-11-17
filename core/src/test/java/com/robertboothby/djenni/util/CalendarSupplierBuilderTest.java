@@ -26,4 +26,16 @@ public class CalendarSupplierBuilderTest {
         assertThat(calendar.getTime(), is(date));
         assertThat(calendar.getTimeZone().toZoneId(), is(zone));
     }
+
+    @Test
+    public void builtCalendarSuppliersShouldRemainStableAfterBuilderChanges() {
+        CalendarSupplierBuilder builder = CalendarSupplierBuilder.calendarSupplier()
+                .dateSupplier(() -> new Date(0L));
+
+        StreamableSupplier<Calendar> supplier = builder.build();
+
+        builder.dateSupplier(() -> new Date(1_000L));
+
+        assertThat(supplier.get().getTime(), is(new Date(0L)));
+    }
 }

@@ -72,4 +72,15 @@ public class IntegerSupplierBuilderTest {
         verify(distribution, times(1)).generate(10);
     }
 
+    @Test
+    public void builtIntegerSuppliersShouldRemainStableAfterBuilderChanges() {
+        IntegerSupplierBuilder builder = integerSupplier().onlyValue(5);
+
+        Supplier<Integer> supplier = builder.build();
+
+        builder.onlyValue(10);
+
+        assertThat(supplier.get(), is(5));
+    }
+
 }

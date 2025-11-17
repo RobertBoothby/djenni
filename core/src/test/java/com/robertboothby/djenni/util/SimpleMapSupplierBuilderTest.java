@@ -32,4 +32,19 @@ public class SimpleMapSupplierBuilderTest {
         assertThat(result.entrySet(), hasSize(1));
     }
 
+    @Test
+    public void builtSimpleMapSuppliersShouldRemainStableAfterBuilderChanges() {
+        SimpleMapSupplierBuilder<String, String> builder = SimpleMapSupplierBuilder.<String, String>mapSupplierBuilder()
+                .withNumberOfEntries(fix(1))
+                .withEntries(fix(mapEntry("FIRST", "FIRST")));
+
+        Supplier<Map<String, String>> supplier = builder.build();
+
+        builder.withEntries(fix(mapEntry("SECOND", "SECOND")));
+
+        Map<String, String> map = supplier.get();
+        assertThat(map, hasEntry("FIRST", "FIRST"));
+        assertThat(map.entrySet(), hasSize(1));
+    }
+
 }

@@ -46,4 +46,17 @@ public class MapSupplierBuilderTest {
         assertThat(actual, is(instanceOf(HashMap.class)));
     }
 
+    @Test
+    public void builtMapSuppliersShouldRemainStableAfterBuilderChanges() {
+        SimpleMapSupplierBuilder<Integer, String> builder = SimpleMapSupplierBuilder.<Integer, String>mapSupplierBuilder()
+                .withEntries(supplyEntries(() -> 1, Object::toString))
+                .withNumberOfEntries(fix(1));
+
+        Map<Integer, String> first = builder.build().get();
+
+        builder.withNumberOfEntries(fix(2));
+
+        assertThat(first.entrySet(), hasSize(1));
+    }
+
 }

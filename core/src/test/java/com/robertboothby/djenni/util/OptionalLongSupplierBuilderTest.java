@@ -46,4 +46,17 @@ public class OptionalLongSupplierBuilderTest {
 
         assertThat(optionalLongs.get(), is(OptionalLong.of(5L)));
     }
+
+    @Test
+    public void builtOptionalLongSuppliersShouldRemainStableAfterBuilderChanges() {
+        OptionalLongSupplierBuilder builder = OptionalLongSupplierBuilder.optionalLongSupplier()
+                .valueSupplier(() -> 8L)
+                .presentWithProbability(1.0D);
+
+        StreamableSupplier<OptionalLong> supplier = builder.build();
+
+        builder.valueSupplier(() -> 9L);
+
+        assertThat(supplier.get(), is(OptionalLong.of(8L)));
+    }
 }

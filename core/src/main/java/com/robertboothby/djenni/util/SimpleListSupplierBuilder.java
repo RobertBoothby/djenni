@@ -7,6 +7,7 @@ import com.robertboothby.djenni.sugar.And;
 import com.robertboothby.djenni.sugar.Range;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -23,20 +24,23 @@ public class SimpleListSupplierBuilder<T> implements ConfigurableSupplierBuilder
 
     //TODO consider moving over to an integer supplier which will make it possible
     //to use the builder to trivially create empty lists.
-    private Range<SimpleListSupplierBuilder<T>, Integer> range = Range.inclusive(this);
+    private final Range<SimpleListSupplierBuilder<T>, Integer> range = Range.inclusive(this);
     private Supplier<? extends T> entries;
 
     @Override
     public StreamableSupplier<List<T>> build() {
+        Supplier<? extends T> entrySupplier = Objects.requireNonNull(this.entries, "entries");
+        int min = range.getMinimum();
+        int max = range.getMaximum();
         StreamableSupplier<Integer> sizes = integerSupplier(
                 builder -> builder
-                        .between(range.getMinimum())
-                        .and(range.getMaximum() + 1)
+                        .between(min)
+                        .and(max + 1)
         );
 
         return () -> {
             Integer numberOfValues = sizes.get();
-            return stream(entries, numberOfValues).collect(toList());
+            return stream(entrySupplier, numberOfValues).collect(toList());
         };
     }
 

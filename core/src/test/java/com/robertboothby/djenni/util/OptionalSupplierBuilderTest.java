@@ -35,4 +35,17 @@ public class OptionalSupplierBuilderTest {
         assertThat(optionalSupplier.get(), is(Optional.empty()));
         assertThat(invocations.get(), is(0));
     }
+
+    @Test
+    public void builtOptionalSuppliersShouldRemainStableAfterBuilderChanges() {
+        OptionalSupplierBuilder<String> builder = OptionalSupplierBuilder.<String>optionalSupplier()
+                .valueSupplier(() -> "first")
+                .presentWithProbability(1.0D);
+
+        StreamableSupplier<Optional<String>> supplier = builder.build();
+
+        builder.valueSupplier(() -> "second");
+
+        assertThat(supplier.get(), is(Optional.of("first")));
+    }
 }

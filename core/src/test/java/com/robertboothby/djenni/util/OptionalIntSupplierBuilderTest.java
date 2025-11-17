@@ -46,4 +46,17 @@ public class OptionalIntSupplierBuilderTest {
 
         assertThat(optionalInts.get(), is(OptionalInt.of(11)));
     }
+
+    @Test
+    public void builtOptionalIntSuppliersShouldRemainStableAfterBuilderChanges() {
+        OptionalIntSupplierBuilder builder = OptionalIntSupplierBuilder.optionalIntSupplier()
+                .valueSupplier(() -> 5)
+                .presentWithProbability(1.0D);
+
+        StreamableSupplier<OptionalInt> supplier = builder.build();
+
+        builder.valueSupplier(() -> 10);
+
+        assertThat(supplier.get(), is(OptionalInt.of(5)));
+    }
 }
