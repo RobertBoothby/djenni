@@ -4,9 +4,16 @@ import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.distribution.Distribution;
 import com.robertboothby.djenni.distribution.simple.SimpleRandomIntegerDistribution;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.function.*;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -31,7 +38,16 @@ public class SupplierHelper {
     }
 
     /**
-     * Create a Supplier from an array with equal chance of generating any of the values.
+     * Get a supplier that always returns {@code null}.
+     * @param <T> the type the caller expects
+     * @return a StreamableSupplier that supplies {@code null}
+     */
+    public static <T> StreamableSupplier<T> nullSupplier() {
+        return NullStreamableSupplier.instance();
+    }
+
+    /**
+     * Create a Supplier from an array with an equal chance of generating any of the values.
      * @see SimpleRandomIntegerDistribution#UNIFORM
      * @param values the array to use when selecting values to supply.
      * @param <T> the type of values in the array and the supplier.
@@ -276,7 +292,7 @@ public class SupplierHelper {
     public static <T> StreamableSupplier<T> nulls(Supplier<T> supplier, Double nullFrequency){
         return explicitlyBiassedSupplierFor(
                 $ -> $
-                        .addSupplier(() -> null, nullFrequency).addSupplier(supplier, 1.0D - nullFrequency)
+                        .addSupplier(nullSupplier(), nullFrequency).addSupplier(supplier, 1.0D - nullFrequency)
         );
     }
 
@@ -300,5 +316,20 @@ public class SupplierHelper {
      */
     public static <T> StreamableSupplier<T[]> arrays(StreamableSupplier<T> underlyingSupplier, Supplier<Integer> arrayLengths, IntFunction<T[]> arrayGenerator){
         return () -> underlyingSupplier.stream(arrayLengths.get()).toArray(arrayGenerator);
+    }
+
+    /**
+     * Create a supplier of random {@link ZoneId}s backed by the set returned from {@link ZoneId#getAvailableZoneIds()}.
+     * @return a StreamableSupplier providing time zones supported by the JVM
+     */
+    public static StreamableSupplier<ZoneId> zoneIds() {
+        List<ZoneId> available = ZoneId.getAvailableZoneIds()
+                .stream()
+                .map(ZoneId::of)
+                .collect(Collectors.toList());
+        StreamableSupplier<Integer> positionSupplier = integerSupplier(
+                builder -> builder.between(0).and(available.size())
+        );
+        return () -> available.get(positionSupplier.get());
     }
 }

@@ -1,10 +1,10 @@
 package com.robertboothby.djenni.dynamic;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /**
  * Standard implementation of {@link DefaultSuppliers}, will be the one used if no override is supplied
@@ -14,7 +14,7 @@ public class DefaultSuppliersImpl extends DefaultSuppliers {
 
     private final Map<Class<?>, Map<String, StreamableSupplier<?>>> classAndPropertyDefaults = new HashMap<>();
 
-    public static final StreamableSupplier<?> defaultObjectSupplier = () -> null;
+    public static final StreamableSupplier<?> defaultObjectSupplier = SupplierHelper.nullSupplier();
 
     { // set up defaults for the primitive types... nulls will break things.
         setPrimitiveDefaults();

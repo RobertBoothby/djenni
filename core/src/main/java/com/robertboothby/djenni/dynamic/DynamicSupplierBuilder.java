@@ -3,6 +3,7 @@ package com.robertboothby.djenni.dynamic;
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
 import com.robertboothby.djenni.dynamic.parameters.IntrospectionParameterContext;
 import com.robertboothby.djenni.dynamic.parameters.Parameter;
 import com.robertboothby.djenni.dynamic.parameters.ParameterContext;
@@ -10,19 +11,14 @@ import com.robertboothby.djenni.dynamic.parameters.RuntimeParameterContext;
 import com.robertboothby.djenni.util.lambda.introspectable.IntrospectableBiConsumer;
 import com.robertboothby.djenni.util.lambda.introspectable.IntrospectableFunction;
 
-import java.beans.BeanInfo;
-import java.beans.FeatureDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
+import java.beans.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -35,7 +31,8 @@ import static java.util.stream.Collectors.toSet;
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
  *
  * <em>TO MAKE THE AUTOMATED PARAMETER NAMING WORK, USE -parameters IN THE JAVA COMPILATION. IN INTELLIJ THIS NEEDS TO BE DONE AT THE TOP LEVEL OF THE PROJECT AS WELL AS THE SUB-MODULES!!</em>
- * TODO - don't forget bean setters - We need to add them to the default function if their properties are not already defined property the constructor and only call them if the relevant properties are actually populated.
+ * TODO - don't forget that we may have novel parameters defined during the introspection process that are not defined in the constructor or setters. We need to add them to the parameter list if not already defined and execute them - Done but test this!!!!!.
+ * TODO - don't forget bean setters - We need to add them to the default function if their properties are not already defined property the constructor and only call them if the relevant properties are actually populated - KInd of done but may be better via semi-dynamic decoration during instantiation - looking at the parameters and adding setter calls as needed.
  * DONE - don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied. Completed property allowing sample / default values for parameters and suppliers.
  * DONE - don't forget primitive types - while we can get away often with supplying null values for object types we cannot do so for primitive types. We need to create a mechanism to provide a reasonable default.
  *
@@ -198,9 +195,12 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         return this;
     }
 
-    public DynamicSupplierBuilder<C> property(String propertyName, Supplier<?> propertySupplier) {
-        //TODO Implement!
-        throw new RuntimeException("NOT YET IMPLEMENTED!");
+    @SuppressWarnings("unchecked")
+    public <P> DynamicSupplierBuilder<C> property(String propertyName, Supplier<P> propertySupplier) {
+        parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().ifPresent($ -> {
+            ((Parameter<P>)$).setParameterSupplier(propertySupplier);
+        });
+        return this;
     }
 
     public DynamicSupplierBuilder<C> property(String propertyName, SupplierBuilder<?> propertySupplierBuilder) {
@@ -215,7 +215,33 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
                 .findFirst()
                 .map(FeatureDescriptor::getName).orElseThrow();
 
-        return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
+        Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
+        if(first.isEmpty()){
+            Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) getter.getReturnType());
+            parameterList.add(parameter);
+            Method setterMethod = stream(beanInfo.getPropertyDescriptors())
+                    .filter($ -> $.getWriteMethod() != null)
+                    .filter($ -> $.getName().equals(propertyName))
+                    .findFirst()
+                    .map(PropertyDescriptor::getWriteMethod).orElseThrow(() -> new RuntimeException("No setter found for property " + propertyName));
+            functionThatBuildsTheInstance = bc -> {
+                C result = functionThatBuildsTheInstance.apply(bc);
+                try {
+                    setterMethod.invoke(result, bc.p(propertyName, (Class<T>) getter.getReturnType()));
+                } catch (Exception e) {
+                    if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return result;
+            };
+
+            return parameter;
+        } else {
+            return (Parameter<T>) first.get();
+        }
     }
 
     private <T> Parameter<T> setter(IntrospectableBiConsumer<? super C, ? extends T> setter) {
@@ -225,7 +251,32 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
                 .findFirst()
                 .map(FeatureDescriptor::getName).orElseThrow();
 
-        return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
+        Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
+        if(first.isEmpty()){
+            Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) setter.getParameterType());
+            parameterList.add(parameter);
+            Method setterMethod = stream(beanInfo.getPropertyDescriptors())
+                    .filter($ -> $.getWriteMethod() != null)
+                    .filter($ -> $.getName().equals(propertyName))
+                    .findFirst()
+                    .map(PropertyDescriptor::getWriteMethod).orElseThrow(() -> new RuntimeException("No setter found for property " + propertyName));
+            functionThatBuildsTheInstance = bc -> {
+                C result = functionThatBuildsTheInstance.apply(bc);
+                try {
+                    setterMethod.invoke(result, bc.p(propertyName, (Class<T>) setter.getParameterType()));
+                } catch (Exception e) {
+                    if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return result;
+            };
+            return parameter;
+        } else {
+            return (Parameter<T>) first.get();
+        }
     }
 
     public static <T> DynamicSupplierBuilder<T> supplierFor(Class<T> tClass) {
@@ -236,4 +287,8 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         }
     }
 
+    public <P> DynamicSupplierBuilder<C> clearProperty(IntrospectableBiConsumer<? super C, P> setter) {
+        setter(setter).setParameterSupplier(SupplierHelper.nullSupplier());
+        return this;
+    }
 }

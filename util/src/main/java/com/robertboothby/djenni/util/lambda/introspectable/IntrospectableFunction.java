@@ -38,9 +38,8 @@ public interface IntrospectableFunction<T,R> extends Function<T,R>, Serializable
     }
 
     default SerializedLambda serializeToIntrospectableForm() {
-        Method writeReplace = null;
         try {
-            writeReplace = getClass().getDeclaredMethod("writeReplace");
+            Method writeReplace = getClass().getDeclaredMethod("writeReplace");
             writeReplace.setAccessible(true);
             return (SerializedLambda) writeReplace.invoke(this);
         } catch (Exception e) {

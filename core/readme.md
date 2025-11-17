@@ -206,6 +206,8 @@ package com.robertboothby.djenni.examples;
 
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
+import com.robertboothby.djenni.core.SupplierHelper;
 
 public class PersonSupplierBuilder implements ConfigurableSupplierBuilder<Person, PersonSupplierBuilder> {
     @Override
@@ -229,10 +231,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PersonSupplierBuilder implements ConfigurableSupplierBuilder<Person, PersonSupplierBuilder> {
-    private Supplier<String[]> givenNamesSupplier = () -> null;
-    private Supplier<String> familyNameSupplier = () -> null;
-    private Supplier<Instant> timeOfBirthSupplier = () -> null;
-    private Supplier<List<String>> titlesByPrecedenceSupplier = () -> null;
+    private Supplier<String[]> givenNamesSupplier = SupplierHelper.nullSupplier();
+    private Supplier<String> familyNameSupplier = SupplierHelper.nullSupplier();
+    private Supplier<Instant> timeOfBirthSupplier = SupplierHelper.nullSupplier();
+    private Supplier<List<String>> titlesByPrecedenceSupplier = SupplierHelper.nullSupplier();
 
     @Override
     public StreamableSupplier<Person> build() {
@@ -259,10 +261,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PersonSupplierBuilder implements ConfigurableSupplierBuilder<Person, PersonSupplierBuilder> {
-    private Supplier<String[]> givenNamesSupplier = () -> null;
-    private Supplier<String> familyNameSupplier = () -> null;
-    private Supplier<Instant> timeOfBirthSupplier = () -> null;
-    private Supplier<List<String>> titlesByPrecedenceSupplier = () -> null;
+    private Supplier<String[]> givenNamesSupplier = SupplierHelper.nullSupplier();
+    private Supplier<String> familyNameSupplier = SupplierHelper.nullSupplier();
+    private Supplier<Instant> timeOfBirthSupplier = SupplierHelper.nullSupplier();
+    private Supplier<List<String>> titlesByPrecedenceSupplier = SupplierHelper.nullSupplier();
 
     @Override
     public StreamableSupplier<Person> build() {
@@ -311,10 +313,10 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class PersonSupplierBuilder implements ConfigurableSupplierBuilder<Person, PersonSupplierBuilder> {
-    private Supplier<String[]> givenNamesSupplier = null;
-    private Supplier<String> familyNameSupplier = () -> null;
-    private Supplier<Instant> timeOfBirthSupplier = () -> null;
-    private Supplier<List<String>> titlesByPrecedenceSupplier = () -> null;
+    private Supplier<String[]> givenNamesSupplier = SupplierHelper.nullSupplier();
+    private Supplier<String> familyNameSupplier = SupplierHelper.nullSupplier();
+    private Supplier<Instant> timeOfBirthSupplier = SupplierHelper.nullSupplier();
+    private Supplier<List<String>> titlesByPrecedenceSupplier = SupplierHelper.nullSupplier();
 
     @Override
     public StreamableSupplier<Person> build() {
@@ -535,6 +537,8 @@ so that it can introspect properly the parameter names of any constructor used.
 Any suppliers it creates will perform a bit worse than those created by a hand-crafted or code generated SupplierBuilder but for many use
 cases the difference will be negligible.
 
+The syntax for configuring it is more clunky than a bespoke SupplierBuilder but is, hopefully, not that much more clunky.
+
 Here is an example of how to use the `DynamicSupplierBuilder` to create a `Person` supplier.
 
 First the Person class which has been compiled with the `-parameters` flag.
@@ -633,6 +637,15 @@ public class PersonDynamicSupplierBuilderExample {
     }
 }
 ```
+The above example uses one of the ways of defining the suppliers for the properties using lambda function introspection
+to identify them. It will first attempt to set the property by matching constructor parameter names before reverting to
+using the corresponding setter if available.
+
+The constructor chosen by default will always be the one with the most parameters. If you want to use a different constructor
+then you can use the `useConstructor` method to specify the constructor you want to use or you can use the `useFunction` method to give you
+even more control where you can supply your own Function to supply the instances. Both of them use an instance of a class
+called the `ParameterContext` that captures the parameter names and types of the constructor or function. 
+
 ## Advanced Suppliers
 Here we will take a look at some of the more advanced capabilities of Djenni suppliers.
 ### Streamable Supplier

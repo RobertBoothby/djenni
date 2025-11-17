@@ -43,4 +43,8 @@ public class Person {
         sb.append('}');
         return sb.toString();
     }
+
+    public static Person person(String[] givenNames, String familyName, Instant timeOfBirth, List<String> titlesByPrecedence){
+        return new Person(givenNames, familyName, timeOfBirth, titlesByPrecedence);
+    }
 }

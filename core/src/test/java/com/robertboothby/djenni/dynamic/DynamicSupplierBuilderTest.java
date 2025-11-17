@@ -9,8 +9,7 @@ import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.dynamic.DefaultSuppliers.defaultSuppliers;
 import static com.robertboothby.djenni.dynamic.DynamicSupplierBuilder.supplierFor;
 import static com.robertboothby.djenni.lang.IntegerSupplierBuilder.anyInteger;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class DynamicSupplierBuilderTest {
@@ -83,6 +82,26 @@ public class DynamicSupplierBuilderTest {
         assertThat(testClass2.getValueTwo(), is(notNullValue()));
         assertThat(testClass2.getValueThree(), is("Three"));
         assertThat(testClass2.getValueFour(), is(0));
+
+    }
+
+    @Test public void shouldClearSetterPropertyParameter() {
+        DynamicSupplierBuilder<TestClass> supplierBuilder = supplierFor(TestClass.class)
+                .property(TestClass::getValueTwo, anyInteger().between(1).and(10))
+                .property(TestClass::getValueOne, fix("One"))
+                .property(TestClass::setValueThree, fix("Three"));
+
+        StreamableSupplier<TestClass> testClassSupplier = supplierBuilder
+                .build();
+        TestClass testClass = testClassSupplier.get();
+        testClass.setValueThree("Four");
+        testClass = testClassSupplier.get();
+        assertThat(testClass.getValueThree(), is("Three"));
+
+        supplierBuilder.clearProperty(TestClass::setValueThree);
+        testClassSupplier = supplierBuilder.build();
+        testClass = testClassSupplier.get();
+        assertThat(testClass.getValueThree(), is(""));
 
     }
 
