@@ -6,10 +6,11 @@
 </head>
 <body>
 <p>
-    This package contains implementations of {@link com.robertboothby.djenni.distribution.Distribution} that are based on simple forms
-    of randomness and do not add complexity by being able to generate the full range of a given primitive type.
-
-    TODO - Replace my naive implementations with the Apache Commons RNG implementations.
+    This package contains self-contained {@link com.robertboothby.djenni.distribution.Distribution} implementations that rely
+    on {@link java.util.concurrent.ThreadLocalRandom}. They prioritise readability and deterministic biasing over strict
+    statistical accuracy, making them ideal for test data generation. Each primitive family (double, int, long) exposes
+    uniform, normal, and inverted-normal curves to help emphasise edge cases. Should more sophisticated RNGs be needed,
+    these implementations can be swapped for Apache Commons RNG or another engine without affecting caller code.
 </p>
 </body>
 </html>

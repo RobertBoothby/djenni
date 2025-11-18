@@ -6,7 +6,27 @@
 </head>
 <body>
 <p>
-    This package contains core classes involved in making djenni work.
+    The <code>com.robertboothby.djenni.core</code> package provides the low-level abstractions and helper utilities that
+    every other module in Djenni builds upon. It includes:
+</p>
+<ul>
+    <li><strong>Supplier infrastructure</strong> &mdash; the {@link com.robertboothby.djenni.core.StreamableSupplier} extension to
+        {@link java.util.function.Supplier} plus adapters such as {@link com.robertboothby.djenni.core.ThreadLocalSupplier},
+        {@link com.robertboothby.djenni.core.CachingSupplier}, {@link com.robertboothby.djenni.core.RenewableSupplier}, and
+        {@link com.robertboothby.djenni.core.ValueStore}.</li>
+    <li><strong>Bias and concatenation builders</strong> &mdash; reusable builders like
+        {@link com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder} and
+        {@link com.robertboothby.djenni.core.ConcatenatingStringSupplierBuilder} for composing higher-order suppliers.</li>
+    <li><strong>Utility APIs</strong> &mdash; {@link com.robertboothby.djenni.core.SupplierHelper} and
+        {@link com.robertboothby.djenni.core.CharacterStrings} expose a catalogue of factory methods, character sets, array helpers,
+        and zoning utilities that support the individual supplier builders.</li>
+    <li><strong>Coordination helpers</strong> &mdash; {@link com.robertboothby.djenni.core.CachingSupplierRegistry} and
+        {@link com.robertboothby.djenni.core.NullStreamableSupplier} simplify cross-test coordination, deterministic
+        seeding, and defensive defaults.</li>
+</ul>
+<p>
+    Together these types offer a consistent DSL for composing complex generation pipelines using immutable suppliers that
+    can be safely shared across tests, threads, and modules.
 </p>
 
 </body>

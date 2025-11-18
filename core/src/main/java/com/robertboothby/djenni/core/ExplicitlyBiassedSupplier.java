@@ -8,15 +8,21 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 /**
- * <p>Instances of this class supply random values in given relative proportions that are passed in as a bias list.</p>
- * <p>For Example:
- * <code>
- *     List&lt;ExplicitlyBiassedSupplier.BiasEntry&lt;Boolean&gt;&gt; biasList = new ArrayList&lt;&gt;();
- *     biasList.add(Boolean.TRUE, 0.9D);
- *     biasList.add(Boolean.FALSE, 0.1D);
- * </code>
- * Would produce a bias list that when passed into this class would generate TRUE 90% of the time and FALSE 10% of the
- * time.</p>
+ * Supplies values according to explicitly configured weights. The builder flattens the weights into a cumulative
+ * probability map and a uniform {@link Distribution} is then used to select the next entry. Weights can be any positive
+ * {@code double}; zero or negative weights are ignored. The underlying distribution defaults to
+ * {@link SimpleRandomDoubleDistribution#UNIFORM}, so the relative proportions remain stable regardless of the absolute
+ * values used.
+ *
+ * <p>For example:</p>
+ * <pre>{@code
+ * List<ExplicitlyBiassedSupplier.BiasDetail<Boolean>> biasList = List.of(
+ *         ExplicitlyBiassedSupplier.biasDetail(() -> Boolean.TRUE, 0.9D),
+ *         ExplicitlyBiassedSupplier.biasDetail(() -> Boolean.FALSE, 0.1D)
+ * );
+ * StreamableSupplier<Boolean> supplier = new ExplicitlyBiassedSupplier<>(biasList);
+ * }</pre>
+ * <p>supplies {@code true} roughly 90% of the time and {@code false} the rest.</p>
  */
 public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
 
@@ -25,9 +31,9 @@ public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
     protected final Distribution<Double, Double> distribution = SimpleRandomDoubleDistribution.UNIFORM;
 
     /**
-     * Construct an instance of the generator using the map of values with their biasses
-     * @param biasList a list of {@link ExplicitlyBiassedSupplier.BiasDetail} that supplies the entries
-     *                 and relative proportions of the entries for generation.
+     * Creates a supplier from precomputed bias details. The list is iterated in order and converted into a cumulative
+     * lookup map, so the supplied list should be deterministic to guarantee reproducible proportions across runs.
+     * @param biasList bias configuration describing which supplier to invoke for each weighted bucket
      */
     public ExplicitlyBiassedSupplier(List<BiasDetail<T>> biasList) {
         this.lookupMap = new TreeMap<>();
@@ -41,6 +47,10 @@ public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
         this.proportionsTotal = runningProportionsTotal;
     }
 
+    /**
+     * Generate the next value using the configured weights.
+     * @return the biased value chosen for the randomly generated position
+     */
     public T get() {
         Double mapKeyValue = distribution.generate(proportionsTotal);
         return lookupMap.ceilingEntry(mapKeyValue).getValue().get();
@@ -60,6 +70,10 @@ public class ExplicitlyBiassedSupplier<T> implements StreamableSupplier<T> {
         }
     }
 
+    /**
+     * Convenience factory used by builders. Negative or zero biases are accepted but ignored by the constructor, so the
+     * onus is on callers to supply sensible weights.
+     */
     static <T> BiasDetail<T> biasDetail(Supplier<T> biasedValue, double biasProportion) {
         return new BiasDetail<T>(biasedValue, biasProportion);
     }

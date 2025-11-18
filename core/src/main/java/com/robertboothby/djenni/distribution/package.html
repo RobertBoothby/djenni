@@ -6,9 +6,21 @@
 </head>
 <body>
 <p>
-    This package holds the &quot;Distribution&quot; related classes. They are used to provide the fundamental randomness
-    to Generators.
+    The <code>com.robertboothby.djenni.distribution</code> package defines the abstraction used by every supplier builder
+    that needs randomness. The top-level {@link com.robertboothby.djenni.distribution.Distribution} interface formalises the
+    contract of generating a number in <code>[0, bound)</code>, while subpackages provide concrete implementations:
 </p>
+<ul>
+    <li><strong>simple</strong> &mdash; lightweight, thread-safe distributions backed by
+        {@link java.util.concurrent.ThreadLocalRandom}. These cover uniform, normal, inverted-normal and one-sided
+        variants for doubles, integers, and longs.</li>
+    <li><strong>fullrange</strong> &mdash; conceptual placeholder for distributions that can exhaustively traverse the
+        range of a primitive by accepting wider bounds (e.g. using a {@link Long} bound to produce full-range integers).</li>
+</ul>
+<p>
+    Builders mix-and-match these distributions to bias test data toward edge cases, bulk “happy path” values, or any
+    other probability curve needed to uncover defects.
+ </p>
 
 </body>
 </html>

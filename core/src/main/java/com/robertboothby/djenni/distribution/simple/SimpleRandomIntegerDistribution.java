@@ -3,9 +3,10 @@ package com.robertboothby.djenni.distribution.simple;
 import com.robertboothby.djenni.distribution.Distribution;
 
 /**
- * This class holds the current set of simple integer distributions. All the distributions are based on those found in
- * {@link com.robertboothby.djenni.distribution.simple.SimpleRandomDoubleDistribution}.
- * @author robertboothby
+ * Integer-specialised façade for the {@link SimpleRandomDoubleDistribution} family. Each predefined constant wraps a
+ * double-based distribution and scales the generated value into the requested integer bound using {@code floor}. The
+ * bound is exclusive, so passing {@code 10} yields values {@code 0..9}. These helpers are intentionally simple and are
+ * primarily meant for exercising edge-biased paths in tests rather than cryptographic scenarios.
  */
 public class SimpleRandomIntegerDistribution implements Distribution<Integer, Integer> {
 
@@ -53,11 +54,22 @@ public class SimpleRandomIntegerDistribution implements Distribution<Integer, In
     public static final SimpleRandomIntegerDistribution RIGHT_INVERTED_NORMAL =
             new SimpleRandomIntegerDistribution(SimpleRandomDoubleDistribution.RIGHT_INVERTED_NORMAL);
 
+    /**
+     * Build a new integer distribution backed by the supplied double distribution. Capturing the delegate allows custom
+     * probability curves to be injected where needed.
+     */
     public SimpleRandomIntegerDistribution(SimpleRandomDoubleDistribution underlyingDistribution) {
         this.underlyingDistribution = underlyingDistribution;
     }
 
+    /**
+     * Generate the next integer in {@code [0, bound)}. A {@link IllegalArgumentException} will be thrown if the bound
+     * is {@code null} or not positive.
+     */
     public Integer generate(Integer bound) {
+        if (bound == null || bound <= 0) {
+            throw new IllegalArgumentException("Bound must be positive");
+        }
         return (int) Math.floor(underlyingDistribution.nextDouble() * bound);
     }
 }
