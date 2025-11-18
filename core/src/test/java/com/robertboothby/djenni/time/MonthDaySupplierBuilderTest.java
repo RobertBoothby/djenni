@@ -35,4 +35,35 @@ public class MonthDaySupplierBuilderTest {
 
         assertThat(supplier.get(), is(MonthDay.of(1, 1)));
     }
+
+    @Test
+    public void shouldIncludeLeapDayByDefault() {
+        StreamableSupplier<MonthDay> supplier = MonthDaySupplierBuilder.aMonthDay()
+                .between(MonthDay.of(2, 29))
+                .and(MonthDay.of(3, 1))
+                .build();
+
+        assertThat(supplier.get(), is(MonthDay.of(2, 29)));
+    }
+
+    @Test
+    public void shouldPreventLeapDayGenerationWhenConfigured() {
+        StreamableSupplier<MonthDay> supplier = MonthDaySupplierBuilder.aMonthDay()
+                .preventLeapDay(true)
+                .between(MonthDay.of(2, 28))
+                .and(MonthDay.of(3, 2))
+                .build();
+
+        boolean leapDayGenerated = supplier.stream(32).anyMatch(monthDay -> monthDay.equals(MonthDay.of(2, 29)));
+        assertThat(leapDayGenerated, is(false));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void preventLeapDayShouldRejectLeapDayOnlyRange() {
+        MonthDaySupplierBuilder.aMonthDay()
+                .preventLeapDay(true)
+                .between(MonthDay.of(2, 29))
+                .and(MonthDay.of(3, 1))
+                .build();
+    }
 }
