@@ -705,6 +705,29 @@ public interface StreamableSupplier<T> extends Supplier<T> {
 ```
 ### Thread Local Supplier
 Unfortunately not all suppliers will be thread safe (for example consider a supplier interacting with a database connection) so the `ThreadLocalSupplier` class provides a mechanism to provide different instances of the thread unsafe supplier on each thread. 
+
+### International Calendar Builders
+Djenni now ships chrono-aware builders that work with any `java.time.chrono.Chronology` visible on the classpath, including the JVM defaults (Thai Buddhist, Japanese, Hijrah, Minguo, etc.) and the extra chronologies contributed by ThreeTen-Extra (Coptic, Ethiopic, Julian, International Fixed…). Use:
+
+- `ChronologyLocalDateSupplierBuilder` for `ChronoLocalDate` values.
+- `ChronologyLocalDateTimeSupplierBuilder` for `ChronoLocalDateTime` values.
+- `ChronologyZonedDateTimeSupplierBuilder` for `ChronoZonedDateTime` values.
+- `ChronologyAppointmentSupplierBuilder` to pair chrono dates with ISO `LocalTime`/`Duration` and emit appointments or intervals.
+
+Each builder offers convenience factories (for example `thaiBuddhistDate()`, `copticDateTime()`, `julianZonedDateTime()`) plus `chronologyById(String)`/`chronologyDateTime(String)` helpers that look up chronologies through `ChronologyCatalog`. That catalog surfaces every discovered calendar and resolves identifiers case-insensitively, so downstream tools can present a complete list without hard coding.
+
+```java
+ChronoLocalDateTime<ThaiBuddhistDate> dob =
+        ChronologyLocalDateTimeSupplierBuilder.thaiBuddhistDateTime()
+                .withZone(ZoneId.of("Asia/Bangkok"))
+                .between(ThaiBuddhistDate.of(2500, 1, 1).atTime(12, 0))
+                .and(ThaiBuddhistDate.of(2567, 1, 1).atTime(12, 0))
+                .build()
+                .get();
+```
+
+When you need to bias or exclude specific values (for example, suppressing leap day across calendars), compose these builders with existing utilities such as `ExplicitlyBiassedSupplierBuilder`, `SupplierHelper.derived(...)`, or `MonthDaySupplierBuilder#preventLeapDay(boolean)`.
+
 ### Caching Suppliers
 # TODO Update this section to reflect the new CachingSupplier mechanism.
 

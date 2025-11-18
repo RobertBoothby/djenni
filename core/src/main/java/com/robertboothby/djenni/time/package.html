@@ -1,1 +1,37 @@
-TODO add support for time value generation.
+<html>
+<body>
+<p>
+    The <code>com.robertboothby.djenni.time</code> package contains the date/time supplier builders that power Djenni's
+    temporal generation features. ISO-8601 builders such as {@link com.robertboothby.djenni.time.LocalDateSupplierBuilder},
+    {@link com.robertboothby.djenni.time.YearMonthSupplierBuilder}, {@link com.robertboothby.djenni.time.DurationSupplierBuilder},
+    and {@link com.robertboothby.djenni.time.MonthDaySupplierBuilder} expose fluent range configuration, thread-safe
+    sampling and convenience adapters for configuring test fixtures.
+</p>
+<p>
+    For international calendar systems, use {@link com.robertboothby.djenni.time.ChronologyLocalDateSupplierBuilder},
+    {@link com.robertboothby.djenni.time.ChronologyLocalDateTimeSupplierBuilder}, or
+    {@link com.robertboothby.djenni.time.ChronologyZonedDateTimeSupplierBuilder}. Each accepts any
+    {@link java.time.chrono.Chronology} available to the JVM, including the standard Java chronologies
+    (Japanese, Thai Buddhist, Hijrah, etc.) and the additional implementations provided by ThreeTen-Extra
+    (Coptic, Ethiopic, Julian, International Fixed and more). Call the convenience factories such as
+    {@link com.robertboothby.djenni.time.ChronologyLocalDateSupplierBuilder#thaiBuddhistDate()},
+    {@link com.robertboothby.djenni.time.ChronologyLocalDateTimeSupplierBuilder#thaiBuddhistDateTime()},
+    {@link com.robertboothby.djenni.time.ChronologyZonedDateTimeSupplierBuilder#thaiBuddhistZonedDateTime()} or resolve a chronology by id:
+</p>
+<pre>
+ChronologyLocalDateSupplierBuilder.chronologyById("Coptic")
+        .between(CopticChronology.INSTANCE.dateYearDay(1736, 1))
+        .and(CopticChronology.INSTANCE.dateYearDay(1736, 2))
+        .build();
+</pre>
+<p>
+    The {@link com.robertboothby.djenni.time.ChronologyCatalog} helper lists every discovered chronology and resolves
+    identifiers case-insensitively, so downstream tooling can present a menu of JVM and ThreeTen-Extra calendars without
+    hard-coding them. When you need specialised behaviour—such as forcing the inclusion of leap days—you can compose
+    suppliers using the core biasing utilities (
+    {@link com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder},
+    {@link com.robertboothby.djenni.core.SupplierHelper}) in combination with the new
+    {@link com.robertboothby.djenni.time.MonthDaySupplierBuilder#preventLeapDay(boolean)} toggle.
+</p>
+</body>
+</html>
