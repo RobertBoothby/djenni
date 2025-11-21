@@ -14,6 +14,7 @@ public class RuntimeParameterContext implements ParameterContext {
 
     private final List<? extends Parameter<?>> parameters;
     private int parameterPosition = 0;
+    private boolean lastValueWasUseDefaultSupplier;
 
     public RuntimeParameterContext(List<? extends Parameter<?>> parameters) {
         this.parameters = parameters;
@@ -21,31 +22,47 @@ public class RuntimeParameterContext implements ParameterContext {
 
     @Override
     public <P> P p(Class<P> parameterClass) {
-        return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
+        Parameter<?> parameter = parameters.get(parameterPosition++);
+        lastValueWasUseDefaultSupplier = parameter.isUseDefaultValueSupplier();
+        return (P) parameter.getParameterSupplier().get();
     }
 
     @Override
     public <P> P p(String name, Class<P> parameterClass) {
-        return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
+        Parameter<?> parameter = parameters.get(parameterPosition++);
+        lastValueWasUseDefaultSupplier = parameter.isUseDefaultValueSupplier();
+        return (P) parameter.getParameterSupplier().get();
     }
 
     @Override
     public <P> P p(P fixedParameter) {
-        return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
+        Parameter<?> parameter = parameters.get(parameterPosition++);
+        lastValueWasUseDefaultSupplier = parameter.isUseDefaultValueSupplier();
+        return (P) parameter.getParameterSupplier().get();
     }
 
     @Override
     public <P> P p(String name, P fixedParameter) {
-        return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
+        Parameter<?> parameter = parameters.get(parameterPosition++);
+        lastValueWasUseDefaultSupplier = parameter.isUseDefaultValueSupplier();
+        return (P) parameter.getParameterSupplier().get();
     }
 
     @Override
     public <P> P p(StreamableSupplier<P> defaultSupplier) {
-        return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
+        Parameter<?> parameter = parameters.get(parameterPosition++);
+        lastValueWasUseDefaultSupplier = parameter.isUseDefaultValueSupplier();
+        return (P) parameter.getParameterSupplier().get();
     }
 
     @Override
     public <P> P p(String name, StreamableSupplier<P> defaultSupplier) {
-        return (P) parameters.get(parameterPosition++).getParameterSupplier().get();
+        Parameter<?> parameter = parameters.get(parameterPosition++);
+        lastValueWasUseDefaultSupplier = parameter.isUseDefaultValueSupplier();
+        return (P) parameter.getParameterSupplier().get();
+    }
+
+    public boolean lastValueWasUseDefaultValueSupplier() {
+        return lastValueWasUseDefaultSupplier;
     }
 }

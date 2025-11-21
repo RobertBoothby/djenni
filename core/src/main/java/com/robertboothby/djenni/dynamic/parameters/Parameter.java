@@ -2,6 +2,7 @@ package com.robertboothby.djenni.dynamic.parameters;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.dynamic.DefaultSuppliers;
+import com.robertboothby.djenni.dynamic.UseDefaultValueSupplier;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -14,18 +15,22 @@ import java.util.stream.Stream;
 public class Parameter<P> {
     private String parameterName;
     private Supplier<P> parameterSupplier;
+    private Supplier<P> defaultParameterSupplier;
     private String nameOverride;
     private Class<? extends P> parameterClass;
+    private boolean parameterSupplierExplicitlySet;
 
     public Parameter(Class<P> parameterClass) {
         this(null, parameterClass);
         this.parameterSupplier = DefaultSuppliers.defaultSuppliers().getSupplierForClass(parameterClass);
+        this.defaultParameterSupplier = this.parameterSupplier;
     }
 
     public Parameter(String nameOverride, Class<P> parameterClass) {
         this.nameOverride = nameOverride;
         this.parameterClass = parameterClass;
         this.parameterSupplier = DefaultSuppliers.defaultSuppliers().getSupplierForClassAndProperty(parameterClass, nameOverride);
+        this.defaultParameterSupplier = this.parameterSupplier;
     }
 
     public Parameter(P defaultParameterValue) {
@@ -41,6 +46,7 @@ public class Parameter<P> {
         this.nameOverride = nameOverride;
         this.parameterClass = (Class<P>) defaultParameterValue.getClass();
         this.parameterSupplier = () -> defaultParameterValue;
+        this.defaultParameterSupplier = this.parameterSupplier;
     }
 
     @SuppressWarnings("unchecked")
@@ -48,13 +54,16 @@ public class Parameter<P> {
         this.nameOverride = nameOverride;
         this.parameterClass = (Class<P>) defaultParameterSupplier.get().getClass();
         this.parameterSupplier = defaultParameterSupplier;
+        this.defaultParameterSupplier = this.parameterSupplier;
     }
 
     public Parameter(Parameter<P> original) {
         this.parameterName = original.parameterName;
         this.parameterSupplier = original.parameterSupplier;
+        this.defaultParameterSupplier = original.defaultParameterSupplier;
         this.nameOverride = original.nameOverride;
         this.parameterClass = original.parameterClass;
+        this.parameterSupplierExplicitlySet = original.parameterSupplierExplicitlySet;
     }
 
 
@@ -67,7 +76,24 @@ public class Parameter<P> {
     }
 
     public void setParameterSupplier(Supplier<P> parameterSupplier) {
+        setParameterSupplier(parameterSupplier, true);
+    }
+
+    public void setParameterSupplier(Supplier<P> parameterSupplier, boolean explicitlySet) {
         this.parameterSupplier = parameterSupplier;
+        this.parameterSupplierExplicitlySet = explicitlySet;
+    }
+
+    public void resetToDefaultSupplier() {
+        setParameterSupplier(this.defaultParameterSupplier, false);
+    }
+
+    public boolean isParameterSupplierExplicitlySet() {
+        return parameterSupplierExplicitlySet;
+    }
+
+    public boolean isUseDefaultValueSupplier() {
+        return parameterSupplier instanceof UseDefaultValueSupplier;
     }
 
     public Optional<String> getNameOverride() {

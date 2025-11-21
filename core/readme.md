@@ -541,6 +541,9 @@ The syntax for configuring it is more clunky than a bespoke SupplierBuilder but 
 
 Here is an example of how to use the `DynamicSupplierBuilder` to create a `Person` supplier.
 
+For a deeper dive into the builder's capabilities and supporting classes, see
+[`core/src/main/java/com/robertboothby/djenni/dynamic/README.md`](src/main/java/com/robertboothby/djenni/dynamic/README.md).
+
 First the Person class which has been compiled with the `-parameters` flag.
 ```
 package com.robertboothby.djenni.examples.examples;
@@ -641,6 +644,11 @@ The above example uses one of the ways of defining the suppliers for the propert
 to identify them. It will first attempt to set the property by matching constructor parameter names before reverting to
 using the corresponding setter if available.
 
+If you later decide that a property you configured via `.property(...)` should go back to using the bean's own default,
+call `clearProperty` with the same setter you used originally (or `useDefaultValue` if you just want to skip touching it
+from now on). That reinstates the builder's internal default supplier so future calls to `build()` behave exactly as they
+did before you overrode the value, instead of guessing with a literal `null`.
+
 The constructor chosen by default will always be the one with the most parameters. If you want to use a different constructor
 then you can use the `useConstructor` method to specify the constructor you want to use or you can use the `useFunction` method to give you
 even more control where you can supply your own Function to supply the instances. Both of them use an instance of a class
@@ -729,11 +737,12 @@ ChronoLocalDateTime<ThaiBuddhistDate> dob =
 When you need to bias or exclude specific values (for example, suppressing leap day across calendars), compose these builders with existing utilities such as `ExplicitlyBiassedSupplierBuilder`, `SupplierHelper.derived(...)`, or `MonthDaySupplierBuilder#preventLeapDay(boolean)`.
 
 ### Caching Suppliers
-# TODO Update this section to reflect the new CachingSupplier mechanism.
 
 In some domains there will be scenarios where there are values that need to be consistent within a given set of objects. For example Primary / Foreign Keys or maybe currency in a group of transactions.
 
-The `CachingSupplier` provides a mechanism for handling these scenarios.
+The `CachingSupplier` provides a mechanism for handling these scenarios. It wraps another `StreamableSupplier`, caches
+the most recently generated value (per thread), and exposes `next()` when you want to advance the underlying supplier
+and update what subsequent `get()` calls return.
 
 A `CachingSupplier` wraps an original supplier and when it is constructed or `next()` is called then it stores the value that has been generated and returns it whenever its own `get()` method is called.
 
@@ -753,13 +762,13 @@ If you use the original supplier directly then the `CachingSupplier` and any lin
         return afterGetCalled(personStreamableSupplier, ignored -> cachingNameSupplier.next());
     }
 ```
-The mechanism is based on the `public static <T> StreamableSupplier<T> afterGetCalled(Supplier<? extends T> supplier, Consumer<T> peeker)` that allows you to create a supplier that shares any values it generates with a `Consumer` which can be very useful for logging or capturing the data generated for investigation or replay.
+Internally the helper uses `SupplierHelper.afterGetCalled(...)` so every time the wrapped supplier runs we capture the new
+value automatically; the `ThreadLocal` cache means each thread can safely hold on to its own “last seen” value. You still
+need to decide when to call `next()` to advance to a fresh value—typically once per aggregate or test scenario.
 
-In the example above I have used `whenGetCalled()` to trigger the generation of a new name after each time the `get()` method is called.
-
-You do need to take care to use the `CachingSupplier.next()` only once in a particular context that needs this type of consistency - if you don't then a new value may be generated unexpectedly.
-
-To make it easier to deal with multiple CachingSuppliers concurrently there is a `CachingSupplierRegistry` that allows you to register and coordinate them more easily.
+For larger scenarios you can wire those calls through `CachingSupplierRegistry`. Register each caching supplier (optionally
+under a group name) and call `registry.next(group)` or `registry.nextAll()` whenever you want every cached relationship to
+advance together—for example, stepping foreign keys forward between transactions while keeping related fields in sync.
 
 ### Collection Suppliers
 The `CollectionSupplierBuilder` provides mechanisms over and above the `SimpleListSupplier` to create suppliers that supply specific collection types.
@@ -774,3 +783,4 @@ Things that I am thinking of adding:
 - Logging mechanisms using `peek()` to capture the generated values easily.
 - Data Storage & replay mechnisms to allow for scenarios to be re-run using the same data for investigation and bug-fixing purposes.
 - SQL Supplier - a mini-framework to access data from a SQL database to feed into the generation other data.
+- Revisit the DynamicSupplierBuilder parameter context API (e.g. returning Optional values or exposing suppliers) so we can encode "use bean default" intent without extra sentinel state.

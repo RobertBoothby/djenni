@@ -1,6 +1,7 @@
 package com.robertboothby.djenni.dynamic;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
 import org.junit.Test;
 
 import java.beans.IntrospectionException;
@@ -103,6 +104,39 @@ public class DynamicSupplierBuilderTest {
         testClass = testClassSupplier.get();
         assertThat(testClass.getValueThree(), is(""));
 
+    }
+
+    @Test
+    public void shouldRespectUseDefaultValueSupplier() throws IntrospectionException {
+        DynamicSupplierBuilder<TestClass> supplierBuilder = supplierFor(TestClass.class);
+
+        TestClass defaultTestClass = supplierBuilder.build().get();
+        assertThat(defaultTestClass.getValueThree(), is(""));
+
+        supplierBuilder.property(TestClass::setValueThree, SupplierHelper.nullSupplier());
+        TestClass overridden = supplierBuilder.build().get();
+        assertThat(overridden.getValueThree(), is(nullValue()));
+
+        supplierBuilder.useDefaultValue(TestClass::setValueThree);
+        TestClass reverted = supplierBuilder.build().get();
+        assertThat(reverted.getValueThree(), is(""));
+    }
+
+    @Test
+    public void builtSuppliersShouldRemainImmutableSnapshots() {
+        DynamicSupplierBuilder<TestClass> builder = supplierFor(TestClass.class)
+                .property(TestClass::getValueOne, fix("One"));
+
+        StreamableSupplier<TestClass> original = builder
+                .property(TestClass::setValueThree, fix("Three"))
+                .build();
+
+        // Reconfigure builder after building; the prior supplier should not change.
+        builder.property(TestClass::setValueThree, fix("Four"));
+        StreamableSupplier<TestClass> updated = builder.build();
+
+        assertThat(original.get().getValueThree(), is("Three"));
+        assertThat(updated.get().getValueThree(), is("Four"));
     }
 
     public static class TestClass {

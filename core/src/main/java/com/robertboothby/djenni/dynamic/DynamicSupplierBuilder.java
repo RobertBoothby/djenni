@@ -29,12 +29,7 @@ import static java.util.stream.Collectors.toSet;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
- *
  * <em>TO MAKE THE AUTOMATED PARAMETER NAMING WORK, USE -parameters IN THE JAVA COMPILATION. IN INTELLIJ THIS NEEDS TO BE DONE AT THE TOP LEVEL OF THE PROJECT AS WELL AS THE SUB-MODULES!!</em>
- * TODO - don't forget that we may have novel parameters defined during the introspection process that are not defined in the constructor or setters. We need to add them to the parameter list if not already defined and execute them - Done but test this!!!!!.
- * TODO - don't forget bean setters - We need to add them to the default function if their properties are not already defined property the constructor and only call them if the relevant properties are actually populated - KInd of done but may be better via semi-dynamic decoration during instantiation - looking at the parameters and adding setter calls as needed.
- * DONE - don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied. Completed property allowing sample / default values for parameters and suppliers.
- * DONE - don't forget primitive types - while we can get away often with supplying null values for object types we cannot do so for primitive types. We need to create a mechanism to provide a reasonable default.
  *
  * @param <C> The type of the Class that will be supplied in the Suppliers created by this builder.
  */
@@ -75,14 +70,19 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
                 .filter($ -> $.getWriteMethod() != null)
                 .filter($ -> !parameterList.stream().map(Parameter::getMappedName).collect(toSet()).contains($.getName()))
                 .forEach($ -> {
-                    parameterList.add(new Parameter<>($.getName(), (Class<Class<?>>) $.getPropertyType()));
+                    Parameter<Object> parameter = new Parameter<>($.getName(), (Class<Object>) $.getPropertyType());
+                    if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
+                        parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+                    }
+                    parameterList.add(parameter);
                     Function<ParameterContext, C> oldFunction = functionThatBuildsTheInstance;
                     functionThatBuildsTheInstance = bc -> {
                         C result = oldFunction.apply(bc);
                         try {
-                            //TODO this will not work as expected if there is a default value set on the class that we are overriding to null... needs more thought.
                             Object p = bc.p($.getName(), $.getPropertyType());
-                            if (p != null) {
+                            boolean skipSetter = bc instanceof RuntimeParameterContext
+                                    && ((RuntimeParameterContext) bc).lastValueWasUseDefaultValueSupplier();
+                            if (!skipSetter) {
                                 $.getWriteMethod().invoke(result, p);
                             }
                         } catch (Exception e) {
@@ -195,6 +195,11 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         return this;
     }
 
+    public <P> DynamicSupplierBuilder<C> useDefaultValue(IntrospectableBiConsumer<? super C, P> setter) {
+        setter(setter).setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+        return this;
+    }
+
     @SuppressWarnings("unchecked")
     public <P> DynamicSupplierBuilder<C> property(String propertyName, Supplier<P> propertySupplier) {
         parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().ifPresent($ -> {
@@ -218,6 +223,9 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
         if(first.isEmpty()){
             Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) getter.getReturnType());
+            if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
+                parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+            }
             parameterList.add(parameter);
             Method setterMethod = stream(beanInfo.getPropertyDescriptors())
                     .filter($ -> $.getWriteMethod() != null)
@@ -254,6 +262,9 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
         if(first.isEmpty()){
             Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) setter.getParameterType());
+            if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
+                parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+            }
             parameterList.add(parameter);
             Method setterMethod = stream(beanInfo.getPropertyDescriptors())
                     .filter($ -> $.getWriteMethod() != null)
@@ -288,7 +299,7 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
     }
 
     public <P> DynamicSupplierBuilder<C> clearProperty(IntrospectableBiConsumer<? super C, P> setter) {
-        setter(setter).setParameterSupplier(SupplierHelper.nullSupplier());
+        setter(setter).setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
         return this;
     }
 }
