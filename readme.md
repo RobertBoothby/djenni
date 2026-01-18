@@ -37,7 +37,6 @@ the JavaBeans getter and setter patterns.
         //OR Stream of 10
         Stream<TestClass> testClassStreamOfTen = testClassSupplier.stream(10);
 ```
-
 ### The Core Pattern
 
 Djenni is built around the concept of a &quot;Supplier&quot; and a &quot;SupplierBuilder&quot;.

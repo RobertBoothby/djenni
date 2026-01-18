@@ -7,7 +7,16 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 /**
- * An introspectable Lambda function for a getter (or similar method).
+ * <p>
+ * An introspectable Lambda function for a class level getter (or similar method) that enables the retrieval of the method's
+ * implementation class, method name, and return type.
+ * </p>
+ * <p>
+ * It does this by leveraging Java's SerializedLambda mechanism to extract the necessary information from the Lambda
+ * expression. While the SerializedLambda functionality can be unreliable if used to serialize between different JVM
+ * versions or class loaders, it provides a reliable way to introspect Lambda expressions at runtime within the current
+ * JVM.
+ * </p>
  */
 @FunctionalInterface
 public interface IntrospectableFunction<T,R> extends Function<T,R>, Serializable {
