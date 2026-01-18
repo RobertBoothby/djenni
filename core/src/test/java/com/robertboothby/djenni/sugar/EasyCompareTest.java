@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.sugar;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.robertboothby.djenni.sugar.EasyCompare.eC;
 import static com.robertboothby.djenni.sugar.EasyCompare.easyCompare;

@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.time;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -9,6 +9,7 @@ import java.time.ZoneOffset;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class OffsetDateTimeSupplierBuilderTest {
 
@@ -27,11 +28,11 @@ public class OffsetDateTimeSupplierBuilderTest {
         assertThat(supplier.get(), is(OffsetDateTime.ofInstant(start, offset)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectInvalidRange() {
-        OffsetDateTimeSupplierBuilder.anOffsetDateTime()
+        assertThrows(IllegalArgumentException.class, () -> OffsetDateTimeSupplierBuilder.anOffsetDateTime()
                 .between(Instant.ofEpochMilli(5))
-                .and(Instant.ofEpochMilli(5));
+                .and(Instant.ofEpochMilli(5)));
     }
 
     @Test

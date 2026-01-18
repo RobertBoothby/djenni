@@ -1,8 +1,8 @@
 package com.robertboothby.djenni.util;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 import java.util.function.Supplier;
@@ -11,9 +11,9 @@ import static com.robertboothby.djenni.core.SupplierHelper.fix;
 import static com.robertboothby.djenni.util.SimpleMapEntry.mapEntry;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class SimpleMapSupplierBuilderTest {
 
     @Test

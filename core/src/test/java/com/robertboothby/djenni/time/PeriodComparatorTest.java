@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.time;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Period;
 

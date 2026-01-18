@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.time;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.threeten.extra.chrono.CopticChronology;
 import org.threeten.extra.chrono.CopticDate;
 import org.threeten.extra.chrono.JulianChronology;
@@ -16,6 +16,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ChronologyLocalDateSupplierBuilderTest {
 
@@ -32,13 +33,13 @@ public class ChronologyLocalDateSupplierBuilderTest {
         assertThat(supplier.get(), is(start));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectMismatchedChronology() {
         ThaiBuddhistDate start = ThaiBuddhistDate.of(2567, 1, 1);
         ChronologyLocalDateSupplierBuilder<ChronoLocalDate> builder =
                 ChronologyLocalDateSupplierBuilder.chronologyDate(ThaiBuddhistChronology.INSTANCE, ChronoLocalDate.class);
-        builder.between(start)
-                .and(CopticChronology.INSTANCE.dateEpochDay(start.toEpochDay()));
+        assertThrows(IllegalArgumentException.class, () -> builder.between(start)
+                .and(CopticChronology.INSTANCE.dateEpochDay(start.toEpochDay())));
     }
 
     @Test

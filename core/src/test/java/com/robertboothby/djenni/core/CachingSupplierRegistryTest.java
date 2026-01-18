@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 

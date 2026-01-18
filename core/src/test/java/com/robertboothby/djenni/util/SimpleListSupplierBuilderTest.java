@@ -2,14 +2,14 @@ package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
-import com.robertboothby.djenni.core.util.Repeat;
-import com.robertboothby.djenni.core.util.RepeatRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.util.HashSet;
 import java.util.List;
@@ -29,11 +29,9 @@ import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.times;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class SimpleListSupplierBuilderTest {
-
-    @Rule
-    public RepeatRule repeatRule = new RepeatRule();
 
     @Mock
     private StreamableSupplier<String> testSupplier;
@@ -58,8 +56,7 @@ public class SimpleListSupplierBuilderTest {
         then(testSupplier).should(times(5)).get();
     }
 
-    @Test
-    @Repeat(value = 10)
+    @RepeatedTest(10)
     @SuppressWarnings("unchecked")
     public void shouldCreateVariableLengthListFromSupplier(){
         //Given

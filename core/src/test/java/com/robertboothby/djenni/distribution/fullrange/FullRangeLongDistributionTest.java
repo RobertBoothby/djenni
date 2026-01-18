@@ -2,7 +2,7 @@ package com.robertboothby.djenni.distribution.fullrange;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FullRangeLongDistributionTest {
 
@@ -58,22 +59,22 @@ public class FullRangeLongDistributionTest {
         assertThat(second, allOf(greaterThanOrEqualTo(-500L), lessThan(0L)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectLowerBoundsBelowLongMin() {
-        FullRangeLongDistribution.uniform()
-                .between(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), BigInteger.valueOf(Long.MIN_VALUE));
+        assertThrows(IllegalArgumentException.class, () -> FullRangeLongDistribution.uniform()
+                .between(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), BigInteger.valueOf(Long.MIN_VALUE)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectUpperBoundsAboveLongMaxPlusOne() {
-        FullRangeLongDistribution.uniform()
-                .between(BigInteger.valueOf(-10L), MAX_EXCLUSIVE.add(BigInteger.ONE));
+        assertThrows(IllegalArgumentException.class, () -> FullRangeLongDistribution.uniform()
+                .between(BigInteger.valueOf(-10L), MAX_EXCLUSIVE.add(BigInteger.ONE)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectInvalidOrdering() {
-        FullRangeLongDistribution.uniform()
-                .between(BigInteger.TEN, BigInteger.ONE);
+        assertThrows(IllegalArgumentException.class, () -> FullRangeLongDistribution.uniform()
+                .between(BigInteger.TEN, BigInteger.ONE));
     }
 
     @Test

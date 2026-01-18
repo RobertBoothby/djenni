@@ -1,10 +1,8 @@
 package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.core.util.Collections;
-import com.robertboothby.djenni.core.util.Repeat;
-import com.robertboothby.djenni.core.util.RepeatRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 
 import java.time.ZoneId;
 import java.util.function.Supplier;
@@ -29,9 +27,6 @@ import static org.hamcrest.Matchers.theInstance;
 public class SupplierHelperTest {
 
     public static final String NOT_NULL = "NOT NULL";
-    @Rule
-    public RepeatRule repeatRule = new RepeatRule();
-
     @Test
     public void shouldSupplyFromValues(){
         //Given
@@ -149,8 +144,7 @@ public class SupplierHelperTest {
         assertThat(nulls, eventuallySuppliesAllValues(Collections.asSet(NOT_NULL, null), 100));
     }
 
-    @Test
-    @Repeat(1000)
+    @RepeatedTest(1000)
     public void shouldNeverSupplyNulls(){
         //Given
         StreamableSupplier<String> not_null = fix(NOT_NULL);
@@ -163,8 +157,7 @@ public class SupplierHelperTest {
         assertThat(value, is(NOT_NULL));
     }
 
-    @Test
-    @Repeat(1000)
+    @RepeatedTest(1000)
     public void shouldAlwaysSupplyNulls(){
         //Given
         StreamableSupplier<String> not_null = fix(NOT_NULL);

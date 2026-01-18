@@ -2,7 +2,7 @@ package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.helper.DataDistributionAssessment;
 import com.robertboothby.djenni.matcher.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

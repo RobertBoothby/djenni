@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.core;
 
 import com.robertboothby.djenni.core.util.Collections;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.robertboothby.djenni.core.ExplicitlyBiassedSupplierBuilder.explicitlyBiassedSupplierFor;
 import static com.robertboothby.djenni.core.SupplierHelper.fix;

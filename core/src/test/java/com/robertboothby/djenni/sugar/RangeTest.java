@@ -1,20 +1,21 @@
 package com.robertboothby.djenni.sugar;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RangeTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldRequireMinimumValue() {
-        Range.inclusive(new Object()).between(null);
+        assertThrows(NullPointerException.class, () -> Range.inclusive(new Object()).between(null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void shouldRequireMaximumValue() {
-        Range.inclusive(new Object()).between(1).and(null);
+        assertThrows(NullPointerException.class, () -> Range.inclusive(new Object()).between(1).and(null));
     }
 
     @Test
@@ -24,25 +25,25 @@ public class RangeTest {
         assertThat(returnedParent, is(parent));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void inclusiveRangeRejectsMaximumLessThanMinimum() {
-        Range.inclusive(new Object()).between(3).and(2);
+        assertThrows(IllegalArgumentException.class, () -> Range.inclusive(new Object()).between(3).and(2));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void exclusiveRangeRejectsEqualBounds() {
-        Range.exclusive(new Object()).between(3).and(3);
+        assertThrows(IllegalArgumentException.class, () -> Range.exclusive(new Object()).between(3).and(3));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void getMinimumRequiresConfiguration() {
-        Range.inclusive(new Object()).getMinimum();
+        assertThrows(IllegalStateException.class, () -> Range.inclusive(new Object()).getMinimum());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void getMaximumRequiresConfiguration() {
         Range<Object, Integer> range = Range.inclusive(new Object());
         range.between(1);
-        range.getMaximum();
+        assertThrows(IllegalStateException.class, range::getMaximum);
     }
 }

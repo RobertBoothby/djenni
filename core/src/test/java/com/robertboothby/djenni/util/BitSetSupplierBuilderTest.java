@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.util;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.BitSet;
 import java.util.concurrent.atomic.AtomicInteger;
