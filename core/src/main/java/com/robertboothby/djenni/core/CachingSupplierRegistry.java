@@ -22,6 +22,9 @@ public class CachingSupplierRegistry {
 
     private final Map<String, Set<CachingSupplier<?>>> registeredSuppliers = new ConcurrentHashMap<>();
 
+    /**
+     * Create a new empty registry. Each registry maintains its own set of named groups.
+     */
     public static CachingSupplierRegistry registry() {
         return new CachingSupplierRegistry();
     }
@@ -52,7 +55,11 @@ public class CachingSupplierRegistry {
      * @return The registry for further calls.
      */
     public CachingSupplierRegistry next(String group){
-        registeredSuppliers.get(group).forEach(CachingSupplier::next);
+        Set<CachingSupplier<?>> suppliers = registeredSuppliers.get(group);
+        if (suppliers == null || suppliers.isEmpty()) {
+            return this;
+        }
+        suppliers.forEach(CachingSupplier::next);
         return this;
     }
 
@@ -66,6 +73,7 @@ public class CachingSupplierRegistry {
 
     /**
      * Calls next() on <em>all</em> CachingSuppliers that have been registered regardless of group.
+     * Invocation order is undefined but currently sequential to maintain compatibility with {@link ThreadLocalSupplier}.
      */
     public void nextAll(){
         registeredSuppliers.values().stream().flatMap(Collection::stream).forEach(CachingSupplier::next);

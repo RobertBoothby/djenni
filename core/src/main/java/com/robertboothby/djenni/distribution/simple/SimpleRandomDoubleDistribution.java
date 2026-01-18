@@ -42,10 +42,13 @@ public abstract class SimpleRandomDoubleDistribution implements Serializable, Di
 
     /**
       * Get the next double value within the range between 0.0 (inclusive) and the bound (exclusive).
-      * @param bound the upper bound (exclusive) on the values that can be generated.
+      * @param bound the strictly positive upper bound (exclusive) on the values that can be generated.
       * @return next double value within the between 0.0 (inclusive) and the bound (exclusive).
       */
     public Double generate(Double bound){
+        if (bound == null || bound <= 0.0D) {
+            throw new IllegalArgumentException("Bound must be positive");
+        }
         return bound * nextDouble();
     }
 

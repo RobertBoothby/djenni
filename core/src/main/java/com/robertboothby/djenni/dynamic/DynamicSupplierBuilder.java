@@ -3,6 +3,7 @@ package com.robertboothby.djenni.dynamic;
 import com.robertboothby.djenni.ConfigurableSupplierBuilder;
 import com.robertboothby.djenni.SupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
+import com.robertboothby.djenni.core.SupplierHelper;
 import com.robertboothby.djenni.dynamic.parameters.IntrospectionParameterContext;
 import com.robertboothby.djenni.dynamic.parameters.Parameter;
 import com.robertboothby.djenni.dynamic.parameters.ParameterContext;
@@ -10,19 +11,15 @@ import com.robertboothby.djenni.dynamic.parameters.RuntimeParameterContext;
 import com.robertboothby.djenni.util.lambda.introspectable.IntrospectableBiConsumer;
 import com.robertboothby.djenni.util.lambda.introspectable.IntrospectableFunction;
 
-import java.beans.BeanInfo;
-import java.beans.FeatureDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
+import java.beans.*;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.RecordComponent;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -33,11 +30,7 @@ import static java.util.stream.Collectors.toSet;
 
 /**
  * This is a dynamic supplier builder that will use reasonable defaults based on the JavaBeans method and constructor parameter naming conventions, but can be massively extended.
- *
  * <em>TO MAKE THE AUTOMATED PARAMETER NAMING WORK, USE -parameters IN THE JAVA COMPILATION. IN INTELLIJ THIS NEEDS TO BE DONE AT THE TOP LEVEL OF THE PROJECT AS WELL AS THE SUB-MODULES!!</em>
- * TODO - don't forget bean setters - We need to add them to the default function if their properties are not already defined property the constructor and only call them if the relevant properties are actually populated.
- * DONE - don't forget that not all constructors / methods allow null values. During introspection we may need to allow for dummy values to be supplied. Completed property allowing sample / default values for parameters and suppliers.
- * DONE - don't forget primitive types - while we can get away often with supplying null values for object types we cannot do so for primitive types. We need to create a mechanism to provide a reasonable default.
  *
  * @param <C> The type of the Class that will be supplied in the Suppliers created by this builder.
  */
@@ -66,10 +59,14 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
     public DynamicSupplierBuilder(Class<C> suppliedClass) throws IntrospectionException {
         this.suppliedClass = suppliedClass;
 
-        stream(suppliedClass.getConstructors())
-                .filter($ -> Modifier.isPublic($.getModifiers()))
-                .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
-                .ifPresent(constructor -> useDefaultedConstructor((Constructor<C>) constructor));
+        if (suppliedClass.isRecord()) {
+            useRecordConstructor();
+        } else {
+            stream(suppliedClass.getConstructors())
+                    .filter($ -> Modifier.isPublic($.getModifiers()))
+                    .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
+                    .ifPresent(constructor -> useDefaultedConstructor((Constructor<C>) constructor));
+        }
 
         beanInfo = Introspector.getBeanInfo(suppliedClass);
 
@@ -78,14 +75,19 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
                 .filter($ -> $.getWriteMethod() != null)
                 .filter($ -> !parameterList.stream().map(Parameter::getMappedName).collect(toSet()).contains($.getName()))
                 .forEach($ -> {
-                    parameterList.add(new Parameter<>($.getName(), (Class<Class<?>>) $.getPropertyType()));
+                    Parameter<Object> parameter = new Parameter<>($.getName(), (Class<Object>) $.getPropertyType());
+                    if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
+                        parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+                    }
+                    parameterList.add(parameter);
                     Function<ParameterContext, C> oldFunction = functionThatBuildsTheInstance;
                     functionThatBuildsTheInstance = bc -> {
                         C result = oldFunction.apply(bc);
                         try {
-                            //TODO this will not work as expected if there is a default value set on the class that we are overriding to null... needs more thought.
                             Object p = bc.p($.getName(), $.getPropertyType());
-                            if (p != null) {
+                            boolean skipSetter = bc instanceof RuntimeParameterContext
+                                    && ((RuntimeParameterContext) bc).lastValueWasUseDefaultValueSupplier();
+                            if (!skipSetter) {
                                 $.getWriteMethod().invoke(result, p);
                             }
                         } catch (Exception e) {
@@ -123,6 +125,15 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
             try {
                 Class<?>[] constructorParameterClasses = parameterList.stream().map(Parameter::getParameterClass).toArray(Class[]::new);
                 Constructor<C> constructor = suppliedClass.getConstructor(constructorParameterClasses);
+                if (suppliedClass.isRecord()) {
+                    RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+                    if (recordComponents != null && recordComponentsMatch(constructorParameterClasses, recordComponents)) {
+                        for (int i = 0; i < recordComponents.length; i++) {
+                            parameterList.get(i).setParameterName(recordComponents[i].getName());
+                        }
+                        return this;
+                    }
+                }
                 java.lang.reflect.Parameter[] parameters = constructor.getParameters();
                 for (int i = 0; i < parameters.length; i++) {
                     parameterList.get(i).setParameterName(parameters[i].getName());
@@ -159,6 +170,52 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void useRecordConstructor() {
+        RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+        if (recordComponents == null) {
+            return;
+        }
+        Class<?>[] parameterTypes = stream(recordComponents)
+                .map(RecordComponent::getType)
+                .toArray(Class[]::new);
+        try {
+            Constructor<C> constructor = suppliedClass.getDeclaredConstructor(parameterTypes);
+            MethodType constructorMethodType = MethodType.methodType(void.class, constructor.getParameterTypes());
+            MethodHandle constructorMethodHandle = MethodHandles.publicLookup().findConstructor(constructor.getDeclaringClass(), constructorMethodType);
+            useFunction($ -> {
+                try {
+                    dummy = (C) constructorMethodHandle.invokeWithArguments(stream(recordComponents)
+                            .map(component -> $.p(component.getName(), (Class<Object>) component.getType()))
+                            .toArray());
+                    return dummy;
+                } catch (Throwable throwable) {
+                    if (throwable instanceof Error) {
+                        throw (Error) throwable;
+                    } else if (throwable instanceof RuntimeException) {
+                        throw (RuntimeException) throwable;
+                    } else {
+                        throw new RuntimeException(throwable);
+                    }
+                }
+            });
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean recordComponentsMatch(Class<?>[] constructorParameterClasses, RecordComponent[] recordComponents) {
+        if (constructorParameterClasses.length != recordComponents.length) {
+            return false;
+        }
+        for (int i = 0; i < constructorParameterClasses.length; i++) {
+            if (!constructorParameterClasses[i].equals(recordComponents[i].getType())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -198,9 +255,17 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         return this;
     }
 
-    public DynamicSupplierBuilder<C> property(String propertyName, Supplier<?> propertySupplier) {
-        //TODO Implement!
-        throw new RuntimeException("NOT YET IMPLEMENTED!");
+    public <P> DynamicSupplierBuilder<C> useDefaultValue(IntrospectableBiConsumer<? super C, P> setter) {
+        setter(setter).setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <P> DynamicSupplierBuilder<C> property(String propertyName, Supplier<P> propertySupplier) {
+        parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().ifPresent($ -> {
+            ((Parameter<P>)$).setParameterSupplier(propertySupplier);
+        });
+        return this;
     }
 
     public DynamicSupplierBuilder<C> property(String propertyName, SupplierBuilder<?> propertySupplierBuilder) {
@@ -209,13 +274,64 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
     }
 
     private <T> Parameter<T> getter(IntrospectableFunction<? super C, T> getter) {
-        String propertyName = stream(beanInfo.getPropertyDescriptors())
+        Optional<String> beanPropertyName = stream(beanInfo.getPropertyDescriptors())
                 .filter($ -> $.getReadMethod() != null)
                 .filter($ -> $.getReadMethod().getName().equals(getter.getMethodName()))
                 .findFirst()
-                .map(FeatureDescriptor::getName).orElseThrow();
+                .map(FeatureDescriptor::getName);
+        String propertyName = beanPropertyName.orElseGet(() -> {
+            if (suppliedClass.isRecord()) {
+                RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+                if (recordComponents != null) {
+                    return stream(recordComponents)
+                            .filter(component -> component.getAccessor().getName().equals(getter.getMethodName()))
+                            .map(RecordComponent::getName)
+                            .findFirst()
+                            .orElseThrow();
+                }
+            }
+            return beanPropertyName.orElseThrow();
+        });
 
-        return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
+        Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
+        if(first.isEmpty()){
+            if (suppliedClass.isRecord()) {
+                RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+                String components = recordComponents == null ? "" : stream(recordComponents)
+                        .map(RecordComponent::getName)
+                        .collect(Collectors.joining(", "));
+                throw new RuntimeException("No record component found for getter " + getter.getMethodName() +
+                        " on " + suppliedClass.getName() +
+                        (components.isEmpty() ? "" : " (components: " + components + ")"));
+            }
+            Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) getter.getReturnType());
+            if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
+                parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+            }
+            parameterList.add(parameter);
+            Method setterMethod = stream(beanInfo.getPropertyDescriptors())
+                    .filter($ -> $.getWriteMethod() != null)
+                    .filter($ -> $.getName().equals(propertyName))
+                    .findFirst()
+                    .map(PropertyDescriptor::getWriteMethod).orElseThrow(() -> new RuntimeException("No setter found for property " + propertyName));
+            functionThatBuildsTheInstance = bc -> {
+                C result = functionThatBuildsTheInstance.apply(bc);
+                try {
+                    setterMethod.invoke(result, bc.p(propertyName, (Class<T>) getter.getReturnType()));
+                } catch (Exception e) {
+                    if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return result;
+            };
+
+            return parameter;
+        } else {
+            return (Parameter<T>) first.get();
+        }
     }
 
     private <T> Parameter<T> setter(IntrospectableBiConsumer<? super C, ? extends T> setter) {
@@ -225,7 +341,35 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
                 .findFirst()
                 .map(FeatureDescriptor::getName).orElseThrow();
 
-        return (Parameter<T>) parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst().orElseThrow();
+        Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
+        if(first.isEmpty()){
+            Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) setter.getParameterType());
+            if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
+                parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+            }
+            parameterList.add(parameter);
+            Method setterMethod = stream(beanInfo.getPropertyDescriptors())
+                    .filter($ -> $.getWriteMethod() != null)
+                    .filter($ -> $.getName().equals(propertyName))
+                    .findFirst()
+                    .map(PropertyDescriptor::getWriteMethod).orElseThrow(() -> new RuntimeException("No setter found for property " + propertyName));
+            functionThatBuildsTheInstance = bc -> {
+                C result = functionThatBuildsTheInstance.apply(bc);
+                try {
+                    setterMethod.invoke(result, bc.p(propertyName, (Class<T>) setter.getParameterType()));
+                } catch (Exception e) {
+                    if (e instanceof RuntimeException) {
+                        throw (RuntimeException) e;
+                    } else {
+                        throw new RuntimeException(e);
+                    }
+                }
+                return result;
+            };
+            return parameter;
+        } else {
+            return (Parameter<T>) first.get();
+        }
     }
 
     public static <T> DynamicSupplierBuilder<T> supplierFor(Class<T> tClass) {
@@ -236,4 +380,15 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         }
     }
 
+    public static <T> DynamicSupplierBuilder<T> supplierForRecord(Class<T> tClass) {
+        if (!tClass.isRecord()) {
+            throw new IllegalArgumentException("Class is not a record: " + tClass.getName());
+        }
+        return supplierFor(tClass);
+    }
+
+    public <P> DynamicSupplierBuilder<C> clearProperty(IntrospectableBiConsumer<? super C, P> setter) {
+        setter(setter).setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
+        return this;
+    }
 }

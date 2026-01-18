@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>Dynamic Supplier Builder</title>
+</head>
+<body>
+<p>
+    The <code>com.robertboothby.djenni.dynamic</code> package contains the dynamic supplier infrastructure, centred on
+    <code>DynamicSupplierBuilder</code>. The builder inspects constructors and JavaBean setters (or record components),
+    captures each argument as a <code>Parameter</code>, and assigns suppliers drawn from <code>DefaultSuppliers</code> so
+    you can generate data objects without writing bespoke builders.
+</p>
+<p>
+    Key features:
+</p>
+<ul>
+    <li>Automatic constructor selection (or explicit control via <code>useConstructor</code>/<code>useFunction</code>).</li>
+    <li>Record-aware configuration via <code>supplierForRecord</code> plus automatic record detection in
+        <code>supplierFor</code>.</li>
+    <li>Getter/setter-based property binding with fluent <code>.property(...)</code> methods, including record
+        accessors.</li>
+    <li>Sentinel <code>UseDefaultValueSupplier</code> that preserves bean defaults for setter-only properties and enables
+        <code>clearProperty</code>/<code>useDefaultValue</code> to revert configuration safely.</li>
+    <li>Extensible default supplier registry (<code>DefaultSuppliers</code>) so teams can define organisation-wide
+        fixtures.</li>
+</ul>
+<p>
+    Supporting classes (<code>ParameterContext</code>, <code>IntrospectionParameterContext</code>,
+    <code>RuntimeParameterContext</code>) capture parameter metadata during introspection and replay it with the correct
+    suppliers at runtime.
+</p>
+<p>
+    Built <code>StreamableSupplier</code> instances are immutable snapshots of the builder configuration. You can keep
+    using an existing supplier while reconfiguring the same <code>DynamicSupplierBuilder</code> to build another supplier
+    without having to re-run introspection.
+</p>
+<p>
+    See <code>README.md</code> in this package for a full usage guide and extended examples.
+</p>
+</body>
+</html>

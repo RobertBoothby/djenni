@@ -74,6 +74,11 @@
             <artifactId>commons-rng-simple</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>org.threeten</groupId>
+            <artifactId>threeten-extra</artifactId>
+            <version>1.8.0</version>
+        </dependency>
     </dependencies>
 
 

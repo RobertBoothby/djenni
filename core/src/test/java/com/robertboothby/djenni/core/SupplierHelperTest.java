@@ -6,6 +6,7 @@ import com.robertboothby.djenni.core.util.RepeatRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.time.ZoneId;
 import java.util.function.Supplier;
 
 import static com.robertboothby.djenni.core.SupplierHelper.fix;
@@ -13,6 +14,7 @@ import static com.robertboothby.djenni.matcher.Matchers.eventuallySuppliesAllVal
 import static java.util.stream.Collectors.toSet;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.in;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
@@ -68,7 +70,7 @@ public class SupplierHelperTest {
     @Test
     public void shouldDeriveFromTwoSuppliers(){
         //Given
-        StreamableSupplier<String> derived = SupplierHelper.derived((£, $) -> £ + " " + $, fix("hello"), fix("world"));
+        StreamableSupplier<String> derived = SupplierHelper.derived((a, b) -> a + " " + b, fix("hello"), fix("world"));
 
         //When
         String result = derived.get();
@@ -173,6 +175,29 @@ public class SupplierHelperTest {
 
         //Then
         assertThat(value, is(nullValue()));
+    }
+
+    @Test
+    public void nullSupplierShouldBeSingletonThatSuppliesNull() {
+        //When
+        StreamableSupplier<String> stringNullSupplier = SupplierHelper.nullSupplier();
+        StreamableSupplier<Integer> integerNullSupplier = SupplierHelper.nullSupplier();
+
+        //Then
+        assertThat(stringNullSupplier.get(), is(nullValue()));
+        assertThat(integerNullSupplier.get(), is(nullValue()));
+        assertThat(integerNullSupplier, is(sameInstance((StreamableSupplier<?>) stringNullSupplier)));
+    }
+
+    @Test
+    public void shouldSupplyRandomZoneIds() {
+        StreamableSupplier<ZoneId> zoneIdSupplier = SupplierHelper.zoneIds();
+
+        ZoneId first = zoneIdSupplier.get();
+        ZoneId second = zoneIdSupplier.get();
+
+        assertThat(first.getId(), is(in(ZoneId.getAvailableZoneIds())));
+        assertThat(second.getId(), is(in(ZoneId.getAvailableZoneIds())));
     }
 
 }

@@ -8,7 +8,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * This builder allows for the configuration of ExplicitlyBiassedSupplier instances.
+ * Fluent builder for {@link ExplicitlyBiassedSupplier}. The builder collects supplier/weight pairs and snapshots them
+ * when {@link #build()} is invoked, ensuring the built supplier is immutable even if the builder is reused to assemble
+ * a different bias list later. By default every supplier is added with a weight of {@link #DEFAULT_WEIGHT} (1.0).
  */
 public class ExplicitlyBiassedSupplierBuilder<T> implements ConfigurableSupplierBuilder<T, ExplicitlyBiassedSupplierBuilder<T>> {
 
@@ -28,8 +30,9 @@ public class ExplicitlyBiassedSupplierBuilder<T> implements ConfigurableSupplier
         return addSupplier(supplier, DEFAULT_WEIGHT);
     }
 
-    /*
-     * Add a supplier with the passed in weight.
+    /**
+     * Add a supplier with the passed in weight. Negative or {@code NaN} weights are permitted but will be ignored by
+     * {@link ExplicitlyBiassedSupplier}, so callers should normally supply positive values.
      * @param supplier The supplier to add.
      * @param weight the weight of the supplier being added.
      * @return the builder for further configuration.

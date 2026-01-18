@@ -6,9 +6,9 @@
 </head>
 <body>
 <p>
-    This package contains distribution implementations that are capable of generating a full range of values. It does
-    this by expressing the bound when generating as a type that is capable of describing the full range that could be
-    generated.
+    This package is reserved for distributions that can exhaustively generate a primitive’s full range. They typically do
+    so by accepting a wider bound type (for example, expressing an <code>int</code> range in terms of a {@link Long}) so
+    that overflows are avoided.
 </p>
 <p>
     For example when generating Integers, expressing the bound as an Integer only allows a bound of
