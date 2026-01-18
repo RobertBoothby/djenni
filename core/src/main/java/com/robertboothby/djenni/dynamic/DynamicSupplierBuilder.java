@@ -18,6 +18,7 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.RecordComponent;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -58,10 +59,14 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
     public DynamicSupplierBuilder(Class<C> suppliedClass) throws IntrospectionException {
         this.suppliedClass = suppliedClass;
 
-        stream(suppliedClass.getConstructors())
-                .filter($ -> Modifier.isPublic($.getModifiers()))
-                .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
-                .ifPresent(constructor -> useDefaultedConstructor((Constructor<C>) constructor));
+        if (suppliedClass.isRecord()) {
+            useRecordConstructor();
+        } else {
+            stream(suppliedClass.getConstructors())
+                    .filter($ -> Modifier.isPublic($.getModifiers()))
+                    .max(comparingInt(Constructor::getParameterCount)) // Get the constructor with the most parameters.
+                    .ifPresent(constructor -> useDefaultedConstructor((Constructor<C>) constructor));
+        }
 
         beanInfo = Introspector.getBeanInfo(suppliedClass);
 
@@ -120,6 +125,15 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
             try {
                 Class<?>[] constructorParameterClasses = parameterList.stream().map(Parameter::getParameterClass).toArray(Class[]::new);
                 Constructor<C> constructor = suppliedClass.getConstructor(constructorParameterClasses);
+                if (suppliedClass.isRecord()) {
+                    RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+                    if (recordComponents != null && recordComponentsMatch(constructorParameterClasses, recordComponents)) {
+                        for (int i = 0; i < recordComponents.length; i++) {
+                            parameterList.get(i).setParameterName(recordComponents[i].getName());
+                        }
+                        return this;
+                    }
+                }
                 java.lang.reflect.Parameter[] parameters = constructor.getParameters();
                 for (int i = 0; i < parameters.length; i++) {
                     parameterList.get(i).setParameterName(parameters[i].getName());
@@ -156,6 +170,52 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void useRecordConstructor() {
+        RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+        if (recordComponents == null) {
+            return;
+        }
+        Class<?>[] parameterTypes = stream(recordComponents)
+                .map(RecordComponent::getType)
+                .toArray(Class[]::new);
+        try {
+            Constructor<C> constructor = suppliedClass.getDeclaredConstructor(parameterTypes);
+            MethodType constructorMethodType = MethodType.methodType(void.class, constructor.getParameterTypes());
+            MethodHandle constructorMethodHandle = MethodHandles.publicLookup().findConstructor(constructor.getDeclaringClass(), constructorMethodType);
+            useFunction($ -> {
+                try {
+                    dummy = (C) constructorMethodHandle.invokeWithArguments(stream(recordComponents)
+                            .map(component -> $.p(component.getName(), (Class<Object>) component.getType()))
+                            .toArray());
+                    return dummy;
+                } catch (Throwable throwable) {
+                    if (throwable instanceof Error) {
+                        throw (Error) throwable;
+                    } else if (throwable instanceof RuntimeException) {
+                        throw (RuntimeException) throwable;
+                    } else {
+                        throw new RuntimeException(throwable);
+                    }
+                }
+            });
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean recordComponentsMatch(Class<?>[] constructorParameterClasses, RecordComponent[] recordComponents) {
+        if (constructorParameterClasses.length != recordComponents.length) {
+            return false;
+        }
+        for (int i = 0; i < constructorParameterClasses.length; i++) {
+            if (!constructorParameterClasses[i].equals(recordComponents[i].getType())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -214,14 +274,36 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
     }
 
     private <T> Parameter<T> getter(IntrospectableFunction<? super C, T> getter) {
-        String propertyName = stream(beanInfo.getPropertyDescriptors())
+        Optional<String> beanPropertyName = stream(beanInfo.getPropertyDescriptors())
                 .filter($ -> $.getReadMethod() != null)
                 .filter($ -> $.getReadMethod().getName().equals(getter.getMethodName()))
                 .findFirst()
-                .map(FeatureDescriptor::getName).orElseThrow();
+                .map(FeatureDescriptor::getName);
+        String propertyName = beanPropertyName.orElseGet(() -> {
+            if (suppliedClass.isRecord()) {
+                RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+                if (recordComponents != null) {
+                    return stream(recordComponents)
+                            .filter(component -> component.getAccessor().getName().equals(getter.getMethodName()))
+                            .map(RecordComponent::getName)
+                            .findFirst()
+                            .orElseThrow();
+                }
+            }
+            return beanPropertyName.orElseThrow();
+        });
 
         Optional<Parameter<?>> first = parameterList.stream().filter($ -> $.getMappedName().equals(propertyName)).findFirst();
         if(first.isEmpty()){
+            if (suppliedClass.isRecord()) {
+                RecordComponent[] recordComponents = suppliedClass.getRecordComponents();
+                String components = recordComponents == null ? "" : stream(recordComponents)
+                        .map(RecordComponent::getName)
+                        .collect(Collectors.joining(", "));
+                throw new RuntimeException("No record component found for getter " + getter.getMethodName() +
+                        " on " + suppliedClass.getName() +
+                        (components.isEmpty() ? "" : " (components: " + components + ")"));
+            }
             Parameter<T> parameter = new Parameter<>(propertyName, (Class<T>) getter.getReturnType());
             if(parameter.getParameterSupplier() == DefaultSuppliersImpl.defaultObjectSupplier) {
                 parameter.setParameterSupplier(UseDefaultValueSupplier.useDefaultValueSupplier(), false);
@@ -296,6 +378,13 @@ public class DynamicSupplierBuilder<C> implements ConfigurableSupplierBuilder<C,
         } catch (IntrospectionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static <T> DynamicSupplierBuilder<T> supplierForRecord(Class<T> tClass) {
+        if (!tClass.isRecord()) {
+            throw new IllegalArgumentException("Class is not a record: " + tClass.getName());
+        }
+        return supplierFor(tClass);
     }
 
     public <P> DynamicSupplierBuilder<C> clearProperty(IntrospectableBiConsumer<? super C, P> setter) {

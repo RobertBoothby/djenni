@@ -1,15 +1,16 @@
 # Dynamic Supplier Builder Guide
 
-This module houses the infrastructure for building suppliers dynamically from arbitrary Java beans. The
+This module houses the infrastructure for building suppliers dynamically from arbitrary Java beans and records. The
 `DynamicSupplierBuilder` inspects constructor parameters and JavaBean setters, associates each property with a
 configurable `Parameter`, and uses `StreamableSupplier` instances to generate values at runtime.
 
 ## When to Reach for DynamicSupplierBuilder
 
-Use the builder when you want to generate fixtures for simple data classes without writing a bespoke
+Use the builder when you want to generate fixtures for simple data classes (including records) without writing a bespoke
 `SupplierBuilder`. It automatically:
 
-1. Picks the public constructor with the most parameters (or a constructor/function you register explicitly).
+1. Picks the public constructor with the most parameters (or a constructor/function you register explicitly). Records
+   use the canonical constructor automatically.
 2. Records every parameter via `ParameterContext`, preserving discovery order.
 3. Adds setter-only properties so write-only attributes can still be populated.
 4. Binds each parameter to a supplier sourced from `DefaultSuppliers`, which you can override globally or per property.
@@ -18,7 +19,8 @@ This gives you a runnable supplier quickly, while still exposing fluent hooks to
 
 ## Requirements
 
-- Compile target classes with `-parameters` so constructor argument names are available at runtime.
+- Compile target classes with `-parameters` so constructor argument names are available at runtime for standard classes.
+- Records do not require `-parameters`; component names are always available for mapping.
 - Ensure setters follow standard JavaBean conventions so the builder can locate them via `Introspector`.
 
 ## Configuring Properties
@@ -38,6 +40,8 @@ Key APIs:
 - `.property(getter, SupplierBuilder)` provides deferred construction via another builder.
 - `.useConstructor(Function<ParameterContext,C>)` or `.useFunction(Function<ParameterContext,C>)` lets you choose a
   different instantiation path while still recording parameters.
+- `.supplierForRecord(Class<T>)` explicitly opts into record-aware configuration; `.supplierFor(Class<T>)` also detects
+  records automatically.
 
 All property calls ultimately manipulate `Parameter` instances captured during introspection. At build time those
 parameters are copied so each supplier has its own snapshot of the configuration.
@@ -98,6 +102,24 @@ TestClass third = defaultingSupplier.get();      // valueThree == bean default (
 
 Suppliers produced by the builder are immutable snapshots of the current configuration. You can safely keep using an
 existing supplier while reconfiguring the same builder to produce a new one.
+
+## Records
+
+Record classes are supported in two ways:
+
+```java
+DynamicSupplierBuilder<PersonRecord> explicit = DynamicSupplierBuilder.supplierForRecord(PersonRecord.class);
+DynamicSupplierBuilder<PersonRecord> implicit = DynamicSupplierBuilder.supplierFor(PersonRecord.class);
+```
+
+Both routes use the canonical constructor and map suppliers by record component names.
+Record accessors can be used directly in `.property(...)` calls:
+
+```java
+DynamicSupplierBuilder<PersonRecord> builder = DynamicSupplierBuilder.supplierFor(PersonRecord.class)
+        .property(PersonRecord::givenName, fix("Ada"))
+        .property(PersonRecord::familyName, fix("Lovelace"));
+```
 
 ## Related Types
 

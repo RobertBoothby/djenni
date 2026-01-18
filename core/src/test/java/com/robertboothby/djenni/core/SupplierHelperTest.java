@@ -70,7 +70,7 @@ public class SupplierHelperTest {
     @Test
     public void shouldDeriveFromTwoSuppliers(){
         //Given
-        StreamableSupplier<String> derived = SupplierHelper.derived((£, $) -> £ + " " + $, fix("hello"), fix("world"));
+        StreamableSupplier<String> derived = SupplierHelper.derived((a, b) -> a + " " + b, fix("hello"), fix("world"));
 
         //When
         String result = derived.get();

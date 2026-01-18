@@ -5,16 +5,19 @@
 <body>
 <p>
     The <code>com.robertboothby.djenni.dynamic</code> package contains the dynamic supplier infrastructure, centred on
-    <code>DynamicSupplierBuilder</code>. The builder inspects constructors and JavaBean setters, captures each argument as a
-    <code>Parameter</code>, and assigns suppliers drawn from <code>DefaultSuppliers</code> so you can generate data objects
-    without writing bespoke builders.
+    <code>DynamicSupplierBuilder</code>. The builder inspects constructors and JavaBean setters (or record components),
+    captures each argument as a <code>Parameter</code>, and assigns suppliers drawn from <code>DefaultSuppliers</code> so
+    you can generate data objects without writing bespoke builders.
 </p>
 <p>
     Key features:
 </p>
 <ul>
     <li>Automatic constructor selection (or explicit control via <code>useConstructor</code>/<code>useFunction</code>).</li>
-    <li>Getter/setter-based property binding with fluent <code>.property(...)</code> methods.</li>
+    <li>Record-aware configuration via <code>supplierForRecord</code> plus automatic record detection in
+        <code>supplierFor</code>.</li>
+    <li>Getter/setter-based property binding with fluent <code>.property(...)</code> methods, including record
+        accessors.</li>
     <li>Sentinel <code>UseDefaultValueSupplier</code> that preserves bean defaults for setter-only properties and enables
         <code>clearProperty</code>/<code>useDefaultValue</code> to revert configuration safely.</li>
     <li>Extensible default supplier registry (<code>DefaultSuppliers</code>) so teams can define organisation-wide
