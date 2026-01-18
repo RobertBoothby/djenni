@@ -1,12 +1,13 @@
 package com.robertboothby.djenni.time;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.MonthDay;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MonthDaySupplierBuilderTest {
 
@@ -58,12 +59,12 @@ public class MonthDaySupplierBuilderTest {
         assertThat(leapDayGenerated, is(false));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void preventLeapDayShouldRejectLeapDayOnlyRange() {
-        MonthDaySupplierBuilder.aMonthDay()
+        assertThrows(IllegalArgumentException.class, () -> MonthDaySupplierBuilder.aMonthDay()
                 .preventLeapDay(true)
                 .between(MonthDay.of(2, 29))
                 .and(MonthDay.of(3, 1))
-                .build();
+                .build());
     }
 }

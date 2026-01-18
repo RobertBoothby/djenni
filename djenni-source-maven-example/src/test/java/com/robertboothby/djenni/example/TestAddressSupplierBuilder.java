@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.example;
 
 import com.robertboothby.djenni.SupplierBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 

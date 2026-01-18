@@ -5,7 +5,7 @@ import com.robertboothby.djenni.core.util.Collections;
 import com.robertboothby.djenni.helper.DataCompletenessAssessment;
 import com.robertboothby.djenni.matcher.Matchers;
 import org.hamcrest.MatcherAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 

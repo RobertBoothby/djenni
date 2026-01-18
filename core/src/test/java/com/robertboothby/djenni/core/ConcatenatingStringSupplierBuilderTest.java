@@ -1,6 +1,6 @@
 package com.robertboothby.djenni.core;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.robertboothby.djenni.core.ConcatenatingStringSupplierBuilder.supplierOfConcatenatedValues;
 import static com.robertboothby.djenni.core.SupplierHelper.fix;

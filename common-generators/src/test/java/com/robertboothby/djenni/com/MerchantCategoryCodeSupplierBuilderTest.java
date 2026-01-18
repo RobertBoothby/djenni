@@ -5,7 +5,7 @@ import com.robertboothby.djenni.common.MerchantCategoryCodeSupplierBuilder;
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.util.Collections;
 import com.robertboothby.djenni.matcher.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.robertboothby.djenni.core.util.Collections.asSet;
 import static com.robertboothby.djenni.matcher.Matchers.eventuallySuppliesAllValues;

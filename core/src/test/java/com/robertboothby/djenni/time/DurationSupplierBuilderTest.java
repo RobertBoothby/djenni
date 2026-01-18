@@ -1,12 +1,13 @@
 package com.robertboothby.djenni.time;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DurationSupplierBuilderTest {
 
@@ -23,11 +24,11 @@ public class DurationSupplierBuilderTest {
         assertThat(supplier.get(), is(start));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectInvalidRange() {
-        DurationSupplierBuilder.aDuration()
+        assertThrows(IllegalArgumentException.class, () -> DurationSupplierBuilder.aDuration()
                 .between(Duration.ofSeconds(1))
-                .and(Duration.ofSeconds(1));
+                .and(Duration.ofSeconds(1)));
     }
 
     @Test

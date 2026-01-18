@@ -2,7 +2,7 @@ package com.robertboothby.djenni.dynamic;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
 import org.hamcrest.CoreMatchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;

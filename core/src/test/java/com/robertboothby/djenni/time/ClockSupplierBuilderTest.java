@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.time;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.threeten.extra.MutableClock;
 import org.threeten.extra.scale.TaiInstant;
 import org.threeten.extra.scale.TimeSource;

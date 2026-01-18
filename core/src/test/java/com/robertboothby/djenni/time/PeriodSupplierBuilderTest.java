@@ -1,12 +1,13 @@
 package com.robertboothby.djenni.time;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.time.Period;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PeriodSupplierBuilderTest {
 
@@ -23,11 +24,11 @@ public class PeriodSupplierBuilderTest {
         assertThat(supplier.get(), is(start));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectInvalidRange() {
-        PeriodSupplierBuilder.aPeriod()
+        assertThrows(IllegalArgumentException.class, () -> PeriodSupplierBuilder.aPeriod()
                 .between(Period.ZERO)
-                .and(Period.ZERO);
+                .and(Period.ZERO));
     }
 
     @Test

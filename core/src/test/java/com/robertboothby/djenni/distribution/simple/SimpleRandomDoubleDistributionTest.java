@@ -1,7 +1,7 @@
 package com.robertboothby.djenni.distribution.simple;
 
 import com.robertboothby.djenni.helper.DataDistributionAssessment;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.robertboothby.djenni.helper.DataDistributionAssessment.assessDistribution;
 import static org.hamcrest.CoreMatchers.both;
@@ -10,7 +10,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  *

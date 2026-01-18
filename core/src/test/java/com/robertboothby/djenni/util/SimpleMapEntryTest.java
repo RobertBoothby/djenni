@@ -1,22 +1,18 @@
 package com.robertboothby.djenni.util;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 public class SimpleMapEntryTest {
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void shouldThrowExceptionWhenSetCalled(){
         //Given
         SimpleMapEntry<String, String> underTest = new SimpleMapEntry<>("TEST", "TEST");
 
         //When
-        underTest.setValue("SHOULD BREAK");
-
-        //Then
-        fail("An UnsupportedOperationException should have been thrown.");
-
+        assertThrows(UnsupportedOperationException.class, () -> underTest.setValue("SHOULD BREAK"));
     }
 }

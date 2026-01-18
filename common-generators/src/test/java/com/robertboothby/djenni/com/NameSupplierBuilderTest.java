@@ -2,7 +2,7 @@ package com.robertboothby.djenni.com;
 
 import com.robertboothby.djenni.common.Name;
 import com.robertboothby.djenni.common.NameSupplierBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.function.Supplier;
 

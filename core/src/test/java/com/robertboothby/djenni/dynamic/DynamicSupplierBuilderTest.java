@@ -2,7 +2,7 @@ package com.robertboothby.djenni.dynamic;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.core.SupplierHelper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.beans.IntrospectionException;
 

@@ -2,7 +2,7 @@ package com.robertboothby.djenni.distribution.fullrange;
 
 import com.robertboothby.djenni.core.StreamableSupplier;
 import com.robertboothby.djenni.distribution.Distribution;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FullRangeIntegerDistributionTest {
 
@@ -50,20 +51,22 @@ public class FullRangeIntegerDistributionTest {
         assertThat(second, allOf(greaterThanOrEqualTo(-50), lessThan(0)));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectLowerBoundsBelowIntegerMin() {
-        FullRangeIntegerDistribution.uniform().between((long) Integer.MIN_VALUE - 1, Integer.MIN_VALUE);
+        assertThrows(IllegalArgumentException.class, () ->
+                FullRangeIntegerDistribution.uniform().between((long) Integer.MIN_VALUE - 1, Integer.MIN_VALUE));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectUpperBoundsAboveIntegerMaxExclusive() {
-        FullRangeIntegerDistribution.uniform()
-                .between(Integer.MIN_VALUE, (long) Integer.MAX_VALUE + 2L);
+        assertThrows(IllegalArgumentException.class, () ->
+                FullRangeIntegerDistribution.uniform()
+                        .between(Integer.MIN_VALUE, (long) Integer.MAX_VALUE + 2L));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldRejectInvalidRangeOrdering() {
-        FullRangeIntegerDistribution.uniform().between(10L, 9L);
+        assertThrows(IllegalArgumentException.class, () -> FullRangeIntegerDistribution.uniform().between(10L, 9L));
     }
 
     @Test
