@@ -5,16 +5,16 @@
     <parent>
         <artifactId>djenni-parent</artifactId>
         <groupId>com.robertboothby.djenni</groupId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.3.0</version>
     </parent>
+    <name>Djenni Core</name>
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>core</artifactId>
     <description>
         This module holds the core components of the Djenni data generator framework. By itself it provides most of the
         components to create an efficient end to end data generation framework for a specific domain. It contains the
-        core
-        SupplierBuilder interfaces, implementations for the core Java data types and useful test components.
+        core SupplierBuilder interfaces, implementations for the core Java data types and useful test components.
         It is intended to be used in conjunction with the source-generator module that will speed up delivery of domain
         specific data generation and also with common domain modules (TBD) that deliver standard generators for common
         frameworks such as JAXB.
